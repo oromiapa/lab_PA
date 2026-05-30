@@ -17,6 +17,11 @@ public:
 
     string getApellido();
     string getDocumento();
+    string getNickname();
+    string getNombre();
+    string getEmail();
+    DtDireccion getDireccion();
+    
 };
 
 #endif

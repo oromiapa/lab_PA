@@ -20,6 +20,7 @@ public:
     DtDireccion getDireccionInmobiliaria();
     string getTelefono();
     string getURL();
+    string getNickname();
 };
 
 

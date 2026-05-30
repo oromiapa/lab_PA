@@ -17,6 +17,12 @@ public:
 
     string getTelefono();
     int getCuentaBancaria();
+    string getNickname();
+    string getNombre();
+    string getEmail();
+    DtDireccion getDireccion();
+    DtFecha getFechaNacimiento();
+    
 };
 
 #endif
