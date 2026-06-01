@@ -4,6 +4,7 @@
 #include <string>
 #include <set>
 #include <memory>
+#include "ISistema.h"
 
 // Forward declarations
 class Inmobiliaria;
@@ -33,7 +34,7 @@ struct DataPropietario {
 struct DataFiltro {
 };
 
-class Sistema {
+class Sistema : public ISistema {
 private:
     // Colecciones globales 
     std::set<std::shared_ptr<Inmobiliaria>> inmobiliarias;
