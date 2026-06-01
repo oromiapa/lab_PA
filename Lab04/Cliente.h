@@ -13,14 +13,9 @@ private:
 
 public:
     Cliente();
-    Cliente(const string & nombre, const string & email, const DtDireccion & direccion, const DtFecha & fechaNacimiento, const string & apellido, const string & documento);
-
+    Cliente(const string & nombre, const string & email, const string & nickname, const string & contrasenia, const string & apellido, const string & documento);
     string getApellido();
     string getDocumento();
-    string getNickname();
-    string getNombre();
-    string getEmail();
-    DtDireccion getDireccion();
     
 };
 

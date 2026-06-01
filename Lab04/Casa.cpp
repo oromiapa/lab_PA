@@ -1,6 +1,6 @@
 #include "Casa.h"
 
-Casa::Casa(const DtDireccion& direccion, const std::string& superficie,
+Casa::Casa(const DtDireccion& direccion, const float superficie,
            const DtFecha& anioConstruccion, int numeroID,
            bool propiedadHorizontal, TipoTecho techo)
     : Inmueble(direccion, superficie, anioConstruccion, numeroID),

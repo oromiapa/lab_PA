@@ -13,15 +13,10 @@ private:
 
 public:
     Propietario();
-    Propietario(const string & nombre, const string & email, const DtDireccion & direccion, const DtFecha & fechaNacimiento, const string & telefono, int cuentaBancaria);
+    Propietario(const string & nombre, const string & email, const string & nickname, const string & contrasenia, const int cuentaBancaria, const string & telefono);
 
-    string getTelefono();
     int getCuentaBancaria();
-    string getNickname();
-    string getNombre();
-    string getEmail();
-    DtDireccion getDireccion();
-    DtFecha getFechaNacimiento();
+    string getTelefono();
     
 };
 

@@ -16,12 +16,12 @@ private:
 
 public:
     Usuario();
-    Usuario(const string & nombre, const string & email, const DtDireccion & direccion, const DtFecha & fechaNacimiento);
+    Usuario(const string & nombre, const string & email, const string & nickname, const string & contrasenia);
 
     string getNombre();
     string getEmail();
-    DtDireccion getDireccion();
-    DtFecha getFechaNacimiento();
+    string getNickname();
+    string getContrasenia();
 };
 
 #endif

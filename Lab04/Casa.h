@@ -11,7 +11,7 @@ private:
 
 public:
     Casa();
-    Casa(const DtDireccion& direccion, const string& superficie, const DtFecha& anioConstruccion, int numeroID, bool propiedadHorizontal, TipoTecho techo);
+    Casa(const DtDireccion& direccion, const float superficie, const DtFecha& anioConstruccion, int numeroID, bool propiedadHorizontal, TipoTecho techo);
 
     bool isPropiedadHorizontal() const;
     TipoTecho getTecho() const;    

@@ -11,7 +11,7 @@ private:
 
 public:
     Apartamento();
-    Apartamento(const DtDireccion& direccion, const std::string& superficie,
+    Apartamento(const DtDireccion& direccion, const float & superficie,
                 const DtFecha& anioConstruccion, int numeroID,
                 int numeroPiso, bool ascensor, float gastosComunes);
 

@@ -15,12 +15,12 @@ private:
 
 public:
     Inmobiliaria();
-    Inmobiliaria(const string & nombre, const string & email, const DtDireccion & direccion, const DtFecha & fechaNacimiento, const DtDireccion & direccionInmobiliaria, const string & telefono, const string & URL);
+    Inmobiliaria(const string & nombre, const string & email, const DtDireccion & direccionInmobiliaria,
+         const string & telefono, const string & URL, const string & nickname, const string & contrasenia);
 
     DtDireccion getDireccionInmobiliaria();
     string getTelefono();
     string getURL();
-    string getNickname();
 };
 
 

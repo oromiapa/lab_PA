@@ -10,19 +10,20 @@
 class Inmueble {
 private:
     DtDireccion direccion;
-    std::string superficie;
+    float superficie;
     DtFecha anioConstruccion;
     int numeroID;
 
 public:
     Inmueble();
-    Inmueble(const DtDireccion& direccion, const std::string& superficie,
+    Inmueble(const DtDireccion& direccion, const float & superficie,
              const DtFecha& anioConstruccion, int numeroID);
-
-    DtDireccion getDireccion() const;
-    std::string getSuperficie() const;
-    DtFecha getAnioConstruccion() const;
-    int getNumeroID() const;
+    
+    DtDireccion getDireccion();
+    float getSuperficie();
+    DtFecha getAnioConstruccion();
+    int getNumeroID();
+    
 };
 
 #endif
