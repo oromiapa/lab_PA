@@ -6,6 +6,7 @@
 #include "./ICollection/interfaces/IDictionary.h"
 #include "./DataTypes/DtDireccion.h"
 #include "./DataTypes/DtFecha.h"
+#include "./DataTypes/TipoTecho.h"
 
 class Usuario;
 class Cliente;
@@ -14,7 +15,6 @@ class Inmobiliaria;
 class Inmueble;
 class Casa;
 class Apartamento;
-class TipoTecho;
 
 class Sistema {
 
@@ -29,13 +29,13 @@ public:
     Sistema();
     ~Sistema();
 
-    bool existeUsuario(const std::string & nickname);
-    void altaCliente(const std::string & nickname, const std::string & nombre, const std::string & email, const std::string & contrasenia, const std::string & apellido, const std::string & documento);
-    void altaPropietario(const std::string & nickname, const std::string & nombre, const std::string & email, const std::string & contrasenia, const std::string & telefono, int cuentaBancaria);
+    bool existeUsuario(const char* nickname);
+    void altaCliente(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const char* apellido, const char* documento);
+    void altaPropietario(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const char* telefono, int cuentaBancaria);
     int autoincremental();
     void crearCasa(const DtDireccion & direccion, const DtFecha & añoConstruccion, float superficie, bool propiedadHorizontal, TipoTecho tipoTecho);
     void crearApartamento(const DtDireccion & direccion, const DtFecha & añoConstruccion, float superficie, int piso, bool TieneAscensor, const float & gastosComunes);
-    void altaInmobiliaria(const std::string & nickname, const std::string & nombre, const std::string & email, const std::string & contrasenia, const DtDireccion & direccionInmobiliaria, const std::string & telefono, const std::string & URL);
+    void altaInmobiliaria(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const DtDireccion & direccionInmobiliaria, const char* telefono, const char* URL);
     ICollection* listarPropietarios();
     
     void vincularPropietario(Propietario* p);

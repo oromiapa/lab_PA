@@ -14,7 +14,7 @@ private:
 
 
 public:
-    Usuario(const std::string & nickname, const std::string & nombre, const std::string & email, const std::string & contrasenia);
+    Usuario(const char* nickname, const char* nombre, const char* email, const char* contrasenia);
     virtual ~Usuario();
 
     std::string getNickname() const;
@@ -22,10 +22,10 @@ public:
     std::string getEmail() const;
     std::string getContrasenia() const;
 
-    void setNickname( const std::string & nickname );
-    void setNombre( const std::string & nombre );
-    void setEmail( const std::string & email );
-    void setContrasenia( const std::string & contrasenia );
+    void setNickname( const char* nickname );
+    void setNombre( const char* nombre );
+    void setEmail( const char* email );
+    void setContrasenia( const char* contrasenia );
 
     
 

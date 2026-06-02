@@ -10,8 +10,7 @@ private:
     TipoTecho techo;
 
 public:
-    Casa();
-    Casa(const DtDireccion& direccion, const std::string& superficie, const DtFecha& anioConstruccion, int numeroID, bool propiedadHorizontal, TipoTecho techo);
+    Casa(const DtDireccion& direccion, float superficie, const DtFecha& anioConstruccion, const int numid, bool propiedadHorizontal, TipoTecho techo);
 
     bool getPropiedadHorizontal() ;
     TipoTecho getTecho() ;

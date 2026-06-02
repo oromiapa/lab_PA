@@ -19,15 +19,14 @@ private:
     IDictionary* inmuebles;
 
 public:
-    Propietario();
+    Propietario(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const char* telefono, int cuentaBancaria);
     ~Propietario();
-    Propietario(const std::string & nickname, const std::string & nombre, const std::string & email, const std::string & contrasenia, const std::string & telefono, int cuentaBancaria);
 
     
     std::string getTelefono() const;
     int getCuentaBancaria() const;
 
-    void setTelefono(const std::string & telefono);
+    void setTelefono(const char* telefono);
     void setCuentaBancaria(int cuentaBancaria);
 
     void vincularInmueble(Inmueble* i);

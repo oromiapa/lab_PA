@@ -12,15 +12,14 @@ private:
     std::string documento;
 
 public:
-    Cliente();
-    Cliente(const std::string & nickname, const std::string & nombre, const std::string & email, const std::string & contrasenia, const std::string & apellido, const std::string & documento);
+    Cliente(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const char* apellido, const char* documento);
     virtual ~Cliente();
 
     std::string getApellido() const;
     std::string getDocumento() const;
     
-    void setApellido(const std::string & apellido);
-    void setDocumento(const std::string & documento);
+    void setApellido(const char* apellido);
+    void setDocumento(const char* documento);
 
     
     

@@ -17,10 +17,10 @@ private:
     std::string URL;
     DtDireccion direccionInmobiliaria;
     IDictionary* inmuebles;
+    IDictionary* propietarios;
 
 public:
-    Inmobiliaria();
-    Inmobiliaria(const std::string & nickname, const std::string & nombre, const std::string & email, const std::string & contrasenia, const DtDireccion & direccionInmobiliaria, const std::string & telefono, const std::string & URL);
+    Inmobiliaria(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const DtDireccion & direccionInmobiliaria, const char* telefono, const char* URL);
     virtual ~Inmobiliaria();
 
     DtDireccion getDireccionInmobiliaria() const ;
@@ -28,8 +28,8 @@ public:
     std::string getURL() const;
 
     void setDireccionInmobiliaria(const DtDireccion & direccionInmobiliaria);
-    void setTelefono(const std::string & telefono);
-    void setURL(const std::string & URL);
+    void setTelefono(const char* telefono);
+    void setURL(const char* URL);
 
     void vincularPropietario(Propietario* p);
     void vincularInmueble(Inmueble* i);

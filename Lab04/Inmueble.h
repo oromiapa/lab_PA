@@ -4,26 +4,27 @@
 #include "Propietario.h"
 #include "./DataTypes/DtDireccion.h"
 #include "./DataTypes/DtFecha.h"
+#include "./ICollection/Interfaces/ICollectible.h"
 
 
-class Inmueble {
+class Inmueble : public ICollectible {
 
 private:
     DtDireccion direccion;
-    std::string superficie;
+    float superficie;
     DtFecha anioConstruccion;
     int numeroID;
 public:
-    Inmueble() ;
-    Inmueble(const DtDireccion& direccion, const std::string& superficie, const DtFecha& anioConstruccion, int numeroID) ;
+    Inmueble(const DtDireccion& direccion, float superficie, const DtFecha& anioConstruccion, const int numid) ;
+    ~Inmueble() ;
 
     DtDireccion getDireccion() ;
-    std::string getSuperficie() ;
+    float getSuperficie() ;
     DtFecha getAnioConstruccion() ;
     int getNumeroID() ;
 
     void setDireccion(const DtDireccion& direccion);
-    void setSuperficie(const std::string& superficie);
+    void setSuperficie(float superficie);
     void setAnioConstruccion(const DtFecha& anioConstruccion);
     void setNumeroID(int numeroID);
 

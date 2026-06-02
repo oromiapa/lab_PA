@@ -1,9 +1,8 @@
 #include "Cliente.h"
 
 
-Cliente::Cliente() : Usuario("", "", "", ""), apellido(""), documento("") {}
-
-Cliente::Cliente(const std::string & nickname, const std::string & nombre, const std::string & email, const std::string & contrasenia, const std::string & apellido, const std::string & documento) : Usuario(nickname, nombre, email, contrasenia), apellido(apellido), documento(documento) {}
+Cliente::Cliente(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const char* apellido, const char* documento) 
+    : Usuario(nickname, nombre, email, contrasenia), apellido(apellido), documento(documento) {}
 
 Cliente::~Cliente() {}
 
@@ -15,11 +14,11 @@ std::string Cliente::getDocumento() const {
     return this->documento;
 }
 
-void Cliente::setApellido(const std::string & apellido) {
+void Cliente::setApellido(const char* apellido) {
     this->apellido = apellido;
 }
 
-void Cliente::setDocumento(const std::string & documento) {
+void Cliente::setDocumento(const char* documento) {
     this->documento = documento;
 }
 

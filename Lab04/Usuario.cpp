@@ -1,6 +1,7 @@
 #include "Usuario.h"
 
-Usuario::Usuario(const std::string & nickname, const std::string & nombre, const std::string & email, const std::string & contrasenia) : nickname(nickname), nombre(nombre), email(email), contrasenia(contrasenia) {}
+Usuario::Usuario(const char* nickname, const char* nombre, const char* email, const char* contrasenia) 
+    : nickname(nickname), nombre(nombre), email(email), contrasenia(contrasenia) {}
 
 Usuario::~Usuario() {}
 
@@ -20,19 +21,19 @@ std::string Usuario::getContrasenia() const {
     return this -> contrasenia;
 }
 
-void Usuario::setNickname(const std::string & nickname) {
+void Usuario::setNickname(const char* nickname) {
     this->nickname = nickname;
 }
 
-void Usuario::setNombre(const std::string & nombre) {
+void Usuario::setNombre(const char* nombre) {
     this->nombre = nombre;
 }
 
-void Usuario::setEmail(const std::string & email) {
+void Usuario::setEmail(const char* email) {
     this->email = email;
 }
 
-void Usuario::setContrasenia(const std::string & contrasenia) {
+void Usuario::setContrasenia(const char* contrasenia) {
     this->contrasenia = contrasenia;
 }
 
