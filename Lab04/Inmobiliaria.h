@@ -2,24 +2,31 @@
 #define INMOBILIARIA_H
 
 #include "Usuario.h"
-
-using namespace std;
+#include <string>
+#include "./DataTypes/DtDireccion.h"
 
 
 class Inmobiliaria : public Usuario {
 
 private:
     DtDireccion direccionInmobiliaria;
-    string telefono;
-    string URL;
+    std::string telefono;
+    std::string URL;
 
 public:
     Inmobiliaria();
-    Inmobiliaria(const string & nombre, const string & email, const DtDireccion & direccion, const DtFecha & fechaNacimiento, const DtDireccion & direccionInmobiliaria, const string & telefono, const string & URL);
+    Inmobiliaria(const std::string & nickname, const std::string & nombre, const std::string & email, const std::string & contrasenia, const DtDireccion & direccionInmobiliaria, const std::string & telefono, const std::string & URL);
 
-    DtDireccion getDireccionInmobiliaria();
-    string getTelefono();
-    string getURL();
+    DtDireccion getDireccionInmobiliaria() ;
+    std::string getTelefono();
+    std::string getURL();
+
+    void setDireccionInmobiliaria(const DtDireccion & direccionInmobiliaria);
+    void setTelefono(const std::string & telefono);
+    void setURL(const std::string & URL);
+
+
+
 };
 
 

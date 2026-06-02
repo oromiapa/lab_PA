@@ -1,22 +1,28 @@
 #ifndef CLIENTE_H
 #define CLIENTE_H
 
+
 #include "Usuario.h"
 
-using namespace std;
 
 class Cliente : public Usuario {
     
 private:
-    string apellido;
-    string documento;
+    std::string apellido;
+    std::string documento;
 
 public:
     Cliente();
-    Cliente(const string & nombre, const string & email, const DtDireccion & direccion, const DtFecha & fechaNacimiento, const string & apellido, const string & documento);
+    Cliente(const std::string & nickname, const std::string & nombre, const std::string & email, const std::string & contrasenia, const std::string & apellido, const std::string & documento);
 
-    string getApellido();
-    string getDocumento();
+    std::string getApellido();
+    std::string getDocumento();
+    
+    void setApellido(const std::string & apellido);
+    void setDocumento(const std::string & documento);
+
+    
+    
 };
 
 #endif

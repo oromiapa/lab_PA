@@ -1,18 +1,17 @@
 #ifndef PUBLICACION_H
 #define PUBLICACION_H
 
-#include <string>
+#include <iostream>
 #include "./DataTypes/DtFecha.h"
 
 
-using namespace std;
 
 
 class Publicacion {
 
 private: 
     DtFecha fechaPublicacion;
-    string texto;
+    std::string texto;
     float precio;
     int id;
     bool activa;
@@ -20,14 +19,24 @@ private:
 
 public:
     Publicacion();
-    Publicacion(const DtFecha& fechaPublicacion, const string& texto, float precio, int id, bool activa, bool tipoPublicacion);
+    Publicacion(const DtFecha& fechaPublicacion, const std::string& texto, float precio, int id, bool activa, bool tipoPublicacion);
 
-    DtFecha getFechaPublicacion() const;
-    string getTexto() const;
-    float getPrecio() const;
-    int getId() const;
-    bool isActiva() const;
-    bool isTipoPublicacion() const;
+    DtFecha getFechaPublicacion() ;
+    std::string getTexto() ;
+    float getPrecio() ;
+    int getId() ;
+
+    void setFechaPublicacion(const DtFecha& fechaPublicacion);
+    void setTexto(const std::string& texto);
+    void setPrecio(float precio);
+    void setId(int id);
+    void setActiva(bool activa);
+    void setTipoPublicacion(bool tipoPublicacion);
+
+    bool estaActiva() ;
+    bool esTipoPublicacion() ;
+
+    
 
 };
 

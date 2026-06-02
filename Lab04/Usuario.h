@@ -1,27 +1,33 @@
 #ifndef USUARIO_H
 #define USUARIO_H
 
-#include <string>
-#include "./DataTypes/DtDireccion.h"
-#include "./DataTypes/DtFecha.h"
+#include <iostream>
 
-using namespace std;
 
 class Usuario {
+
 private:
-    string nombre;
-    string email;
-    DtDireccion direccion;
-    DtFecha fechaNacimiento;
+    std::string nickname;
+    std::string nombre;
+    std::string email;
+    std::string contrasenia;
+
 
 public:
-    Usuario();
-    Usuario(const string & nombre, const string & email, const DtDireccion & direccion, const DtFecha & fechaNacimiento);
+    Usuario(const std::string & nickname, const std::string & nombre, const std::string & email, const std::string & contrasenia);
+    virtual ~Usuario();
 
-    string getNombre();
-    string getEmail();
-    DtDireccion getDireccion();
-    DtFecha getFechaNacimiento();
+    std::string getNickname();
+    std::string getNombre();
+    std::string getEmail();
+    std::string getContrasenia();
+
+    void setNickname(const std::string & nickname);
+    void setNombre(const std::string & nombre);
+    void setEmail(const std::string & email);
+    void setContrasenia(const std::string & contrasenia);
+    
+
 };
 
 #endif

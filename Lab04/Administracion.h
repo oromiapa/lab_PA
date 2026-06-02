@@ -13,7 +13,11 @@ public:
     Administracion();
     Administracion(const DtFecha& fechainicio);
 
-    DtFecha getFechaInicio() const;
+    DtFecha getFechaInicio() ;
+
+    void setFechaInicio(const DtFecha& fechainicio) ;
+
+    
 
 };
 

@@ -11,10 +11,19 @@ private:
 
 public:
     Casa();
-    Casa(const DtDireccion& direccion, const string& superficie, const DtFecha& anioConstruccion, int numeroID, bool propiedadHorizontal, TipoTecho techo);
+    Casa(const DtDireccion& direccion, const std::string& superficie, const DtFecha& anioConstruccion, int numeroID, bool propiedadHorizontal, TipoTecho techo);
 
-    bool isPropiedadHorizontal() const;
-    TipoTecho getTecho() const;    
+    bool getPropiedadHorizontal() ;
+    TipoTecho getTecho() ;
+
+    void setPropiedadHorizontal(bool propiedadHorizontal);
+    void setTecho(TipoTecho techo);
+
+    bool isPropiedadHorizontal() ;
+
+
+
+
 };
 
 #endif

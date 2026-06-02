@@ -1,7 +1,7 @@
 #ifndef SISTEMA_H
 #define SISTEMA_H
 
-#include <string>
+#include <iostream>
 #include <vector>
 #include "Cliente.h"
 #include "Propietario.h"
@@ -9,7 +9,6 @@
 #include "Casa.h"
 #include "Apartamento.h"
 
-using namespace std;
 
 
 class Sistema {
