@@ -2,7 +2,7 @@
 #define DTPROPIETARIO_H
 
 #include <string>
-#include "./ICollection/interfaces/ICollectible.h" 
+#include "../ICollection/interfaces/ICollectible.h" 
 
 class DtPropietario : public ICollectible {
 
