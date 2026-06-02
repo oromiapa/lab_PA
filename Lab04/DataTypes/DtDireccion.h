@@ -16,9 +16,9 @@ public:
     DtDireccion() ;
     DtDireccion( const string & calle, int numero, const string & ciudad ) ;
 
-    string getCalle() ;
-    int getNumero() ;
-    string getCiudad() ;
+    string getCalle() const ;
+    int getNumero() const ;
+    string getCiudad() const ;
 
 };
 

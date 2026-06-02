@@ -14,9 +14,10 @@ private:
 public:
     Cliente();
     Cliente(const std::string & nickname, const std::string & nombre, const std::string & email, const std::string & contrasenia, const std::string & apellido, const std::string & documento);
+    virtual ~Cliente();
 
-    std::string getApellido();
-    std::string getDocumento();
+    std::string getApellido() const;
+    std::string getDocumento() const;
     
     void setApellido(const std::string & apellido);
     void setDocumento(const std::string & documento);
