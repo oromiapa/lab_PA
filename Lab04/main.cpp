@@ -22,100 +22,80 @@ int main() {
     ISistema* sys = Factory::getInstancia()->getSistema();
     std::cout << "[OK] Sistema instanciado correctamente a traves de la Factory." << std::endl;
 
-    // 2. Definir datos de prueba para los DataTypes
+    // 2. Definir datos de prueba globales
     DtDireccion dirCasa("Av. Siempreviva", 742, "Springfield");
     DtDireccion dirApto("18 de Julio", 1234, "Montevideo");
     DtDireccion dirInmo("Sarandi", 555, "San Jose");
     DtFecha fechaConstruccion(15, 5, 2010);
 
-    // 3. Prueba de Alta de Clientes y validación de excepciones
-    std::cout << "\n--- Probando Alta de Clientes ---" << std::endl;
-    try {
-        std::cout << "Intentando registrar a 'juan99'..." << std::endl;
-        sys->altaCliente("juan99", "Juan Perez", "juan@mail.com", "pass123", "Perez", "1.234.567-8");
-        std::cout << "[OK] Cliente 'juan99' registrado con exito." << std::endl;
-
-        // Intentamos registrar al mismo usuario para forzar la excepcion std::invalid_argument
-        std::cout << "Intentando registrar a 'juan99' de nuevo (debe fallar)..." << std::endl;
-        sys->altaCliente("juan99", "Juan Distinto", "juan2@mail.com", "otra", "Gomez", "8.765.432-1");
-    } 
-    catch (const std::invalid_argument& e) {
-        std::cout << "[CONTROLADO] Excepcion capturada con exito: " << e.what() << std::endl;
-    } 
-    catch (...) {
-        std::cout << "[ERROR] Se produjo un error inesperado al dar de alta el cliente." << std::endl;
-    }
-
-    // 4. Prueba de Alta de Propietarios
-    std::cout << "\n--- Probando Alta de Propietarios ---" << std::endl;
+    // 3. CASO DE USO: Alta de Propietario con sus Inmuebles asociados
+    std::cout << "\n--- [Caso de Uso] Alta de Propietario e Inmuebles ---" << std::endl;
     try {
         std::cout << "Registrando al propietario 'maria_prop'..." << std::endl;
         sys->altaPropietario("maria_prop", "Maria Lopez", "maria@mail.com", "secret456", "099123456", 12345678);
-        std::cout << "[OK] Propietario 'maria_prop' registrado." << std::endl;
-        
-        std::cout << "Registrando un segundo propietario 'jose_prop' para pruebas de bucle..." << std::endl;
-        sys->altaPropietario("jose_prop", "Jose Rodriguez", "jose@mail.com", "jose789", "099765432", 87654321);
-        std::cout << "[OK] Propietario 'jose_prop' registrado." << std::endl;
+        std::cout << "[OK] Propietario 'maria_prop' registrado en el sistema." << std::endl;
+
+        // Simulando el bucle loop: "Mientras el propietario decida agregar inmuebles"
+        std::cout << "  -> Creando y vinculando Casa a 'maria_prop'..." << std::endl;
+        sys->crearCasa(dirCasa, fechaConstruccion, 120.5f, false, TipoTecho::TECHO_A_DOS_AGUAS); 
+
+        std::cout << "  -> Creando y vinculando Apartamento a 'maria_prop'..." << std::endl;
+        sys->crearApartamento(dirApto, fechaConstruccion, 65.0f, 4, true, 4500.0f);
+
+        // Cerramos la sección de alta del propietario para liberar el puntero intermedio
+        sys->finalizarAltaPropietario();
+        std::cout << "[OK] Registro de inmuebles finalizado. Memoria intermedia liberada." << std::endl;
     } 
     catch (const std::exception& e) {
-        std::cout << "[ERROR] No se pudo registrar al propietario: " << e.what() << std::endl;
+        std::cout << "[ERROR] Fallo el alta del propietario o sus inmuebles: " << e.what() << std::endl;
     }
 
-    // 5. Prueba de Alta de Inmobiliarias y Vinculación de Propietarios (Caso de Uso Integrado)
-    std::cout << "\n--- Probando Caso de Uso: Alta Inmobiliaria y Vinculacion ---" << std::endl;
+    // 4. CASO DE USO: Alta Inmobiliaria y Vinculación Automatizada
+    std::cout << "\n--- [Caso de Uso] Alta Inmobiliaria y Vinculacion de Propietarios ---" << std::endl;
     try {
-        std::cout << "Registrando Inmobiliaria 'InmoCentral' (Comienza el recuerdo en Sistema)..." << std::endl;
+        std::cout << "Registrando Inmobiliaria 'InmoCentral'..." << std::endl;
         sys->altaInmobiliaria("inmo_central", "Inmo Central", "contacto@inmo.com", "admin789", dirInmo, "29001234", "www.inmocentral.com");
-        std::cout << "[OK] Inmobiliaria 'InmoCentral' registrada globalmente." << std::endl;
+        std::cout << "[OK] Inmobiliaria 'InmoCentral' dada de alta." << std::endl;
 
-        // Simulando el bucle del diagrama de secuencia: "Mientras se desee agregar propietarios"
-        std::cout << "\n[Bucle UI] Vinculando propietario 'maria_prop' a la inmobiliaria actual..." << std::endl;
+        // Simulando el bucle del diagrama: El administrador selecciona un propietario de la lista
+        std::cout << "\n[Bucle UI] Vinculando propietario 'maria_prop' a la nueva inmobiliaria..." << std::endl;
+        std::cout << "(Internamente la Inmobiliaria tomara los inmuebles de 'maria_prop' usando getNumeroID())" << std::endl;
+        
         sys->vincularPropietario("maria_prop");
-        std::cout << "[OK] 'maria_prop' vinculada exitosamente." << std::endl;
+        std::cout << "[OK] Vinculacion exitosa. Los inmuebles pasaron a la coleccion de la Inmobiliaria." << std::endl;
 
-        std::cout << "[Bucle UI] Vinculando propietario 'jose_prop' a la inmobiliaria actual..." << std::endl;
-        sys->vincularPropietario("jose_prop");
-        std::cout << "[OK] 'jose_prop' vinculado exitosamente." << std::endl;
-
-        // Intentamos un error de precondición (propietario inexistente)
-        std::cout << "[Bucle UI] Intentando vincular un usuario inexistente 'fantasma' (debe fallar)..." << std::endl;
+        // Prueba de control de errores
+        std::cout << "\n[Bucle UI] Intentando vincular un propietario inexistente 'pepe_fantasma'..." << std::endl;
         try {
-            sys->vincularPropietario("fantasma");
+            sys->vincularPropietario("pepe_fantasma");
         } catch (const std::invalid_argument& e) {
-            std::cout << "[CONTROLADO] Excepcion capturada con exito: " << e.what() << std::endl;
+            std::cout << "[CONTROLADO] Excepcion correcta capturada: " << e.what() << std::endl;
         }
 
-        // Finalización del caso de uso según el diagrama de secuencia
-        std::cout << "\nFinalizando Caso de Uso (Liberando memoria del sistema)..." << std::endl;
+        // Finalización del caso de uso de la inmobiliaria
         sys->finalizarAltaInmobiliaria();
-        std::cout << "[OK] Memoria intermedia del sistema limpia." << std::endl;
-
+        std::cout << "[OK] Caso de uso de Alta Inmobiliaria cerrado de forma segura." << std::endl;
     } 
     catch (const std::exception& e) {
-        std::cout << "[ERROR] Error critico en el proceso de la inmobiliaria: " << e.what() << std::endl;
+        std::cout << "[ERROR] Ocurrio un problema con la inmobiliaria: " << e.what() << std::endl;
     }
 
-    // 6. Prueba de Creación de Inmuebles (Casas y Apartamentos)
-    std::cout << "\n--- Probando Creacion de Inmuebles ---" << std::endl;
+    // 5. Prueba de control de Clientes independientes
+    std::cout << "\n--- Probando Alta de Clientes de forma independiente ---" << std::endl;
     try {
-        std::cout << "Creando una Casa..." << std::endl;
-        sys->crearCasa(dirCasa, fechaConstruccion, 120.5f, false, TipoTecho::TECHO_A_DOS_AGUAS); 
-        std::cout << "[OK] Casa creada exitosamente." << std::endl;
-
-        std::cout << "Creando un Apartamento..." << std::endl;
-        sys->crearApartamento(dirApto, fechaConstruccion, 65.0f, 4, true, 4500.0f);
-        std::cout << "[OK] Apartamento creado exitosamente." << std::endl;
+        sys->altaCliente("juan99", "Juan Perez", "juan@mail.com", "pass123", "Perez", "1.234.567-8");
+        std::cout << "[OK] Cliente 'juan99' registrado con exito." << std::endl;
     } 
     catch (const std::exception& e) {
-        std::cout << "[ERROR] Fallo la creacion de inmuebles: " << e.what() << std::endl;
+        std::cout << "[ERROR] Fallo el alta de cliente: " << e.what() << std::endl;
     }
 
-    // 7. Prueba de Listar Propietarios
-    std::cout << "\n--- Probando Listar Propietarios ---" << std::endl;
+    // 6. Verificación: Listar Propietarios Globales del Sistema
+    std::cout << "\n--- Verificacion Final: Listar Propietarios ---" << std::endl;
     try {
         ICollection* lista = sys->listarPropietarios();
         if (lista != nullptr) {
-            std::cout << "[OK] Se obtuvo la lista de propietarios globales. Iterando elementos:" << std::endl;
+            std::cout << "[OK] Lista obtenida. Imprimiendo registros:" << std::endl;
             std::cout << "--------------------------------------------------" << std::endl;
 
             IIterator* it = lista->getIterator();
@@ -130,25 +110,20 @@ int main() {
                 std::cout << "--------------------------------------------------" << std::endl;
 
                 contador++;
-                
-                // NOTA: Recuerda que los DtPropietario agregados dinámicamente en tu función
-                // de listado deben borrarse para no perder memoria.
-                delete dtProp; 
+                delete dtProp; // Limpieza del DataType dinámico devuelto
                 it->next(); 
             }
 
-            delete it;    // Liberamos el iterador de la lista
-            delete lista; // Liberamos el contenedor de la lista de Data Types
+            delete it;    // Limpieza del iterador
+            delete lista; // Limpieza de la lista contenedora
 
             if (contador == 1) {
-                std::cout << " (La lista de propietarios esta vacia actualmente)" << std::endl;
+                std::cout << " (No hay propietarios registrados)" << std::endl;
             }
-        } else {
-            std::cout << "[WARN] La lista devuelta es un puntero nulo." << std::endl;
         }
     } 
     catch (const std::exception& e) {
-        std::cout << "[ERROR] Error al listar propietarios: " << e.what() << std::endl;
+        std::cout << "[ERROR] Fallo el listado final: " << e.what() << std::endl;
     }
 
     std::cout << "\n========== FIN DE LAS PRUEBAS DEL SISTEMA ==========" << std::endl;

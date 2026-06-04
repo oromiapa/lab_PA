@@ -24,6 +24,7 @@ public:
     virtual ICollection* listarPropietarios() = 0;
     virtual void vincularPropietario(const char* nicknamePropietario) = 0;
     virtual void finalizarAltaInmobiliaria() = 0;
+    virtual void finalizarAltaPropietario() = 0;
 
 };
 

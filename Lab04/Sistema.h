@@ -25,6 +25,7 @@ private:
     IDictionary* inmuebles;
     IDictionary* inmobiliarias;
     Inmobiliaria* inmobiliariaActual;
+    Propietario* propietarioActual;
     int contadorInmuebles;
 
 public:
@@ -41,6 +42,7 @@ public:
     ICollection* listarPropietarios(); 
     void vincularPropietario(const char* nicknamePropietario);
     void finalizarAltaInmobiliaria();
+    void finalizarAltaPropietario();
 
 };
 

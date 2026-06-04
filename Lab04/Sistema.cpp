@@ -20,6 +20,7 @@ Sistema::Sistema() {
     this->inmuebles = new OrderedDictionary();
     this->inmobiliarias = new OrderedDictionary();
     this->inmobiliariaActual = nullptr;
+    this->propietarioActual = nullptr;
     this->contadorInmuebles = 0;
 }
 
@@ -74,6 +75,8 @@ void Sistema::altaPropietario(const char* nickname, const char* nombre, const ch
     Propietario* propietario = new Propietario(nickname, nombre, email, contrasenia, telefono, cuentaBancaria);
     String* key = new String(nickname);
     this->usuarios->add(key, propietario);
+
+    this->propietarioActual = propietario;
 }
 
 
@@ -87,6 +90,7 @@ void Sistema::crearCasa(const DtDireccion & direccion, const DtFecha & añoConst
     Integer* key = new Integer(numid);
     Casa* casa = new Casa(direccion, superficie, añoConstruccion, numid, propiedadHorizontal, tipoTecho);
     this->inmuebles->add(key, casa);
+    this->propietarioActual->vincularInmueble(casa);
 }
 
 
@@ -95,6 +99,7 @@ void Sistema::crearApartamento(const DtDireccion & direccion, const DtFecha & a�
     Integer* key = new Integer(numid);
     Apartamento* apartamento = new Apartamento(direccion, superficie, añoConstruccion, numid, numeroPiso, TieneAscensor, gastosComunes);
     this->inmuebles->add(key, apartamento);
+    this->propietarioActual->vincularInmueble(apartamento);
 }
 
 
@@ -131,31 +136,38 @@ ICollection* Sistema::listarPropietarios() {
 
 
 void Sistema::vincularPropietario(const char* nicknamePropietario) {
-    // ---- PASO 1 del diagrama: p : find(nickname) ----
+    // 1. Buscamos el usuario en el diccionario global de usuarios del sistema
     String* keyBuscar = new String(nicknamePropietario);
     ICollectible* item = this->usuarios->find(keyBuscar);
-    delete keyBuscar; // Borramos la clave temporal de búsqueda
+    delete keyBuscar; // Borramos la clave de búsqueda para evitar fugas de memoria
 
     if (item == nullptr) {
         throw std::invalid_argument("El propietario no existe.");
     }
     
-    Propietario* p = dynamic_cast<Propietario*>(item);
-    if (p == nullptr) {
-        throw std::invalid_argument("El usuario encontrado no es un propietario.");
+    // 2. Súper importante: Validamos que realmente sea un Propietario
+    Propietario* prop = dynamic_cast<Propietario*>(item);
+    if (prop == nullptr) {
+        throw std::invalid_argument("El nickname ingresado no pertenece a un propietario.");
     }
 
-    // ---- PASO 2 del diagrama: vincularPropietario(p) ----
-    // El sistema le envía el mensaje a la inmobiliaria recordada
+    // 3. Le pasamos el propietario a la inmobiliaria que el sistema está "recordando"
     if (this->inmobiliariaActual != nullptr) {
-        this->inmobiliariaActual->vincularPropietario(p); 
+        
+        // AQUÍ PASA TODO: El sistema le da el Propietario, 
+        // y la Inmobiliaria absorbe sus inmuebles automáticamente
+        this->inmobiliariaActual->vincularPropietario(prop); 
+        
     } else {
-        throw std::runtime_error("No hay una inmobiliaria activa en el sistema.");
+        throw std::runtime_error("No hay una inmobiliaria activa en el sistema para vincular.");
     }
 }
 
 
 void Sistema::finalizarAltaInmobiliaria() {
-    this->inmobiliariaActual = nullptr; // Ya no recordamos la inmobiliaria, el caso de uso terminó.
+    this->inmobiliariaActual = nullptr; 
 }
 
+void Sistema::finalizarAltaPropietario() {
+    this->propietarioActual = nullptr;
+}

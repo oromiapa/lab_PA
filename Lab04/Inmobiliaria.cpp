@@ -40,8 +40,30 @@ void Inmobiliaria::setURL(const char* URL) {
 void Inmobiliaria::vincularPropietario(Propietario* p) {
     if (p == nullptr) return;
 
-    std::string nick = p->getNickname();
-    String* key = new String(nick.c_str());
+    // 1. Le pedimos al propietario la lista de sus inmuebles reales
+    ICollection* listaInmuebles = p->obtenerInmueblesPropios();
+    
+    // 2. Iteramos esa lista para agregarlos a la Inmobiliaria
+    IIterator* it = listaInmuebles->getIterator();
+    while (it->hasCurrent()) {
+        Inmueble* inm = dynamic_cast<Inmueble*>(it->getCurrent());
+        if (inm != nullptr) {
+            // Llamamos a la función miembro de Inmobiliaria que ya tienes definida
+            this->vincularInmueble(inm); 
+        }
+        it->next();
+    }
+    
+    // 3. Limpieza de memoria temporal
+    delete it;
+    delete listaInmuebles; // Borramos la lista contenedora (los inmuebles no se borran)
+}
 
-    this->propietariosAsociados->add(key, p);
+void Inmobiliaria::vincularInmueble(Inmueble* i) {
+    if (i == nullptr) return;
+
+    int id = i->getNumeroID(); 
+    Integer* key = new Integer(id);
+
+    this->inmuebles->add(key, i); 
 }

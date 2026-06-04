@@ -31,3 +31,37 @@ DtPropietario Propietario::getDatos() {
     DtPropietario dt(this->getNickname().c_str(), this->getNombre().c_str());
     return dt;
 }
+
+
+ICollection* Propietario::obtenerInmueblesPropios() {
+    ICollection* listaDts = new List();
+    IIterator* it = this->inmuebles->getIterator();
+
+    while (it->hasCurrent()) {
+        // Obtenemos el Inmueble real del diccionario
+        Inmueble* inm = dynamic_cast<Inmueble*>(it->getCurrent());
+        
+        if (inm != nullptr) {
+            // Metemos el objeto Inmueble directo a la lista 
+            // (o si prefieres transferir puros DataTypes, crearías un new DtInmueble aquí)
+            listaDts->add(inm); 
+        }
+        it->next();
+    }
+    delete it;
+    return listaDts; 
+}
+
+void Propietario::vincularInmueble(Inmueble* i) {
+    if (i == nullptr) return;
+
+    // 1. Obtenemos el ID numérico que identifica al inmueble
+    int id = i->getNumeroID(); 
+
+    // 2. Instanciamos la clave usando el constructor que nos mostraste
+    Integer* key = new Integer(id);
+
+    // 3. Lo agregamos al OrderedDictionary interno del propietario
+    // El diccionario toma posesión de 'key' (él la borrará en su destructor).
+    this->inmuebles->add(key, i);
+}
