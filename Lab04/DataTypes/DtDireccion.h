@@ -1,24 +1,23 @@
 #ifndef DTDIRECCION_H
 #define DTDIRECCION_H
 
-#include <stdexcept>
+#include <string>
 
-using namespace std;
 
 class DtDireccion {
 
 private:
-    string calle ;
+    std::string calle ;
     int numero ;
-    string ciudad ;
+    std::string ciudad ;
 
 public:
     DtDireccion() ;
-    DtDireccion( const string & calle, int numero, const string & ciudad ) ;
+    DtDireccion( const char* calle, int numero, const char* ciudad ) ;
 
-    string getCalle() const ;
+    std::string getCalle() const ;
     int getNumero() const ;
-    string getCiudad() const ;
+    std::string getCiudad() const ;
 
 };
 

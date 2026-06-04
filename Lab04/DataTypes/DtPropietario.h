@@ -11,7 +11,7 @@ private:
     std::string nombre;
 
 public:
-    DtPropietario(std::string nick, std::string nom);
+    DtPropietario( const char* nick, const char* nom );
     virtual ~DtPropietario();
 
     std::string getNickname() const ;

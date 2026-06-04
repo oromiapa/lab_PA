@@ -11,7 +11,7 @@ private:
     std::string nombre;
 
 public:
-    DtInmobiliaria(std::string nick, std::string nom);
+    DtInmobiliaria( const char* nick, const char* nom );
     virtual ~DtInmobiliaria();
 
     std::string getNickname() const ;
