@@ -2,6 +2,8 @@
 #define SISTEMA_H
 
 #include <string>
+#include <stdexcept>
+#include "ISistema.h"
 #include "./ICollection/collections/OrderedDictionary.h"
 #include "./ICollection/interfaces/IDictionary.h"
 #include "./DataTypes/DtDireccion.h"
@@ -16,7 +18,7 @@ class Inmueble;
 class Casa;
 class Apartamento;
 
-class Sistema {
+class Sistema : public ISistema {
 
 private:
     IDictionary* usuarios;

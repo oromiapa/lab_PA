@@ -26,3 +26,8 @@ void Propietario::setCuentaBancaria(int cuentaBancaria) {
     this->cuentaBancaria = cuentaBancaria;
 }
 
+
+DtPropietario Propietario::getDatos() {
+    DtPropietario dt(this->getNickname().c_str(), this->getNombre().c_str());
+    return dt;
+}

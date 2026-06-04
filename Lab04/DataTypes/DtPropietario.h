@@ -2,6 +2,7 @@
 #define DTPROPIETARIO_H
 
 #include <string>
+#include <stdexcept>
 #include "../ICollection/interfaces/ICollectible.h" 
 
 class DtPropietario : public ICollectible {
@@ -11,7 +12,7 @@ private:
     std::string nombre;
 
 public:
-    DtPropietario( const char* nick, const char* nom );
+    DtPropietario(std::string nick, std::string nom);
     virtual ~DtPropietario();
 
     std::string getNickname() const ;

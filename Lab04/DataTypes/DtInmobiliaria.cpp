@@ -1,6 +1,6 @@
 #include "DtInmobiliaria.h"
 
-DtInmobiliaria::DtInmobiliaria(const char* nick, const char* nom) {
+DtInmobiliaria::DtInmobiliaria(std::string nick, std::string nom) {
     this->nickname = nick;
     this->nombre = nom;
 }

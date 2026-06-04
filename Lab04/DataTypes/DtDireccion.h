@@ -2,6 +2,7 @@
 #define DTDIRECCION_H
 
 #include <string>
+#include <stdexcept>
 
 
 class DtDireccion {
@@ -13,7 +14,7 @@ private:
 
 public:
     DtDireccion() ;
-    DtDireccion( const char* calle, int numero, const char* ciudad ) ;
+    DtDireccion( const std::string & calle, int numero, const std::string & ciudad ) ;
 
     std::string getCalle() const ;
     int getNumero() const ;

@@ -1,120 +1,130 @@
 #include <iostream>
-#include <exception>
-#include "Sistema.h"
+#include <stdexcept>
+
+// Se incluyen los DataTypes necesarios para los parámetros
 #include "./DataTypes/DtDireccion.h"
 #include "./DataTypes/DtFecha.h"
+#include "./DataTypes/TipoTecho.h"
 #include "./DataTypes/DtPropietario.h"
 
+// Se incluyen las interfaces de las colecciones para poder iterar
+#include "./ICollection/interfaces/ICollection.h"
+#include "./ICollection/interfaces/IIterator.h"
 
-void probarAltaUsuarios(Sistema* sistema) {
-    std::cout << "--- Creando Usuarios (Clientes, Propietarios e Inmobiliarias) ---" << std::endl;
-    
-    try {
-        // 1. Altas exitosas de Clientes y Propietarios
-        sistema->altaCliente("juan99", "Juan", "juan@mail.com", "pass123", "Pérez", "1.234.567-8");
-        sistema->altaPropietario("maria_prop", "Maria", "maria@mail.com", "prop456", "099123456", 123456);
-        
-        // 2. Instanciamos DtDireccion usando tu constructor: DtDireccion(const char*, int, const char*)
-        DtDireccion dirInmo("Av. 18 de Julio", 1420, "Montevideo");
-        
-        // Alta de Inmobiliaria pasando la dirección por referencia constante
-        sistema->altaInmobiliaria("inmo_centro", "Inmo Centro", "contacto@inmo.com", "inmo789", dirInmo, "29001122", "www.inmocentro.com");
-        
-        std::cout << "[OK] Usuarios e Inmobiliaria creados correctamente." << std::endl;
-
-        // 3. Caso de prueba de falla: Intentar repetir un Nickname
-        std::cout << "\nIntentando registrar un nickname duplicado (debería lanzar excepción)..." << std::endl;
-        sistema->altaCliente("juan99", "Juan Segundo", "juan2@mail.com", "otra", "Gomez", "4.555.666-2");
-        
-    } catch (const std::invalid_argument& e) {
-        std::cout << "[ÉXITO DEL TEST] Excepción capturada correctamente: " << e.what() << std::endl;
-    } catch (const std::exception& e) {
-        std::cout << "[ERROR] Ocurrió un error inesperado: " << e.what() << std::endl;
-    }
-}
-
-void probarAltaInmuebles(Sistema* sistema) {
-    std::cout << "\n--- Creando Inmuebles (Casas y Apartamentos) ---" << std::endl;
-    
-    try {
-        // Creamos las direcciones usando tu estructura
-        DtDireccion dirCasa("Calle Falsa", 123, "Canelones");
-        
-        // Asumo un constructor similar para DtFecha (ej: día, mes, año)
-        // Si tu DtFecha usa otra estructura, adáptalo de forma similar a DtDireccion
-        DtFecha fechaCasa(15, 5, 2010); 
-        
-        // Crear una Casa
-        sistema->crearCasa(dirCasa, fechaCasa, 120.5f, false, TipoTecho::TECHO_PLANO);
-        std::cout << "[OK] Casa creada exitosamente (ID autoincremental)." << std::endl;
-
-        // Dirección para el apartamento
-        DtDireccion dirApto("Bulevar Artigas", 3210, "Montevideo");
-        DtFecha fechaApto(1, 1, 2020);
-        
-        // Crear un Apartamento
-        sistema->crearApartamento(dirApto, fechaApto, 65.0f, 4, true, 4500.0f);
-        std::cout << "[OK] Apartamento creado exitosamente (ID autoincremental)." << std::endl;
-        
-    } catch (const std::exception& e) {
-        std::cout << "[ERROR] Error al crear inmuebles: " << e.what() << std::endl;
-    }
-}
-
-void probarListarPropietarios(Sistema* sistema) {
-    std::cout << "\n--- Listando Propietarios del Sistema ---" << std::endl;
-    
-    ICollection* listaPropietarios = sistema->listarPropietarios();
-    
-    if (listaPropietarios == nullptr) {
-        std::cout << "[ERROR] La colección devuelta es null." << std::endl;
-        return;
-    }
-
-    IIterator* it = listaPropietarios->getIterator();
-    int cont = 0;
-    
-    while (it->hasCurrent()) {
-        cont++;
-        DtPropietario* dtP = dynamic_cast<DtPropietario*>(it->getCurrent());
-        if (dtP != nullptr) {
-            std::cout << "Propietario " << cont << " -> " 
-                      << "Nickname: " << dtP->getNickname() 
-                      << " | Nombre: " << dtP->getNombre() << std::endl;
-        }
-        it->next();
-    }
-    
-    std::cout << "Total de propietarios listados: " << cont << std::endl;
-
-    // Limpieza estricta de memoria de la lista temporal
-    delete it;
-    
-    IIterator* itClean = listaPropietarios->getIterator();
-    while (itClean->hasCurrent()) {
-        delete itClean->getCurrent(); // Borra cada DtPropietario creado con new en Sistema
-        itClean->next();
-    }
-    delete itClean;
-    delete listaPropietarios; // Borra el contenedor List
-}
+// Se incluye la Factory para acceder al sistema de forma correcta
+#include "Factory.h"
+#include "ISistema.h"
 
 int main() {
-    std::cout << "=== INICIANDO PRUEBAS DEL SISTEMA (MOCK DATA) ===" << std::endl;
+    std::cout << "========== INICIANDO PRUEBAS DEL SISTEMA ==========" << std::endl;
 
-    // Instanciamos el controlador principal (Sistema)
-    Sistema* sistema = new Sistema();
+    // 1. Obtener la interfaz del sistema a través de la Fábrica (corregido)
+    ISistema* sys = Factory::getInstancia()->getSistema();
+    std::cout << "[OK] Sistema instanciado correctamente a traves de la Factory." << std::endl;
 
-    // Ejecución de los casos de prueba
-    probarAltaUsuarios(sistema);
-    probarAltaInmuebles(sistema);
-    probarListarPropietarios(sistema);
+    // 2. Definir datos de prueba para los DataTypes
+    DtDireccion dirCasa("Av. Siempreviva", 742, "Springfield");
+    DtDireccion dirApto("18 de Julio", 1234, "Montevideo");
+    DtDireccion dirInmo("Sarandi", 555, "San Jose");
+    DtFecha fechaConstruccion(15, 5, 2010);
 
-    // Destrucción del sistema y liberación de memoria interna
-    std::cout << "\n--- Destruyendo el Sistema ---" << std::endl;
-    delete sistema;
-    std::cout << "[OK] Memoria del sistema liberada con éxito." << std::endl;
+    // 3. Prueba de Alta de Clientes y validación de excepciones
+    std::cout << "\n--- Probando Alta de Clientes ---" << std::endl;
+    try {
+        std::cout << "Intentando registrar a 'juan99'..." << std::endl;
+        sys->altaCliente("juan99", "Juan Perez", "juan@mail.com", "pass123", "Perez", "1.234.567-8");
+        std::cout << "[OK] Cliente 'juan99' registrado con exito." << std::endl;
 
-    std::cout << "=== PRUEBAS FINALIZADAS ===" << std::endl;
+        // Intentamos registrar al mismo usuario para forzar la excepcion std::invalid_argument
+        std::cout << "Intentando registrar a 'juan99' de nuevo (debe fallar)..." << std::endl;
+        sys->altaCliente("juan99", "Juan Distinto", "juan2@mail.com", "otra", "Gomez", "8.765.432-1");
+    } 
+    catch (const std::invalid_argument& e) {
+        std::cout << "[CONTROLADO] Excepcion capturada con exito: " << e.what() << std::endl;
+    } 
+    catch (...) {
+        std::cout << "[ERROR] Se produjo un error inesperado al dar de alta el cliente." << std::endl;
+    }
+
+    // 4. Prueba de Alta de Propietarios
+    std::cout << "\n--- Probando Alta de Propietarios ---" << std::endl;
+    try {
+        std::cout << "Registrando al propietario 'maria_prop'..." << std::endl;
+        sys->altaPropietario("maria_prop", "Maria Lopez", "maria@mail.com", "secret456", "099123456", 12345678);
+        std::cout << "[OK] Propietario 'maria_prop' registrado." << std::endl;
+    } 
+    catch (const std::exception& e) {
+        std::cout << "[ERROR] No se pudo registrar al propietario: " << e.what() << std::endl;
+    }
+
+    // 5. Prueba de Alta de Inmobiliarias
+    std::cout << "\n--- Probando Alta de Inmobiliarias ---" << std::endl;
+    try {
+        std::cout << "Registrando Inmobiliaria 'InmoCentral'..." << std::endl;
+        sys->altaInmobiliaria("inmo_central", "Inmo Central", "contacto@inmo.com", "admin789", dirInmo, "29001234", "www.inmocentral.com");
+        std::cout << "[OK] Inmobiliaria 'InmoCentral' registrada." << std::endl;
+    } 
+    catch (const std::exception& e) {
+        std::cout << "[ERROR] No se pudo registrar la inmobiliaria: " << e.what() << std::endl;
+    }
+
+    // 6. Prueba de Creación de Inmuebles (Casas y Apartamentos)
+    std::cout << "\n--- Probando Creacion de Inmuebles ---" << std::endl;
+    try {
+        std::cout << "Creando una Casa..." << std::endl;
+        // Cambia 'Tejas' por un enum valido de tu TipoTecho.h si es necesario
+        sys->crearCasa(dirCasa, fechaConstruccion, 120.5f, false, TipoTecho::TECHO_A_DOS_AGUAS); 
+        std::cout << "[OK] Casa creada exitosamente. Id Autoincremental actual: " << sys->autoincremental() << std::endl;
+
+        std::cout << "Creando un Apartamento..." << std::endl;
+        sys->crearApartamento(dirApto, fechaConstruccion, 65.0f, 4, true, 4500.0f);
+        std::cout << "[OK] Apartamento creado exitosamente. Id Autoincremental actual: " << sys->autoincremental() << std::endl;
+    } 
+    catch (const std::exception& e) {
+        std::cout << "[ERROR] Fallo la creacion de inmuebles: " << e.what() << std::endl;
+    }
+
+    // 7. Prueba de Listar Propietarios (Recorrido e impresion real)
+    std::cout << "\n--- Probando Listar Propietarios ---" << std::endl;
+    try {
+        ICollection* lista = sys->listarPropietarios();
+        if (lista != nullptr) {
+            std::cout << "[OK] Se obtuvo la lista de propietarios. Iterando elementos:" << std::endl;
+            std::cout << "--------------------------------------------------" << std::endl;
+
+            IIterator* it = lista->getIterator();
+            int contador = 1;
+
+            while (it->hasCurrent()) {
+                // Hacemos el cast al DataType que tu funcion almacena de forma dinamica
+                DtPropietario* dtProp = (DtPropietario*)it->getCurrent();
+
+                std::cout << " Propietario #" << contador << std::endl;
+                std::cout << "   - Nickname: " << dtProp->getNickname() << std::endl;
+                std::cout << "   - Nombre:   " << dtProp->getNombre() << std::endl;
+                std::cout << "--------------------------------------------------" << std::endl;
+
+                contador++;
+                it->next(); // Avanzar al siguiente
+            }
+
+            delete it; // Evitamos fugas de memoria del iterador del main
+
+            if (contador == 1) {
+                std::cout << " (La lista de propietarios esta vacia actualmente)" << std::endl;
+            }
+
+            // Opcional: Si necesitas liberar la memoria de la lista y sus dts,
+            // deberias hacerlo aqui antes de terminar, pero para la prueba basica sirve.
+
+        } else {
+            std::cout << "[WARN] La lista devuelta es un puntero nulo." << std::endl;
+        }
+    } 
+    catch (const std::exception& e) {
+        std::cout << "[ERROR] Error al listar propietarios: " << e.what() << std::endl;
+    }
+
+    std::cout << "\n========== FIN DE LAS PRUEBAS DEL SISTEMA ==========" << std::endl;
     return 0;
 }

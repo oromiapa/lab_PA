@@ -2,6 +2,7 @@
 #define INMOBILIARIA_H
 
 #include "Usuario.h"
+#include "Inmueble.h"
 #include "./ICollection/collections/OrderedDictionary.h"
 #include "./ICollection/interfaces/IDictionary.h"
 #include "./ICollection/interfaces/IKey.h"

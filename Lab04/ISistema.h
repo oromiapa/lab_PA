@@ -2,6 +2,7 @@
 #define ISISTEMA_H
 
 #include <string>
+#include <stdexcept>
 #include "./ICollection/collections/OrderedDictionary.h"
 #include "./ICollection/interfaces/IDictionary.h"
 #include "./DataTypes/DtDireccion.h"

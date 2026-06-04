@@ -1,9 +1,8 @@
 #ifndef DTFECHA_H
 #define DTFECHA_H
 
+#include <string>
 #include <stdexcept>
-
-using namespace std;
 
 class DtFecha {
 

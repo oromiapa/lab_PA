@@ -1,7 +1,8 @@
 #ifndef VISITA_H
 #define VISITA_H
 
-#include <iostream>
+#include <string>
+#include <stdexcept>
 #include "./DataTypes/DtFecha.h"
 #include "Cliente.h"
 #include "Publicacion.h"

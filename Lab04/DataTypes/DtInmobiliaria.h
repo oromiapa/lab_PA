@@ -2,7 +2,8 @@
 #define DTInmobiliaria_H
 
 #include <string>
-#include "./ICollection/interfaces/ICollectible.h" 
+#include <stdexcept>
+#include "../ICollection/interfaces/ICollectible.h" 
 
 class DtInmobiliaria : public ICollectible {
 
@@ -11,7 +12,7 @@ private:
     std::string nombre;
 
 public:
-    DtInmobiliaria( const char* nick, const char* nom );
+    DtInmobiliaria(std::string nick, std::string nom);
     virtual ~DtInmobiliaria();
 
     std::string getNickname() const ;

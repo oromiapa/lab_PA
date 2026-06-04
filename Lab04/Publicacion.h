@@ -1,7 +1,8 @@
 #ifndef PUBLICACION_H
 #define PUBLICACION_H
 
-#include <iostream>
+#include <string>
+#include <stdexcept>
 #include "./DataTypes/DtFecha.h"
 
 

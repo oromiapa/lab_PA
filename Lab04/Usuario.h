@@ -2,6 +2,7 @@
 #define USUARIO_H
 
 #include <string>
+#include <stdexcept>
 #include "./ICollection/Interfaces/ICollectible.h"
 
 class Usuario : public ICollectible {
