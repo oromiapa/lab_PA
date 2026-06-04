@@ -1,6 +1,6 @@
 #include "DtPropietario.h"
 
-DtPropietario::DtPropietario(std::string nick, std::string nom) {
+DtPropietario::DtPropietario(const char* nick, const char* nom) {
     this->nickname = nick;
     this->nombre = nom;
 }

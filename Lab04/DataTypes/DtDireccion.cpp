@@ -2,7 +2,7 @@
 
 DtDireccion::DtDireccion() : calle(""), numero(0), ciudad("") {}
 
-DtDireccion::DtDireccion(const string & calle, int numero, const string & ciudad) : calle(calle), numero(numero), ciudad(ciudad) {}
+DtDireccion::DtDireccion(const char* calle, int numero, const char* ciudad) : calle(calle), numero(numero), ciudad(ciudad) {}
 
 std::string DtDireccion::getCalle() const {
     return this->calle;

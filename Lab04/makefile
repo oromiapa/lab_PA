@@ -5,7 +5,7 @@ run:
 	./programa
 
 
-all: DtDireccion.o DtFecha.o DtPropietario.o TipoTecho.o List.o ListIterator.o ListNode.o OrderedDictionary.o OrderedDictionaryEntry.o ICollectible.o ICollection.o IDictionary.o IIterator.o IKey.o OrderedKey.o Integer.o String.o ISistema.o Factory.o Sistema.o Usuario.o Cliente.o Propietario.o Inmobiliaria.o Inmueble.o Casa.o Apartamento.o main.o 
+all: DtDireccion.o DtFecha.o DtPropietario.o List.o ListIterator.o ListNode.o OrderedDictionary.o OrderedDictionaryEntry.o ICollectible.o ICollection.o IDictionary.o IIterator.o IKey.o OrderedKey.o Integer.o String.o ISistema.o Factory.o Sistema.o Usuario.o Cliente.o Propietario.o Inmobiliaria.o Inmueble.o Casa.o Apartamento.o main.o 
 	g++ DtDireccion.o DtFecha.o DtPropietario.o TipoTecho.o List.o ListIterator.o ListNode.o OrderedDictionary.o OrderedDictionaryEntry.o ICollectible.o ICollection.o IDictionary.o IIterator.o IKey.o OrderedKey.o Integer.o String.o ISistema.o Factory.o Sistema.o Usuario.o Cliente.o Propietario.o Inmobiliaria.o Inmueble.o Casa.o Apartamento.o main.o -o programa
 
 
@@ -17,9 +17,6 @@ DtFecha.o:
 
 DtPropietario.o:
 	g++ -c DataTypes/DtPropietario.cpp
-
-TipoTecho.o:
-	g++ -c DataTypes/TipoTecho.cpp
 
 List.o:
 	g++ -c ICollection/collections/List.cpp
