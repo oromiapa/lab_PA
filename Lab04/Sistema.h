@@ -38,9 +38,9 @@ public:
     void crearCasa(const DtDireccion & direccion, const DtFecha & añoConstruccion, float superficie, bool propiedadHorizontal, TipoTecho tipoTecho);
     void crearApartamento(const DtDireccion & direccion, const DtFecha & añoConstruccion, float superficie, int piso, bool TieneAscensor, const float & gastosComunes);
     void altaInmobiliaria(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const DtDireccion & direccionInmobiliaria, const char* telefono, const char* URL);
-    ICollection* listarPropietarios();
-    
-    void vincularPropietario(Propietario* p);
+    ICollection* listarPropietarios(); 
+    void vincularPropietario(const char* nicknamePropietario);
+    void finalizarAltaInmobiliaria();
 
 };
 

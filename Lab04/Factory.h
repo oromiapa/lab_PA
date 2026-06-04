@@ -6,7 +6,7 @@
 class Factory {
 private:
     static Factory* instancia; 
-    ISistema* sys;             // <-- NUEVO: Atributo para guardar el sistema único
+    ISistema* sys;
     Factory();                 
 public:
     static Factory* getInstancia(); 

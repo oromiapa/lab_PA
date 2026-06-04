@@ -14,6 +14,7 @@ private:
     float superficie;
     DtFecha anioConstruccion;
     int numeroID;
+    
 public:
     Inmueble(const DtDireccion& direccion, float superficie, const DtFecha& anioConstruccion, const int numid) ;
     ~Inmueble() ;

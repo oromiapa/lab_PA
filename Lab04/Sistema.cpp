@@ -102,9 +102,13 @@ void Sistema::altaInmobiliaria(const char* nickname, const char* nombre, const c
     if (this->existeUsuario(nickname)) {
         throw std::invalid_argument("El usuario ya existe");
     }
+    
     Inmobiliaria* inmobiliaria = new Inmobiliaria(nickname, nombre, email, contrasenia, direccionInmobiliaria, telefono, URL);
     String* key = new String(nickname);
+    
     this->usuarios->add(key, inmobiliaria);
+    
+    this->inmobiliariaActual = inmobiliaria; 
 }
 
 
@@ -126,4 +130,32 @@ ICollection* Sistema::listarPropietarios() {
 }
 
 
+void Sistema::vincularPropietario(const char* nicknamePropietario) {
+    // ---- PASO 1 del diagrama: p : find(nickname) ----
+    String* keyBuscar = new String(nicknamePropietario);
+    ICollectible* item = this->usuarios->find(keyBuscar);
+    delete keyBuscar; // Borramos la clave temporal de búsqueda
+
+    if (item == nullptr) {
+        throw std::invalid_argument("El propietario no existe.");
+    }
+    
+    Propietario* p = dynamic_cast<Propietario*>(item);
+    if (p == nullptr) {
+        throw std::invalid_argument("El usuario encontrado no es un propietario.");
+    }
+
+    // ---- PASO 2 del diagrama: vincularPropietario(p) ----
+    // El sistema le envía el mensaje a la inmobiliaria recordada
+    if (this->inmobiliariaActual != nullptr) {
+        this->inmobiliariaActual->vincularPropietario(p); 
+    } else {
+        throw std::runtime_error("No hay una inmobiliaria activa en el sistema.");
+    }
+}
+
+
+void Sistema::finalizarAltaInmobiliaria() {
+    this->inmobiliariaActual = nullptr; // Ya no recordamos la inmobiliaria, el caso de uso terminó.
+}
 

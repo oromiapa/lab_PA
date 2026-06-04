@@ -18,7 +18,7 @@ private:
     std::string URL;
     DtDireccion direccionInmobiliaria;
     IDictionary* inmuebles;
-    IDictionary* propietarios;
+    IDictionary* propietariosAsociados;
 
 public:
     Inmobiliaria(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const DtDireccion & direccionInmobiliaria, const char* telefono, const char* URL);
