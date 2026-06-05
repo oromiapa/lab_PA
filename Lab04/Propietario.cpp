@@ -33,24 +33,10 @@ DtPropietario Propietario::getDatos() {
 }
 
 
-ICollection* Propietario::obtenerInmueblesPropios() {
-    ICollection* listaDts = new List();
-    IIterator* it = this->inmuebles->getIterator();
+IDictionary* Propietario::obtenerInmueblesPropios() const {
+    return this->inmuebles;
+} 
 
-    while (it->hasCurrent()) {
-        // Obtenemos el Inmueble real del diccionario
-        Inmueble* inm = dynamic_cast<Inmueble*>(it->getCurrent());
-        
-        if (inm != nullptr) {
-            // Metemos el objeto Inmueble directo a la lista 
-            // (o si prefieres transferir puros DataTypes, crearías un new DtInmueble aquí)
-            listaDts->add(inm); 
-        }
-        it->next();
-    }
-    delete it;
-    return listaDts; 
-}
 
 void Propietario::vincularInmueble(Inmueble* i) {
     if (i == nullptr) return;
@@ -64,4 +50,7 @@ void Propietario::vincularInmueble(Inmueble* i) {
     // 3. Lo agregamos al OrderedDictionary interno del propietario
     // El diccionario toma posesión de 'key' (él la borrará en su destructor).
     this->inmuebles->add(key, i);
+
+    //El propietario se asigna a sí mismo (this) como dueño del inmueble
+    i->setDuenio(this);
 }

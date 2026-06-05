@@ -4,6 +4,7 @@
 #include "Usuario.h"
 #include "Inmueble.h"
 #include "Propietario.h"
+#include "Administracion.h"
 #include "./ICollection/collections/OrderedDictionary.h"
 #include "./ICollection/interfaces/IDictionary.h"
 #include "./ICollection/interfaces/IKey.h"
@@ -20,6 +21,7 @@ private:
     DtDireccion direccionInmobiliaria;
     IDictionary* inmuebles;
     IDictionary* propietariosAsociados;
+    ICollection* administraciones;
 
 public:
     Inmobiliaria(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const DtDireccion & direccionInmobiliaria, const char* telefono, const char* URL);
@@ -35,8 +37,16 @@ public:
 
     void vincularPropietario(Propietario* p);
     void vincularInmueble(Inmueble* i);
-    DtInmobiliaria getDatos();
 
+    
+    IDictionary* getInmuebles() const;
+    
+    DtInmobiliaria getDatos();
+    
+    DtFecha obtenerFecha();
+
+    ICollection* seleccionarInmobiliaria();
+    void altaAdministracion(int numid) ;
 
 
 };

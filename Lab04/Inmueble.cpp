@@ -22,6 +22,10 @@ int Inmueble::getNumeroID() {
     return this->numeroID;
 }
 
+Propietario* Inmueble::getDuenio() const {
+    return this->duenio;
+}
+
 void Inmueble::setDireccion(const DtDireccion& direccion) {
     this->direccion = direccion;
 }
@@ -36,5 +40,9 @@ void Inmueble::setAnioConstruccion(const DtFecha& anioConstruccion) {
 
 void Inmueble::setNumeroID(int numeroID) {
     this->numeroID = numeroID;
+}
+
+void Inmueble::setDuenio(Propietario* p) {
+    this->duenio = p;
 }
 

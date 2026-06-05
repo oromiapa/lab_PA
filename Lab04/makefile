@@ -5,8 +5,8 @@ run:
 	./programa
 
 
-all: DtDireccion.o DtFecha.o DtPropietario.o List.o ListIterator.o ListNode.o OrderedDictionary.o OrderedDictionaryEntry.o ICollectible.o ICollection.o IDictionary.o IIterator.o IKey.o OrderedKey.o Integer.o String.o ISistema.o Factory.o Sistema.o Usuario.o Cliente.o Propietario.o Inmobiliaria.o Inmueble.o Casa.o Apartamento.o main.o 
-	g++ DtDireccion.o DtFecha.o DtPropietario.o List.o ListIterator.o ListNode.o OrderedDictionary.o OrderedDictionaryEntry.o ICollectible.o ICollection.o IDictionary.o IIterator.o IKey.o OrderedKey.o Integer.o String.o ISistema.o Factory.o Sistema.o Usuario.o Cliente.o Propietario.o Inmobiliaria.o Inmueble.o Casa.o Apartamento.o main.o -o programa
+all: DtDireccion.o DtFecha.o DtInmobiliaria.o DtInmueble.o DtInmXProp.o DtPropietario.o List.o ListIterator.o ListNode.o OrderedDictionary.o OrderedDictionaryEntry.o ICollectible.o ICollection.o IDictionary.o IIterator.o IKey.o OrderedKey.o Integer.o String.o ISistema.o Factory.o Sistema.o Usuario.o Cliente.o Propietario.o Inmobiliaria.o Inmueble.o Casa.o Apartamento.o Administracion.o main.o 
+	g++ DtDireccion.o DtFecha.o DtInmobiliaria.o DtInmueble.o DtInmXProp.o DtPropietario.o List.o ListIterator.o ListNode.o OrderedDictionary.o OrderedDictionaryEntry.o ICollectible.o ICollection.o IDictionary.o IIterator.o IKey.o OrderedKey.o Integer.o String.o ISistema.o Factory.o Sistema.o Usuario.o Cliente.o Propietario.o Inmobiliaria.o Inmueble.o Casa.o Apartamento.o Administracion.o main.o -o programa
 
 
 DtDireccion.o: 
@@ -14,6 +14,15 @@ DtDireccion.o:
 
 DtFecha.o:
 	g++ -c DataTypes/DTFecha.cpp
+
+DtInmobiliaria.o:
+	g++ -c DataTypes/DtInmobiliaria.cpp
+
+DtInmueble.o:
+	g++ -c DataTypes/DtInmueble.cpp
+
+DtInmXProp.o:
+	g++ -c DataTypes/DtInmXProp.cpp
 
 DtPropietario.o:
 	g++ -c DataTypes/DtPropietario.cpp
@@ -87,8 +96,11 @@ Casa.o:
 Apartamento.o:
 	g++ -c Apartamento.cpp
 
+Administracion.o:
+	g++ -c Administracion.cpp
+
 main.o:
 	g++ -c main.cpp
 
 clean:
-	rm -f DtDireccion.o DtFecha.o DtPropietario.o TipoTecho.o List.o ListIterator.o ListNode.o OrderedDictionary.o OrderedDictionaryEntry.o ICollectible.o ICollection.o IDictionary.o IIterator.o IKey.o OrderedKey.o Integer.o String.o ISistema.o Factory.o Sistema.o Usuario.o Cliente.o Propietario.o Inmobiliaria.o Inmueble.o Casa.o Apartamento.o main.o programa
+	rm -f DtDireccion.o DtFecha.o DtInmobiliaria.o DtInmueble.o DtInmXProp.o DtPropietario.o List.o ListIterator.o ListNode.o OrderedDictionary.o OrderedDictionaryEntry.o ICollectible.o ICollection.o IDictionary.o IIterator.o IKey.o OrderedKey.o Integer.o String.o ISistema.o Factory.o Sistema.o Usuario.o Cliente.o Propietario.o Inmobiliaria.o Inmueble.o Casa.o Apartamento.o Administracion.o main.o programa

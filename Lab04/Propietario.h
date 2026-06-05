@@ -12,6 +12,7 @@
 #include "./ICollection/interfaces/IKey.h"
 #include "./DataTypes/DtPropietario.h"
 #include "./DataTypes/DtInmueble.h"
+#include "./DataTypes/DtInmXProp.h"
 
 class Inmueble;
 
@@ -34,10 +35,9 @@ public:
     void setCuentaBancaria(int cuentaBancaria);
 
     DtPropietario getDatos();
-    ICollection* obtenerInmueblesPropios();
+    IDictionary* obtenerInmueblesPropios() const;
 
     void vincularInmueble(Inmueble* i);
-    void removerInmueble(Inmueble* i);
 
 };
 

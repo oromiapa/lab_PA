@@ -7,6 +7,8 @@
 #include "./ICollection/Interfaces/ICollectible.h"
 
 
+class Propietario;
+
 class Inmueble : public ICollectible {
 
 private:
@@ -14,6 +16,7 @@ private:
     float superficie;
     DtFecha anioConstruccion;
     int numeroID;
+    Propietario* duenio;
     
 public:
     Inmueble(const DtDireccion& direccion, float superficie, const DtFecha& anioConstruccion, const int numid) ;
@@ -23,11 +26,13 @@ public:
     float getSuperficie() ;
     DtFecha getAnioConstruccion() ;
     int getNumeroID() ;
+    Propietario* getDuenio() const;
 
     void setDireccion(const DtDireccion& direccion);
     void setSuperficie(float superficie);
     void setAnioConstruccion(const DtFecha& anioConstruccion);
     void setNumeroID(int numeroID);
+    void setDuenio(Propietario* p);
 
 
 

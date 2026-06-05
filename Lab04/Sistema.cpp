@@ -51,32 +51,39 @@ Sistema::~Sistema() {
 // Métodos
 
 bool Sistema::existeUsuario(const char* nickname) {
+
     String* key = new String(nickname);
     bool existe = this->usuarios->member(key);
     delete key;
     return existe;
+
 }
 
 
 void Sistema::altaCliente(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const char* apellido, const char* documento) {
-    if (this->existeUsuario(nickname)) {
+
+    if (this->existeUsuario(nickname)) 
         throw std::invalid_argument("El usuario ya existe");
-    }
+
     Cliente* cliente = new Cliente(nickname, nombre, email, contrasenia, apellido, documento);
     String* key = new String(nickname);
     this->usuarios->add(key, cliente);
+
 }
 
 
 void Sistema::altaPropietario(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const char* telefono, int cuentaBancaria) {
-    if (this->existeUsuario(nickname)) {
+
+    if (this->existeUsuario(nickname)) 
         throw std::invalid_argument("El usuario ya existe");
-    }
+    
+
     Propietario* propietario = new Propietario(nickname, nombre, email, contrasenia, telefono, cuentaBancaria);
     String* key = new String(nickname);
     this->usuarios->add(key, propietario);
 
     this->propietarioActual = propietario;
+
 }
 
 
@@ -85,28 +92,33 @@ int Sistema::autoincremental() {
 }
 
 
-void Sistema::crearCasa(const DtDireccion & direccion, const DtFecha & añoConstruccion, float superficie, bool propiedadHorizontal, TipoTecho tipoTecho) {
+void Sistema::crearCasa(const DtDireccion & direccion, const DtFecha & anioConstruccion, float superficie, bool propiedadHorizontal, TipoTecho tipoTecho) {
+
     int numid = this->autoincremental();
     Integer* key = new Integer(numid);
-    Casa* casa = new Casa(direccion, superficie, añoConstruccion, numid, propiedadHorizontal, tipoTecho);
+    Casa* casa = new Casa(direccion, superficie, anioConstruccion, numid, propiedadHorizontal, tipoTecho);
     this->inmuebles->add(key, casa);
     this->propietarioActual->vincularInmueble(casa);
+
 }
 
 
-void Sistema::crearApartamento(const DtDireccion & direccion, const DtFecha & añoConstruccion, float superficie, int numeroPiso, bool TieneAscensor, const float & gastosComunes) {
+void Sistema::crearApartamento(const DtDireccion & direccion, const DtFecha & anioConstruccion, float superficie, int numeroPiso, bool TieneAscensor, const float & gastosComunes) {
+
     int numid = this->autoincremental();
     Integer* key = new Integer(numid);
-    Apartamento* apartamento = new Apartamento(direccion, superficie, añoConstruccion, numid, numeroPiso, TieneAscensor, gastosComunes);
+    Apartamento* apartamento = new Apartamento(direccion, superficie, anioConstruccion, numid, numeroPiso, TieneAscensor, gastosComunes);
     this->inmuebles->add(key, apartamento);
     this->propietarioActual->vincularInmueble(apartamento);
+
 }
 
 
 void Sistema::altaInmobiliaria(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const DtDireccion & direccionInmobiliaria, const char* telefono, const char* URL) {
-    if (this->existeUsuario(nickname)) {
+
+    if (this->existeUsuario(nickname)) 
         throw std::invalid_argument("El usuario ya existe");
-    }
+
     
     Inmobiliaria* inmobiliaria = new Inmobiliaria(nickname, nombre, email, contrasenia, direccionInmobiliaria, telefono, URL);
     String* key = new String(nickname);
@@ -114,24 +126,32 @@ void Sistema::altaInmobiliaria(const char* nickname, const char* nombre, const c
     this->usuarios->add(key, inmobiliaria);
     
     this->inmobiliariaActual = inmobiliaria; 
+
 }
 
 
 ICollection* Sistema::listarPropietarios() {
+
     ICollection* propietarios = new List();
     IIterator* it = this->usuarios->getIterator();
+
     while (it->hasCurrent()) {
         ICollectible* item = it->getCurrent();
         Propietario* p = dynamic_cast<Propietario*>(item);
+
         if (p != nullptr) {
             DtPropietario datos = p->getDatos();
             DtPropietario* dtParaLista = new DtPropietario(datos.getNickname(), datos.getNombre());
             propietarios->add(dtParaLista);
         }
+
         it->next();
+
     }
+
     delete it;
     return propietarios;
+
 }
 
 
@@ -170,4 +190,85 @@ void Sistema::finalizarAltaInmobiliaria() {
 
 void Sistema::finalizarAltaPropietario() {
     this->propietarioActual = nullptr;
+}
+
+
+
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+
+ICollection* Sistema::listarInmobiliarias() {
+
+    ICollection* inmobiliarias = new List();
+    IIterator* it = this->usuarios->getIterator();
+
+    while (it->hasCurrent()) {
+        ICollectible* item = it->getCurrent();
+        Inmobiliaria* i = dynamic_cast<Inmobiliaria*>(item);
+
+        if (i != nullptr) {
+            DtInmobiliaria datos = i->getDatos();
+            DtInmobiliaria* dtParaLista = new DtInmobiliaria(datos.getNickname(), datos.getNombre());
+            inmobiliarias->add(dtParaLista);
+        }
+
+        it->next();
+    
+    }
+    
+    delete it;
+    return inmobiliarias;
+
+}
+
+
+
+
+ICollection* Sistema::seleccionarInmobiliaria(const char* nombreInmobiliaria) {
+    if (nombreInmobiliaria == nullptr) {
+        throw std::invalid_argument("El nombre de la inmobiliaria no puede ser nulo.");
+    }
+
+    // 1. Inmobiliaria := find(nickname)
+    String* keyBuscar = new String(nombreInmobiliaria);
+    ICollectible* item = this->usuarios->find(keyBuscar);
+    delete keyBuscar;
+
+    if (item == nullptr) {
+        throw std::invalid_argument("La inmobiliaria seleccionada no existe.");
+    }
+
+    Inmobiliaria* inm = dynamic_cast<Inmobiliaria*>(item);
+    if (inm == nullptr) {
+        throw std::invalid_argument("El usuario encontrado no es una inmobiliaria.");
+    }
+
+    // Post-condición: Recordamos la inmobiliaria para el paso 3 (altaAdministracion)
+    this->inmobiliariaActual = inm;
+
+    // 2. DELEGACIÓN (Mensaje 2 del diagrama de comunicación)
+    // El sistema le dice a la inmobiliaria: "Trabaja tú y dame los resultados"
+    ICollection* resultado = inm->seleccionarInmobiliaria();
+
+    return resultado;
+}
+
+
+
+
+void Sistema::altaAdministracion(int numid) {
+    if (this->inmobiliariaActual == nullptr) {
+        throw std::runtime_error("Error: No hay ninguna inmobiliaria seleccionada en memoria.");
+    }
+
+    // El sistema solo le pasa el ID, la inmobiliaria maneja su propia fecha interna
+    this->inmobiliariaActual->altaAdministracion(numid);
+
+    // Post-condición: limpieza del recuerdo
+    this->inmobiliariaActual = nullptr;
 }

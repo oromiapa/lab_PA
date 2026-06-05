@@ -32,6 +32,7 @@ public:
     Sistema();
     ~Sistema();
 
+// Primer Caso: ALTA DE USUARIOS
     bool existeUsuario(const char* nickname);
     void altaCliente(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const char* apellido, const char* documento);
     void altaPropietario(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const char* telefono, int cuentaBancaria);
@@ -43,6 +44,12 @@ public:
     void vincularPropietario(const char* nicknamePropietario);
     void finalizarAltaInmobiliaria();
     void finalizarAltaPropietario();
+
+
+//Segundo Caso: ALTA DE ADMINISTRACION
+    ICollection* listarInmobiliarias();
+    ICollection* seleccionarInmobiliaria(const char* nombreInmobiliaria);
+    void altaAdministracion(int numid);
 
 };
 

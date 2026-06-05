@@ -6,6 +6,8 @@
 #include "./DataTypes/DtFecha.h"
 #include "./DataTypes/TipoTecho.h"
 #include "./DataTypes/DtPropietario.h"
+#include "./DataTypes/DtInmobiliaria.h" // <-- NUEVO: Para poder listar las inmobiliarias
+#include "./DataTypes/DtInmXProp.h" 
 
 // Se incluyen las interfaces de las colecciones para poder iterar
 #include "./ICollection/interfaces/ICollection.h"
@@ -31,100 +33,137 @@ int main() {
     // 3. CASO DE USO: Alta de Propietario con sus Inmuebles asociados
     std::cout << "\n--- [Caso de Uso] Alta de Propietario e Inmuebles ---" << std::endl;
     try {
-        std::cout << "Registrando al propietario 'maria_prop'..." << std::endl;
         sys->altaPropietario("maria_prop", "Maria Lopez", "maria@mail.com", "secret456", "099123456", 12345678);
-        std::cout << "[OK] Propietario 'maria_prop' registrado en el sistema." << std::endl;
-
-        // Simulando el bucle loop: "Mientras el propietario decida agregar inmuebles"
-        std::cout << "  -> Creando y vinculando Casa a 'maria_prop'..." << std::endl;
         sys->crearCasa(dirCasa, fechaConstruccion, 120.5f, false, TipoTecho::TECHO_A_DOS_AGUAS); 
-
-        std::cout << "  -> Creando y vinculando Apartamento a 'maria_prop'..." << std::endl;
         sys->crearApartamento(dirApto, fechaConstruccion, 65.0f, 4, true, 4500.0f);
-
-        // Cerramos la sección de alta del propietario para liberar el puntero intermedio
         sys->finalizarAltaPropietario();
-        std::cout << "[OK] Registro de inmuebles finalizado. Memoria intermedia liberada." << std::endl;
+        std::cout << "[OK] Propietario 'maria_prop' e inmuebles creados con exito." << std::endl;
     } 
     catch (const std::exception& e) {
-        std::cout << "[ERROR] Fallo el alta del propietario o sus inmuebles: " << e.what() << std::endl;
+        std::cout << "[ERROR] Fallo el alta del propietario: " << e.what() << std::endl;
     }
 
-    // 4. CASO DE USO: Alta Inmobiliaria y Vinculación Automatizada
-    std::cout << "\n--- [Caso de Uso] Alta Inmobiliaria y Vinculacion de Propietarios ---" << std::endl;
+    // 4. CASO DE USO: Alta Inmobiliaria
+    std::cout << "\n--- [Caso de Uso] Alta Inmobiliaria y Vinculacion ---" << std::endl;
     try {
-        std::cout << "Registrando Inmobiliaria 'InmoCentral'..." << std::endl;
         sys->altaInmobiliaria("inmo_central", "Inmo Central", "contacto@inmo.com", "admin789", dirInmo, "29001234", "www.inmocentral.com");
-        std::cout << "[OK] Inmobiliaria 'InmoCentral' dada de alta." << std::endl;
-
-        // Simulando el bucle del diagrama: El administrador selecciona un propietario de la lista
-        std::cout << "\n[Bucle UI] Vinculando propietario 'maria_prop' a la nueva inmobiliaria..." << std::endl;
-        std::cout << "(Internamente la Inmobiliaria tomara los inmuebles de 'maria_prop' usando getNumeroID())" << std::endl;
-        
         sys->vincularPropietario("maria_prop");
-        std::cout << "[OK] Vinculacion exitosa. Los inmuebles pasaron a la coleccion de la Inmobiliaria." << std::endl;
-
-        // Prueba de control de errores
-        std::cout << "\n[Bucle UI] Intentando vincular un propietario inexistente 'pepe_fantasma'..." << std::endl;
-        try {
-            sys->vincularPropietario("pepe_fantasma");
-        } catch (const std::invalid_argument& e) {
-            std::cout << "[CONTROLADO] Excepcion correcta capturada: " << e.what() << std::endl;
-        }
-
-        // Finalización del caso de uso de la inmobiliaria
         sys->finalizarAltaInmobiliaria();
-        std::cout << "[OK] Caso de uso de Alta Inmobiliaria cerrado de forma segura." << std::endl;
+        std::cout << "[OK] Inmobiliaria 'InmoCentral' vinculada con los inmuebles de Maria." << std::endl;
     } 
     catch (const std::exception& e) {
         std::cout << "[ERROR] Ocurrio un problema con la inmobiliaria: " << e.what() << std::endl;
     }
 
     // 5. Prueba de control de Clientes independientes
-    std::cout << "\n--- Probando Alta de Clientes de forma independiente ---" << std::endl;
     try {
         sys->altaCliente("juan99", "Juan Perez", "juan@mail.com", "pass123", "Perez", "1.234.567-8");
-        std::cout << "[OK] Cliente 'juan99' registrado con exito." << std::endl;
+    } catch (...) {}
+
+    // ====================================================================================
+    // 6. CASO DE USO COMPLETO: ALTA DE ADMINISTRACIÓN (Visualización de listas)
+    // ====================================================================================
+    std::cout << "\n--- [Caso de Uso] Alta de Administracion ---" << std::endl;
+    
+    // PASO 1: El sistema muestra las Inmobiliarias para que el usuario elija
+    std::cout << "[UI] Listando Inmobiliarias registradas en el sistema:" << std::endl;
+    try {
+        ICollection* listaInmobiliarias = sys->listarInmobiliarias();
+        if (listaInmobiliarias != nullptr) {
+            std::cout << "--------------------------------------------------" << std::endl;
+            IIterator* itInmo = listaInmobiliarias->getIterator();
+            while (itInmo->hasCurrent()) {
+                DtInmobiliaria* dtInmo = dynamic_cast<DtInmobiliaria*>(itInmo->getCurrent());
+                if (dtInmo != nullptr) {
+                    std::cout << " -> Nickname: " << dtInmo->getNickname() << std::endl;
+                    std::cout << "    Nombre:   " << dtInmo->getNombre() << std::endl;
+                    std::cout << "--------------------------------------------------" << std::endl;
+                }
+                delete dtInmo;
+                itInmo->next();
+            }
+            delete itInmo;
+            delete listaInmobiliarias;
+        }
     } 
     catch (const std::exception& e) {
-        std::cout << "[ERROR] Fallo el alta de cliente: " << e.what() << std::endl;
+        std::cout << "[ERROR] No se pudieron listar las inmobiliarias: " << e.what() << std::endl;
     }
 
-    // 6. Verificación: Listar Propietarios Globales del Sistema
+    // PASO 2: El usuario selecciona una Inmobiliaria y el sistema muestra SUS Inmuebles
+    int idCapturadoParaPrueba = -1; 
+    std::cout << "\n[UI] Seleccionando la inmobiliaria 'inmo_central'..." << std::endl;
+    
+    try {
+        ICollection* listaInmueblesCompuestos = sys->seleccionarInmobiliaria("inmo_central");
+
+        if (listaInmueblesCompuestos != nullptr) {
+            std::cout << "[OK] Inmuebles que CONTIENE la inmobiliaria seleccionada:" << std::endl;
+            std::cout << "--------------------------------------------------" << std::endl;
+
+            IIterator* itCompuesto = listaInmueblesCompuestos->getIterator();
+            while (itCompuesto->hasCurrent()) {
+                DtInmXProp* dtComp = dynamic_cast<DtInmXProp*>(itCompuesto->getCurrent());
+
+                if (dtComp != nullptr) {
+                    // Usamos getNumId() que es el que busca tu Linker
+                    std::cout << " -> Inmueble ID:        " << dtComp->getNumId() << std::endl;
+                    std::cout << "    Propietario Legal:  " << dtComp->getPropietariovinculado().getNombre() << std::endl;
+                    std::cout << "    Direccion:          " << dtComp->getDireccion().getCiudad() << std::endl;
+                    std::cout << "--------------------------------------------------" << std::endl;
+
+                    if (idCapturadoParaPrueba == -1) {
+                        idCapturadoParaPrueba = dtComp->getNumId();
+                    }
+                }
+                delete dtComp; 
+                itCompuesto->next();
+            }
+            delete itCompuesto;           
+            delete listaInmueblesCompuestos; 
+        }
+    } 
+    catch (const std::exception& e) {
+        std::cout << "[ERROR] Error al seleccionar la inmobiliaria: " << e.what() << std::endl;
+    }
+
+    // PASO 3: Confirmación de Alta de Administración usando uno de los inmuebles mostrados
+    std::cout << "\n[UI] Confirmando Alta de Administracion para el ID: " << idCapturadoParaPrueba << "..." << std::endl;
+    try {
+        if (idCapturadoParaPrueba != -1) {
+            sys->altaAdministracion(idCapturadoParaPrueba);
+            std::cout << "[OK] Administracion creada exitosamente en la Inmobiliaria." << std::endl;
+        }
+    } 
+    catch (const std::exception& e) {
+        std::cout << "[ERROR] Error al dar de alta la administracion: " << e.what() << std::endl;
+    }
+
+    // 7. Prueba de Control: Post-condición
+    std::cout << "\n[Prueba de Control] Validando que el sistema limpio la inmobiliaria de la memoria..." << std::endl;
+    try {
+        sys->altaAdministracion(idCapturadoParaPrueba); 
+    } 
+    catch (const std::runtime_error& e) {
+        std::cout << "[CONTROLADO] Excepcion correcta: " << e.what() << std::endl;
+    }
+
+    // 8. Verificación previa existente: Listar Propietarios
     std::cout << "\n--- Verificacion Final: Listar Propietarios ---" << std::endl;
     try {
         ICollection* lista = sys->listarPropietarios();
         if (lista != nullptr) {
-            std::cout << "[OK] Lista obtenida. Imprimiendo registros:" << std::endl;
-            std::cout << "--------------------------------------------------" << std::endl;
-
             IIterator* it = lista->getIterator();
-            int contador = 1;
-
             while (it->hasCurrent()) {
                 DtPropietario* dtProp = (DtPropietario*)it->getCurrent();
-
-                std::cout << " Propietario #" << contador << std::endl;
-                std::cout << "   - Nickname: " << dtProp->getNickname() << std::endl;
-                std::cout << "   - Nombre:   " << dtProp->getNombre() << std::endl;
-                std::cout << "--------------------------------------------------" << std::endl;
-
-                contador++;
-                delete dtProp; // Limpieza del DataType dinámico devuelto
+                std::cout << " -> Propietario: " << dtProp->getNombre() << " (" << dtProp->getNickname() << ")" << std::endl;
+                delete dtProp; 
                 it->next(); 
             }
-
-            delete it;    // Limpieza del iterador
-            delete lista; // Limpieza de la lista contenedora
-
-            if (contador == 1) {
-                std::cout << " (No hay propietarios registrados)" << std::endl;
-            }
+            delete it;    
+            delete lista; 
         }
-    } 
-    catch (const std::exception& e) {
-        std::cout << "[ERROR] Fallo el listado final: " << e.what() << std::endl;
-    }
+    } catch (...) {}
 
     std::cout << "\n========== FIN DE LAS PRUEBAS DEL SISTEMA ==========" << std::endl;
     return 0;
