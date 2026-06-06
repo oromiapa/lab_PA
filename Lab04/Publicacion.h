@@ -3,8 +3,13 @@
 
 #include <string>
 #include <stdexcept>
+
+//DataTypes
 #include "./DataTypes/DtFecha.h"
 
+//ICollection/interfaces
+#include "./ICollection/interfaces/ICollectible.h"
+#include "./ICollection/interfaces/ICollection.h"
 
 
 

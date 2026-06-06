@@ -1,9 +1,11 @@
 #ifndef DTINMXPROP_H
 #define DTINMXPROP_H
 
+//DataTypes internos empaquetados
 #include "DtDireccion.h"
 #include "DtPropietario.h"
-#include "../ICollection/interfaces/ICollectible.h" 
+
+#include "../ICollection/interfaces/ICollectible.h"
 
 
 class DtInmXProp : public ICollectible {

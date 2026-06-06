@@ -28,6 +28,8 @@ public:
     virtual ICollection* listarInmobiliarias() = 0;
     virtual ICollection* seleccionarInmobiliaria(const char* nombreInmobiliaria) = 0;
     virtual void altaAdministracion(int numid) = 0;
+    virtual ICollection* seleccionarInmobiliariaAdministrada(const char* nombreInmobiliaria) ;
+    virtual void altaPublicacion(const int numid , const char* text , float price , bool tipopub) ;
 
 };
 

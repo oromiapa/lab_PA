@@ -1,13 +1,19 @@
 #ifndef INMUEBLE_H
 #define INMUEBLE_H
 
-#include "Propietario.h"
+#include <string>
+#include <stdexcept>
+
+//DataTypes
 #include "./DataTypes/DtDireccion.h"
 #include "./DataTypes/DtFecha.h"
-#include "./ICollection/Interfaces/ICollectible.h"
+
+//ICollection/interfaces
+#include "./ICollection/interfaces/ICollectible.h"
 
 
 class Propietario;
+class Inmobiliaria;
 
 class Inmueble : public ICollectible {
 

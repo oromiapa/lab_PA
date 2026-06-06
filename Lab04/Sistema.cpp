@@ -6,11 +6,25 @@
 #include "Inmueble.h"
 #include "Casa.h"
 #include "Apartamento.h"
+#include "Administracion.h"
+#include "Publicacion.h"
+
+//DataTypes
 #include "./DataTypes/DtPropietario.h"
+#include "./DataTypes/DtInmobiliaria.h"
+#include "./DataTypes/DtInmXProp.h"
+#include "./DataTypes/DtInmuebleAdministrado.h"
+
+//ICollection
 #include "./ICollection/String.h"
 #include "./ICollection/Integer.h"
+
+//ICollection/interfaces
+#include "./ICollection/interfaces/IIterator.h"
+
+//ICollection/collections
+#include "./ICollection/collections/OrderedDictionary.h"
 #include "./ICollection/collections/List.h"
-#include "./DataTypes/TipoTecho.h"
 
 
 //Constructor y destructor
@@ -271,4 +285,44 @@ void Sistema::altaAdministracion(int numid) {
 
     // Post-condición: limpieza del recuerdo
     this->inmobiliariaActual = nullptr;
+}
+
+
+
+
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+
+
+
+ICollection* Sistema::seleccionarInmobiliariaAdministrada(const char* nombreInmobiliaria) {
+    if (nombreInmobiliaria == nullptr) {
+        throw std::invalid_argument("El nombre de la inmobiliaria no puede ser nulo.");
+    }
+
+    // 1. Inmobiliaria := find(nickname)
+    String* keyBuscar = new String(nombreInmobiliaria);
+    ICollectible* item = this->usuarios->find(keyBuscar);
+    delete keyBuscar;
+
+    if (item == nullptr) {
+        throw std::invalid_argument("La inmobiliaria seleccionada no existe.");
+    }
+
+    Inmobiliaria* inm = dynamic_cast<Inmobiliaria*>(item);
+    if (inm == nullptr) {
+        throw std::invalid_argument("El usuario encontrado no es una inmobiliaria.");
+    }
+
+
+    // 2. DELEGACIÓN (Mensaje 2 del diagrama de comunicación)
+    // El sistema le dice a la inmobiliaria: "Trabaja tú y dame los resultados"
+    ICollection* resultado = inm->seleccionarInmobiliariaAdministrada();
+
+    return resultado;
 }

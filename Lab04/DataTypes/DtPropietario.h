@@ -3,7 +3,7 @@
 
 #include <string>
 #include <stdexcept>
-#include "../ICollection/interfaces/ICollectible.h" 
+#include "../ICollection/interfaces/ICollectible.h"
 
 class DtPropietario : public ICollectible {
 

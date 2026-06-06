@@ -1,12 +1,17 @@
 #ifndef ADMINISTRACION_H
 #define ADMINISTRACION_H
 
-#include "Inmobiliaria.h"
-#include "Publicacion.h"
-#include "Inmueble.h"
-#include "./DataTypes/DtFecha.h"
-#include "./ICollection/interfaces/ICollectible.h"
+#include <string>
+#include <stdexcept>
 
+//DataTypes
+#include "./DataTypes/DtFecha.h"
+
+//ICollection/interfaces
+#include "./ICollection/interfaces/ICollectible.h"
+#include "./ICollection/interfaces/ICollection.h"
+
+class Inmueble;
 
 class Administracion : public ICollectible {
 

@@ -3,9 +3,12 @@
 
 #include <string>
 #include <stdexcept>
-#include "./DtDireccion.h"
-#include "./DtFecha.h"
-#include "../ICollection/interfaces/ICollectible.h" 
+
+//DataTypes internos
+#include "DtDireccion.h"
+#include "DtFecha.h"
+
+#include "../ICollection/interfaces/ICollectible.h"
 
 
 class DtInmueble : public ICollectible {

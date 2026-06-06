@@ -1,4 +1,13 @@
 #include "Administracion.h"
+#include "Inmueble.h"
+#include "Publicacion.h"
+
+//ICollection/interfaces
+#include "./ICollection/interfaces/IIterator.h"
+
+//ICollection/collections
+#include "./ICollection/collections/List.h"
+
 
 Administracion::Administracion() : fechainicio(), inmuebleAdministrado(nullptr) {}
 

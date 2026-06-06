@@ -3,12 +3,19 @@
 
 #include <string>
 #include <stdexcept>
+
+//Clases
 #include "ISistema.h"
-#include "./ICollection/collections/OrderedDictionary.h"
-#include "./ICollection/interfaces/IDictionary.h"
+
+//DataTypes
 #include "./DataTypes/DtDireccion.h"
 #include "./DataTypes/DtFecha.h"
 #include "./DataTypes/TipoTecho.h"
+
+//ICollection/interfaces
+#include "./ICollection/interfaces/IDictionary.h"
+#include "./ICollection/interfaces/ICollection.h"
+
 
 class Usuario;
 class Cliente;
@@ -32,6 +39,8 @@ public:
     Sistema();
     ~Sistema();
 
+
+
 // Primer Caso: ALTA DE USUARIOS
     bool existeUsuario(const char* nickname);
     void altaCliente(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const char* apellido, const char* documento);
@@ -46,10 +55,18 @@ public:
     void finalizarAltaPropietario();
 
 
+
 //Segundo Caso: ALTA DE ADMINISTRACION
     ICollection* listarInmobiliarias();
     ICollection* seleccionarInmobiliaria(const char* nombreInmobiliaria);
     void altaAdministracion(int numid);
+
+
+
+//Tercer Caso: ALTA DE PUBLICACION 
+//  ICollection* listarInmobiliarias(); [Es el mismo que en el tercer caso]
+    ICollection* seleccionarInmobiliariaAdministrada(const char* nombreInmobiliaria) ;
+    void altaPublicacion(const int numid , const char* text , float price , bool tipopub) ;
 
 };
 

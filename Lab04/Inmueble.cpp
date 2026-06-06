@@ -1,5 +1,6 @@
 #include "Inmueble.h"
-#include <string>
+#include "Propietario.h"
+#include "Inmobiliaria.h"
 
 Inmueble::Inmueble(const DtDireccion& direccion, float superficie, const DtFecha& anioConstruccion, const int numid) 
     : direccion(direccion), superficie(superficie), anioConstruccion(anioConstruccion), numeroID(numid) {}

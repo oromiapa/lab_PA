@@ -1,4 +1,21 @@
 #include "Propietario.h"
+#include "Inmueble.h"
+
+// interfaces y collections
+#include "./ICollection/interfaces/ICollection.h"
+#include "./ICollection/interfaces/IIterator.h"
+#include "./ICollection/collections/OrderedDictionary.h" 
+#include "./ICollection/collections/List.h"
+
+// Wrappers para claves
+#include "./ICollection/String.h"
+#include "./ICollection/Integer.h"
+
+// DataTypes
+#include "./DataTypes/DtInmueble.h"
+#include "./DataTypes/DtInmXProp.h"
+
+
 
 Propietario::Propietario(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const char* telefono, int cuentaBancaria) 
     : Usuario(nickname, nombre, email, contrasenia), telefono(telefono), cuentaBancaria(cuentaBancaria) {

@@ -1,7 +1,10 @@
 #ifndef CASA_H
 #define CASA_H
 
+//Clases
 #include "Inmueble.h"
+
+//DataTypes
 #include "./DataTypes/TipoTecho.h"
 
 class Casa : public Inmueble {

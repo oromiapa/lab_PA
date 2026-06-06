@@ -1,5 +1,22 @@
 #include "Inmobiliaria.h"
+#include "Inmueble.h"
+#include "Administracion.h"
+#include "Propietario.h"
 
+//DataTypes
+#include "./DataTypes/DtInmXProp.h"
+#include "./DataTypes/DtInmuebleAdministrado.h"
+
+//ICollection
+#include "./ICollection/String.h"
+#include "./ICollection/Integer.h"
+
+//ICollection/interfaces
+#include "./ICollection/interfaces/IIterator.h"
+
+//ICollection/collections
+#include "./ICollection/collections/OrderedDictionary.h"
+#include "./ICollection/collections/List.h"
 
 Inmobiliaria::Inmobiliaria(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const DtDireccion & direccionInmobiliaria, const char* telefono, const char* URL) 
     : Usuario(nickname, nombre, email, contrasenia), telefono(telefono), URL(URL), direccionInmobiliaria(direccionInmobiliaria) {
@@ -44,6 +61,11 @@ void Inmobiliaria::setURL(const char* URL) {
 }
 
 
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
 void Inmobiliaria::vincularPropietario(Propietario* p) {
     if (p == nullptr) return;
 
@@ -83,6 +105,9 @@ IDictionary* Inmobiliaria::getInmuebles() const {
 
 
 
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
 
@@ -103,8 +128,8 @@ ICollection* Inmobiliaria::seleccionarInmobiliaria() {
             DtDireccion dir = currentInm->getDireccion();
 
             // Mensaje 2.2.1* nom := getNombre() : string (Le pide los datos al Propietario)
-            Propietario* elDueño = currentInm->getDuenio();
-            DtPropietario dtProp = elDueño->getDatos(); 
+            Propietario* elDuenio = currentInm->getDuenio();
+            DtPropietario dtProp = elDuenio->getDatos(); 
 
             // Se empaqueta en el DataType compuesto
             DtInmXProp* dtCompuesto = new DtInmXProp(id, dir, dtProp);
@@ -141,3 +166,47 @@ void Inmobiliaria::altaAdministracion(int numid) {
 
     this->administraciones->add(nuevaAdmin);
 }
+
+
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+ICollection* Inmobiliaria::seleccionarInmobiliariaAdministrada() {
+    ICollection* listaRetorno = new List();
+
+    // 1. Iteramos la lista de ADMINISTRACIONES (las relaciones asociativas)
+    IIterator* itAdmin = this->administraciones->getIterator();
+
+    while (itAdmin->hasCurrent()) {
+        Administracion* currentAdmin = dynamic_cast<Administracion*>(itAdmin->getCurrent());
+        
+        if (currentAdmin != nullptr) {
+            // 2. Le pedimos la fecha directamente a la administración
+            DtFecha fechaAdmin = currentAdmin->getFechaInicio(); // Asegúrate de tener este getter en Administracion
+
+            // 3. Le pedimos el Inmueble asociado a esa administración
+            Inmueble* currentInm = currentAdmin->getInmueble(); // Asegúrate de tener este getter en Administracion
+            
+            if (currentInm != nullptr) {
+                // 4. Extraemos los datos del inmueble
+                int id = currentInm->getNumeroID();
+                DtDireccion dir = currentInm->getDireccion();
+
+                // 5. Empaquetamos todo en el DataType correspondiente
+                DtInmuebleAdministrado* dtCompuesto = new DtInmuebleAdministrado(id, dir, fechaAdmin);
+                listaRetorno->add(dtCompuesto);
+            }
+        }
+        itAdmin->next();
+    }
+    delete itAdmin;
+
+    return listaRetorno; 
+}
+
+
+
