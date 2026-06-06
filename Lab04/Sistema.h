@@ -65,7 +65,7 @@ public:
 
 //Tercer Caso: ALTA DE PUBLICACION 
 //  ICollection* listarInmobiliarias(); [Es el mismo que en el tercer caso]
-    ICollection* seleccionarInmobiliariaAdministrada(const char* nombreInmobiliaria) ;
+    ICollection* seleccionarInmobiliariaAdministrada(const char* nombreInmobiliaria);
     void altaPublicacion(const int numid , const char* text , float price , bool tipopub) ;
 
 };

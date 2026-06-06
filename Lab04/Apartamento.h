@@ -12,16 +12,19 @@ private:
     float gastosComunes;
 
 public:
-    Apartamento();
+//Constructor y Destructor
     Apartamento(const DtDireccion& direccion, const float superficie, const DtFecha& anioConstruccion, const int numid, int numeroPiso, bool tieneAscensor, float gastosComunes);
+    ~Apartamento();
 
+//Gets
     int getNumeroPiso() ;
     float getGastosComunes() ;
+    bool hayAscensor() ;
 
+//Sets
     void setNumeroPiso(int numeroPiso);
     void setGastosComunes(float gastosComunes);
 
-    bool hayAscensor() ;
 
 };
 #endif

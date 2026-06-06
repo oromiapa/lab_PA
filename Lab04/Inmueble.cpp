@@ -1,11 +1,18 @@
 #include "Inmueble.h"
 #include "Propietario.h"
 #include "Inmobiliaria.h"
+#include "Administracion.h"
 
 Inmueble::Inmueble(const DtDireccion& direccion, float superficie, const DtFecha& anioConstruccion, const int numid) 
     : direccion(direccion), superficie(superficie), anioConstruccion(anioConstruccion), numeroID(numid) {}
 
 Inmueble::~Inmueble() {}
+
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
 
 DtDireccion Inmueble::getDireccion() {
     return this->direccion;
@@ -27,6 +34,18 @@ Propietario* Inmueble::getDuenio() const {
     return this->duenio;
 }
 
+DtFecha Inmueble::getFechaAdministracion() const {
+    if (this->administracionAsociada != nullptr) {
+        return this->administracionAsociada->getFechaInicio(); // Mensaje 2.2.1 del DC
+    }
+    return DtFecha(0, 0, 2026); // Fecha por defecto si no tuviera (por seguridad)
+}
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+
 void Inmueble::setDireccion(const DtDireccion& direccion) {
     this->direccion = direccion;
 }
@@ -47,3 +66,20 @@ void Inmueble::setDuenio(Propietario* p) {
     this->duenio = p;
 }
 
+void Inmueble::setAdministracion(Administracion* admin) {
+    this->administracionAsociada = admin;
+}
+
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+void Inmueble::altaPublicacion(const int numid, const char* text, float price, bool tipopub) {
+    if (this->administracionAsociada == nullptr) {
+        throw std::runtime_error("Error: El inmueble no posee una administración activa para ser publicado.");
+    }
+
+    // El Inmueble delega el mensaje a su clase asociativa (Mensaje 2.1 del DC)
+    this->administracionAsociada->altaPublicacion(numid, text, price, tipopub);
+}

@@ -154,7 +154,7 @@ ICollection* Sistema::listarPropietarios() {
         Propietario* p = dynamic_cast<Propietario*>(item);
 
         if (p != nullptr) {
-            DtPropietario datos = p->getDatos();
+            DtPropietario datos = p->getDatosPropietario();
             DtPropietario* dtParaLista = new DtPropietario(datos.getNickname(), datos.getNombre());
             propietarios->add(dtParaLista);
         }
@@ -285,6 +285,7 @@ void Sistema::altaAdministracion(int numid) {
 
     // Post-condición: limpieza del recuerdo
     this->inmobiliariaActual = nullptr;
+    
 }
 
 
@@ -301,28 +302,46 @@ void Sistema::altaAdministracion(int numid) {
 
 
 ICollection* Sistema::seleccionarInmobiliariaAdministrada(const char* nombreInmobiliaria) {
-    if (nombreInmobiliaria == nullptr) {
-        throw std::invalid_argument("El nombre de la inmobiliaria no puede ser nulo.");
-    }
+    ICollection* listaRetorno = new List();
 
-    // 1. Inmobiliaria := find(nickname)
-    String* keyBuscar = new String(nombreInmobiliaria);
-    ICollectible* item = this->usuarios->find(keyBuscar);
-    delete keyBuscar;
+    // Mensaje 2.1* [foreach]: i := next (Itera la colección de inmuebles)
+    IIterator* it = this->inmuebles->getIterator();
+
+    while (it->hasCurrent()) {
+        Inmueble* currentInm = dynamic_cast<Inmueble*>(it->getCurrent());
+        
+        if (currentInm != nullptr) {
+            int id = currentInm->getNumeroID();
+            DtDireccion dir = currentInm->getDireccion();
+
+            // 💡 Mensaje 2.2.1: El Inmueble va a buscar la fecha de su administración
+            DtFecha fechaAdmin = currentInm->getFechaAdministracion(); 
+
+            // Se empaqueta en el DataType compuesto
+            DtInmuebleAdministrado* dtCompuesto = new DtInmuebleAdministrado(id, dir, fechaAdmin);
+            listaRetorno->add(dtCompuesto);
+        }
+        it->next();
+    }
+    delete it;
+
+    return listaRetorno; 
+}
+
+
+
+void Sistema::altaPublicacion(const int numid, const char* text, float price, bool tipopub) {
+    // 1. Buscamos el inmueble por su ID en el diccionario del Sistema
+    Integer* key = new Integer(numid);
+    ICollectible* item = this->inmuebles->find(key);
+    delete key;
 
     if (item == nullptr) {
-        throw std::invalid_argument("La inmobiliaria seleccionada no existe.");
+        throw std::invalid_argument("Error: No existe un inmueble con el ID especificado.");
     }
 
-    Inmobiliaria* inm = dynamic_cast<Inmobiliaria*>(item);
-    if (inm == nullptr) {
-        throw std::invalid_argument("El usuario encontrado no es una inmobiliaria.");
-    }
+    Inmueble* inm = dynamic_cast<Inmueble*>(item);
 
-
-    // 2. DELEGACIÓN (Mensaje 2 del diagrama de comunicación)
-    // El sistema le dice a la inmobiliaria: "Trabaja tú y dame los resultados"
-    ICollection* resultado = inm->seleccionarInmobiliariaAdministrada();
-
-    return resultado;
+    // 2. Transmitimos el mensaje al Inmueble (Mensaje 2 del DC)
+    inm->altaPublicacion(numid, text, price, tipopub);
 }

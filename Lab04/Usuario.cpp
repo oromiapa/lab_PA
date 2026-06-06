@@ -5,6 +5,12 @@ Usuario::Usuario(const char* nickname, const char* nombre, const char* email, co
 
 Usuario::~Usuario() {}
 
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+
 std::string Usuario::getNickname() const {
     return this -> nickname;
 }
@@ -20,6 +26,12 @@ std::string Usuario::getEmail() const {
 std::string Usuario::getContrasenia() const {
     return this -> contrasenia;
 }
+
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
 
 void Usuario::setNickname(const char* nickname) {
     this->nickname = nickname;

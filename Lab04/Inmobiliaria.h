@@ -6,13 +6,14 @@
 
 //DataTypes
 #include "./DataTypes/DtDireccion.h"
+#include "./DataTypes/DtFecha.h"
 #include "./DataTypes/DtInmobiliaria.h"
 
 //ICollection/interfaces
 #include "./ICollection/interfaces/IDictionary.h"
 #include "./ICollection/interfaces/ICollection.h"
 
-
+class Inmueble;
 class Propietario;
 
 class Inmobiliaria : public Usuario {

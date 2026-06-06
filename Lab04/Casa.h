@@ -13,16 +13,18 @@ private:
     TipoTecho techo;
 
 public:
+//Constructor y Destructor
     Casa(const DtDireccion& direccion, float superficie, const DtFecha& anioConstruccion, const int numid, bool propiedadHorizontal, TipoTecho techo);
+    ~Casa();
 
+//Gets
     bool getPropiedadHorizontal() ;
     TipoTecho getTecho() ;
-
-    void setPropiedadHorizontal(bool propiedadHorizontal);
-    void setTecho(TipoTecho techo);
-
     bool isPropiedadHorizontal() ;
 
+//Sets
+    void setPropiedadHorizontal(bool propiedadHorizontal);
+    void setTecho(TipoTecho techo);
 
 
 

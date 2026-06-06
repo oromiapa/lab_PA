@@ -4,45 +4,47 @@
 #include <string>
 #include <stdexcept>
 
-//DataTypes
+
+// DataTypes
 #include "./DataTypes/DtFecha.h"
 
-//ICollection/interfaces
+// ICollection/interfaces
 #include "./ICollection/interfaces/ICollectible.h"
 #include "./ICollection/interfaces/ICollection.h"
 
 
-
-class Publicacion {
-
-private: 
-    DtFecha fechaPublicacion;
+class Publicacion : public ICollectible {
+private:
+    int id;
     std::string texto;
     float precio;
-    int id;
+    DtFecha fechaPublicacion;
+    bool tipoPublicacion; // TRUE = Venta, FALSE = Alquiler
     bool activa;
-    bool tipoPublicacion;
 
 public:
-    Publicacion();
-    Publicacion(const DtFecha& fechaPublicacion, const std::string& texto, float precio, int id, bool activa, bool tipoPublicacion);
+// Constructor y Destructor
+    Publicacion(int id, const char* texto, float precio, const DtFecha& fecha, bool tipoPub, bool activa);
+    virtual ~Publicacion();
 
-    DtFecha getFechaPublicacion() ;
-    std::string getTexto() ;
-    float getPrecio() ;
-    int getId() ;
+// Gets
+    int getID() const;
+    std::string getTexto() const;
+    float getPrecio() const;
+    DtFecha getFechaPublicacion() const;
+    bool getTipoPublicacion() const;
+    bool getActiva() const;
 
-    void setFechaPublicacion(const DtFecha& fechaPublicacion);
-    void setTexto(const std::string& texto);
+// Sets
+    void setTexto(const char* texto);
     void setPrecio(float precio);
-    void setId(int id);
+    void setFechaPublicacion(const DtFecha& fecha);
+    void setTipoPublicacion(bool tipoPub);
     void setActiva(bool activa);
-    void setTipoPublicacion(bool tipoPublicacion);
 
-    bool estaActiva() ;
-    bool esTipoPublicacion() ;
-
-    
+//3er Caso
+    bool comprobarTipo(bool tipoPub) const;
+    bool mismaFecha(const DtFecha& fecha) const;
 
 };
 

@@ -129,7 +129,7 @@ ICollection* Inmobiliaria::seleccionarInmobiliaria() {
 
             // Mensaje 2.2.1* nom := getNombre() : string (Le pide los datos al Propietario)
             Propietario* elDuenio = currentInm->getDuenio();
-            DtPropietario dtProp = elDuenio->getDatos(); 
+            DtPropietario dtProp = elDuenio->getDatosPropietario(); 
 
             // Se empaqueta en el DataType compuesto
             DtInmXProp* dtCompuesto = new DtInmXProp(id, dir, dtProp);
@@ -165,6 +165,9 @@ void Inmobiliaria::altaAdministracion(int numid) {
     Administracion* nuevaAdmin = new Administracion(fechaHoy, inm);
 
     this->administraciones->add(nuevaAdmin);
+
+    inm->setAdministracion(nuevaAdmin);
+    
 }
 
 
@@ -178,7 +181,7 @@ void Inmobiliaria::altaAdministracion(int numid) {
 ICollection* Inmobiliaria::seleccionarInmobiliariaAdministrada() {
     ICollection* listaRetorno = new List();
 
-    // 1. Iteramos la lista de ADMINISTRACIONES (las relaciones asociativas)
+    // 1. Iteramos la lista de ADMINISTRACIONES (las relaciones asociativas reales)
     IIterator* itAdmin = this->administraciones->getIterator();
 
     while (itAdmin->hasCurrent()) {
@@ -186,24 +189,28 @@ ICollection* Inmobiliaria::seleccionarInmobiliariaAdministrada() {
         
         if (currentAdmin != nullptr) {
             // 2. Le pedimos la fecha directamente a la administración
-            DtFecha fechaAdmin = currentAdmin->getFechaInicio(); // Asegúrate de tener este getter en Administracion
+            DtFecha fechaAdmin = currentAdmin->getFechaInicio();
 
             // 3. Le pedimos el Inmueble asociado a esa administración
-            Inmueble* currentInm = currentAdmin->getInmueble(); // Asegúrate de tener este getter en Administracion
+            Inmueble* currentInm = currentAdmin->getInmueble();
             
             if (currentInm != nullptr) {
-                // 4. Extraemos los datos del inmueble
-                int id = currentInm->getNumeroID();
+                // 4. Extraemos los datos del inmueble 
+                // 💡 Nota: Asegúrate de usar getNumId() o getNumeroID() según tu Inmueble.h
+                int id = currentInm->getNumeroID(); 
                 DtDireccion dir = currentInm->getDireccion();
 
                 // 5. Empaquetamos todo en el DataType correspondiente
-                DtInmuebleAdministrado* dtCompuesto = new DtInmuebleAdministrado(id, dir, fechaAdmin);
+                DtAdministracion dtAdminAux(fechaAdmin); 
+                DtInmuebleAdministrado* dtCompuesto = new DtInmuebleAdministrado(id, dir, dtAdminAux);
+
+                // 6. ¡EL PASO FALTANTE! Metemos el DataType en la lista que va a viajar al main
                 listaRetorno->add(dtCompuesto);
             }
         }
         itAdmin->next();
     }
-    delete itAdmin;
+    delete itAdmin; // Limpieza del iterador para evitar leaks
 
     return listaRetorno; 
 }

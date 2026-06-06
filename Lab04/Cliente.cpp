@@ -6,6 +6,9 @@ Cliente::Cliente(const char* nickname, const char* nombre, const char* email, co
 
 Cliente::~Cliente() {}
 
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
 std::string Cliente::getApellido() const {
     return this->apellido;
 }
@@ -13,6 +16,9 @@ std::string Cliente::getApellido() const {
 std::string Cliente::getDocumento() const {
     return this->documento;
 }
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
 
 void Cliente::setApellido(const char* apellido) {
     this->apellido = apellido;

@@ -26,6 +26,8 @@ Propietario::~Propietario() {
     delete this->inmuebles;
 }
 
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
 
 std::string Propietario::getTelefono() const {
     return this->telefono;
@@ -34,6 +36,23 @@ std::string Propietario::getTelefono() const {
 int Propietario::getCuentaBancaria() const {
     return this->cuentaBancaria;
 }
+
+
+
+DtPropietario Propietario::getDatosPropietario() {
+    DtPropietario dt(this->getNickname().c_str(), this->getNombre().c_str());
+    return dt;
+}
+
+
+IDictionary* Propietario::obtenerInmueblesPropios() const {
+    return this->inmuebles;
+}
+
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
 
 void Propietario::setTelefono(const char* telefono) {
     this->telefono = telefono;
@@ -44,30 +63,20 @@ void Propietario::setCuentaBancaria(int cuentaBancaria) {
 }
 
 
-DtPropietario Propietario::getDatos() {
-    DtPropietario dt(this->getNickname().c_str(), this->getNombre().c_str());
-    return dt;
-}
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
-IDictionary* Propietario::obtenerInmueblesPropios() const {
-    return this->inmuebles;
-} 
 
 
 void Propietario::vincularInmueble(Inmueble* i) {
+
     if (i == nullptr) return;
 
-    // 1. Obtenemos el ID numérico que identifica al inmueble
     int id = i->getNumeroID(); 
 
-    // 2. Instanciamos la clave usando el constructor que nos mostraste
     Integer* key = new Integer(id);
 
-    // 3. Lo agregamos al OrderedDictionary interno del propietario
-    // El diccionario toma posesión de 'key' (él la borrará en su destructor).
     this->inmuebles->add(key, i);
 
-    //El propietario se asigna a sí mismo (this) como dueño del inmueble
     i->setDuenio(this);
 }

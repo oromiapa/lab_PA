@@ -12,15 +12,15 @@ DtFecha::DtFecha(int dia, int mes, int anio) {
     this->anio = anio;
 }
 
-int DtFecha::getDia() {
+int DtFecha::getDia() const {
     return this->dia;
 }
 
-int DtFecha::getMes() {
+int DtFecha::getMes() const {
     return this->mes;
 }
 
-int DtFecha::getAnio() {
+int DtFecha::getAnio() const {
     return this->anio;
 }
 
