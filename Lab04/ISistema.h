@@ -30,6 +30,9 @@ public:
     virtual void altaAdministracion(int numid) = 0;
     virtual ICollection* seleccionarInmobiliariaAdministrada(const char* nombreInmobiliaria) = 0;
     virtual void altaPublicacion(const int numid , const char* text , float price , bool tipopub) = 0 ;
+    virtual ICollection* listarinmueblesxpropietario() = 0 ;
+    virtual DtInmueble seleccionarInmueble(int numid) = 0 ;
+    virtual void eliminarInmueble(int numid) = 0 ;
 
 };
 

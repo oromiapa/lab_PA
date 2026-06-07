@@ -12,6 +12,7 @@
 //DataTypes
 #include "./DataTypes/DtPropietario.h"
 #include "./DataTypes/DtInmobiliaria.h"
+#include "./DataTypes/DtInmueble.h"
 #include "./DataTypes/DtInmXProp.h"
 #include "./DataTypes/DtInmuebleAdministrado.h"
 
@@ -345,3 +346,76 @@ void Sistema::altaPublicacion(const int numid, const char* text, float price, bo
     // 2. Transmitimos el mensaje al Inmueble (Mensaje 2 del DC)
     inm->altaPublicacion(numid, text, price, tipopub);
 }
+
+
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+ICollection* Sistema::listarinmueblesxpropietario() {
+    ICollection* listaRetorno = new List();
+    
+    // 1. Iteramos la colección de inmuebles del sistema
+    IIterator* itInm = this->inmuebles->getIterator();
+
+    while (itInm->hasCurrent()) {
+        Inmueble* currentInm = dynamic_cast<Inmueble*>(itInm->getCurrent());
+
+        if (currentInm != nullptr) {
+            // 2. Extraemos el ID y la Dirección DIRECTO desde la clase de negocio Inmueble
+            int id = currentInm->getNumeroID(); 
+            DtDireccion dir = currentInm->getDireccion();
+
+            // 3. Obtenemos su propietario asociado
+            Propietario* prop = currentInm->getDuenio(); 
+
+            if (prop != nullptr) {
+                // 4. Fabricamos el DataType plano del propietario
+                DtPropietario dtPropAux(prop->getNickname().c_str(), prop->getNombre().c_str());
+
+                // 5. ¡Directo al constructor del DataType Compuesto!
+                DtInmXProp* dtCompuesto = new DtInmXProp(id, dir, dtPropAux);
+
+                // 6. Lo agregamos al set/lista de retorno
+                listaRetorno->add(dtCompuesto);
+            }
+        }
+        itInm->next();
+    }
+    delete itInm; // Evitamos memory leaks
+
+    return listaRetorno;
+}
+
+
+
+DtInmueble Sistema::seleccionarInmueble(int numid) {
+    
+    Integer* keyBuscar = new Integer(numid);
+    ICollectible* item = this->inmuebles->find(keyBuscar);
+    delete keyBuscar;
+
+    if (item == nullptr) {
+        throw std::invalid_argument("El inmueble seleccionado no existe.");
+    }
+
+    Inmueble* i = dynamic_cast<Inmueble*>(item);
+
+    this->inmuebleActual = i;
+
+    int id = this->inmuebleActual->getNumeroID();
+    DtDireccion dir = this->inmuebleActual->getDireccion();
+    float superficie = this->inmuebleActual->getSuperficie();
+    DtFecha fecha = this->inmuebleActual->getAnioConstruccion();
+
+
+    return DtInmueble(id, dir, superficie, fecha); 
+
+}
+
+
+
+

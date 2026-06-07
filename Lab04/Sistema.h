@@ -33,6 +33,7 @@ private:
     IDictionary* inmobiliarias;
     Inmobiliaria* inmobiliariaActual;
     Propietario* propietarioActual;
+    Inmueble* inmuebleActual;
     int contadorInmuebles;
 
 public:
@@ -64,9 +65,15 @@ public:
 
 
 //Tercer Caso: ALTA DE PUBLICACION 
-//  ICollection* listarInmobiliarias(); [Es el mismo que en el tercer caso]
+//  ICollection* listarInmobiliarias(); [Es el mismo que en el segundo caso]
     ICollection* seleccionarInmobiliariaAdministrada(const char* nombreInmobiliaria);
     void altaPublicacion(const int numid , const char* text , float price , bool tipopub) ;
+
+
+//Cuarto Caso: ELIMINAR INMUEBLE
+    ICollection* listarinmueblesxpropietario() ;
+    DtInmueble seleccionarInmueble(int numid) ;
+    void eliminarInmueble(int numid) ;
 
 };
 

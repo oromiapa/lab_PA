@@ -83,3 +83,7 @@ void Inmueble::altaPublicacion(const int numid, const char* text, float price, b
     // El Inmueble delega el mensaje a su clase asociativa (Mensaje 2.1 del DC)
     this->administracionAsociada->altaPublicacion(numid, text, price, tipopub);
 }
+
+
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
