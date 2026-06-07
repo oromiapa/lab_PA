@@ -7,6 +7,7 @@
 #include "./ICollection/interfaces/IDictionary.h"
 #include "./DataTypes/DtDireccion.h"
 #include "./DataTypes/DtFecha.h"
+#include "./DataTypes/DtInmueble.h"
 #include "./DataTypes/TipoTecho.h"
 
 

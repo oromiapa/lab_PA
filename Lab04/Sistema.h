@@ -70,6 +70,7 @@ public:
     void altaPublicacion(const int numid , const char* text , float price , bool tipopub) ;
 
 
+
 //Cuarto Caso: ELIMINAR INMUEBLE
     ICollection* listarinmueblesxpropietario() ;
     DtInmueble seleccionarInmueble(int numid) ;

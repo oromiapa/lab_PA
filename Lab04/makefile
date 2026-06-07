@@ -5,8 +5,8 @@ run:
 	./programa
 
 
-all: DtAdministracion.o DtDireccion.o DtFecha.o DtInmobiliaria.o DtInmueble.o DtInmuebleAdministrado.o DtInmXProp.o DtPropietario.o List.o ListIterator.o ListNode.o OrderedDictionary.o OrderedDictionaryEntry.o ICollectible.o ICollection.o IDictionary.o IIterator.o IKey.o OrderedKey.o Integer.o String.o ISistema.o Factory.o Sistema.o Usuario.o Cliente.o Propietario.o Inmobiliaria.o Inmueble.o Casa.o Apartamento.o Administracion.o Publicacion.o main.o 
-	g++ DtAdministracion.o DtDireccion.o DtFecha.o DtInmobiliaria.o DtInmueble.o DtInmuebleAdministrado.o DtInmXProp.o DtPropietario.o List.o ListIterator.o ListNode.o OrderedDictionary.o OrderedDictionaryEntry.o ICollectible.o ICollection.o IDictionary.o IIterator.o IKey.o OrderedKey.o Integer.o String.o ISistema.o Factory.o Sistema.o Usuario.o Cliente.o Propietario.o Inmobiliaria.o Inmueble.o Casa.o Apartamento.o Administracion.o Publicacion.o main.o -o programa
+all: DtAdministracion.o DtDireccion.o DtFecha.o DtInmobiliaria.o DtInmueble.o DtInmuebleAdministrado.o DtInmXProp.o DtPropietario.o List.o ListIterator.o ListNode.o OrderedDictionary.o OrderedDictionaryEntry.o ICollectible.o ICollection.o IDictionary.o IIterator.o IKey.o OrderedKey.o Integer.o String.o ISistema.o Factory.o Sistema.o Usuario.o Cliente.o Propietario.o Inmobiliaria.o Inmueble.o Casa.o Apartamento.o Administracion.o Publicacion.o Visita.o main.o 
+	g++ DtAdministracion.o DtDireccion.o DtFecha.o DtInmobiliaria.o DtInmueble.o DtInmuebleAdministrado.o DtInmXProp.o DtPropietario.o List.o ListIterator.o ListNode.o OrderedDictionary.o OrderedDictionaryEntry.o ICollectible.o ICollection.o IDictionary.o IIterator.o IKey.o OrderedKey.o Integer.o String.o ISistema.o Factory.o Sistema.o Usuario.o Cliente.o Propietario.o Inmobiliaria.o Inmueble.o Casa.o Apartamento.o Administracion.o Publicacion.o Visita.o main.o -o programa
 
 DtAdministracion.o:
 	g++ -c DataTypes/DtAdministracion.cpp
@@ -107,8 +107,11 @@ Administracion.o:
 Publicacion.o:
 	g++ -c Publicacion.cpp
 
+Visita.o:
+	g++ -c Visita.cpp
+
 main.o:
 	g++ -c main.cpp
 
 clean:
-	rm -f DtAdministracion.o DtDireccion.o DtFecha.o DtInmobiliaria.o DtInmueble.o DtInmuebleAdministrado.o DtInmXProp.o DtPropietario.o List.o ListIterator.o ListNode.o OrderedDictionary.o OrderedDictionaryEntry.o ICollectible.o ICollection.o IDictionary.o IIterator.o IKey.o OrderedKey.o Integer.o String.o ISistema.o Factory.o Sistema.o Usuario.o Cliente.o Propietario.o Inmobiliaria.o Inmueble.o Casa.o Apartamento.o Administracion.o Publicacion.o main.o programa
+	rm -f DtAdministracion.o DtDireccion.o DtFecha.o DtInmobiliaria.o DtInmueble.o DtInmuebleAdministrado.o DtInmXProp.o DtPropietario.o List.o ListIterator.o ListNode.o OrderedDictionary.o OrderedDictionaryEntry.o ICollectible.o ICollection.o IDictionary.o IIterator.o IKey.o OrderedKey.o Integer.o String.o ISistema.o Factory.o Sistema.o Usuario.o Cliente.o Propietario.o Inmobiliaria.o Inmueble.o Casa.o Apartamento.o Administracion.o Publicacion.o Visita.o main.o programa

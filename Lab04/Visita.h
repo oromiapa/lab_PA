@@ -7,29 +7,28 @@
 // DataTypes
 #include "./DataTypes/DtFecha.h"
 
-//ICollection/interfaces
+// ICollection/interfaces
 #include "./ICollection/interfaces/ICollectible.h"
 
 
-class Visita {
+class Visita : public ICollectible {
 
 private:
     DtFecha fechavisita;
     std::string contacto;
 
 public:
-//Constructor y Destructor
+// Constructor y Destructor
     Visita(const DtFecha& fechavisita, const char* contacto);
-    ~Visita();
+    virtual ~Visita(); 
 
-//Gets
-    DtFecha getFechaVisita() ;
-    std::string getContacto() ;
+// Gets
+    DtFecha getFechaVisita() const; 
+    std::string getContacto() const;
 
-//Sets
-    void setFechaVistia() ;
-    void setContacto() ;
-
+// Sets
+    void setFechaVisita(const DtFecha& fechavisita);
+    void setContacto(const std::string& contacto);
 };
 
-#endif 
+#endif

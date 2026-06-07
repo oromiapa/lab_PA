@@ -16,6 +16,7 @@ Publicacion::Publicacion(int id, const char* texto, float precio, const DtFecha&
     this->fechaPublicacion = fecha;
     this->tipoPublicacion = tipoPub;
     this->activa = activa;
+    this->visitas = nullptr;  // sin esto, ~Publicacion() hace delete sobre basura → segfault
 }
 
 

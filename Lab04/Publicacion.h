@@ -21,7 +21,7 @@ private:
     DtFecha fechaPublicacion;
     bool tipoPublicacion; // TRUE = Venta, FALSE = Alquiler
     bool activa;
-    IDictionary* visitas;
+    ICollection* visitas;
 
 public:
 // Constructor y Destructor

@@ -15,6 +15,7 @@
 
 class Inmueble;
 class Propietario;
+class Administracion;
 
 class Inmobiliaria : public Usuario {
 

@@ -246,7 +246,6 @@ ICollection* Sistema::seleccionarInmobiliaria(const char* nombreInmobiliaria) {
         throw std::invalid_argument("El nombre de la inmobiliaria no puede ser nulo.");
     }
 
-    // 1. Inmobiliaria := find(nickname)
     String* keyBuscar = new String(nombreInmobiliaria);
     ICollectible* item = this->usuarios->find(keyBuscar);
     delete keyBuscar;
@@ -260,11 +259,9 @@ ICollection* Sistema::seleccionarInmobiliaria(const char* nombreInmobiliaria) {
         throw std::invalid_argument("El usuario encontrado no es una inmobiliaria.");
     }
 
-    // Post-condición: Recordamos la inmobiliaria para el paso 3 (altaAdministracion)
     this->inmobiliariaActual = inm;
 
-    // 2. DELEGACIÓN (Mensaje 2 del diagrama de comunicación)
-    // El sistema le dice a la inmobiliaria: "Trabaja tú y dame los resultados"
+
     ICollection* resultado = inm->seleccionarInmobiliaria();
 
     return resultado;
@@ -278,10 +275,8 @@ void Sistema::altaAdministracion(int numid) {
         throw std::runtime_error("Error: No hay ninguna inmobiliaria seleccionada en memoria.");
     }
 
-    // El sistema solo le pasa el ID, la inmobiliaria maneja su propia fecha interna
     this->inmobiliariaActual->altaAdministracion(numid);
 
-    // Post-condición: limpieza del recuerdo
     this->inmobiliariaActual = nullptr;
     
 }
@@ -302,7 +297,6 @@ void Sistema::altaAdministracion(int numid) {
 ICollection* Sistema::seleccionarInmobiliariaAdministrada(const char* nombreInmobiliaria) {
     ICollection* listaRetorno = new List();
 
-    // Mensaje 2.1* [foreach]: i := next (Itera la colección de inmuebles)
     IIterator* it = this->inmuebles->getIterator();
 
     while (it->hasCurrent()) {
@@ -312,10 +306,8 @@ ICollection* Sistema::seleccionarInmobiliariaAdministrada(const char* nombreInmo
             int id = currentInm->getNumeroID();
             DtDireccion dir = currentInm->getDireccion();
 
-            // 💡 Mensaje 2.2.1: El Inmueble va a buscar la fecha de su administración
             DtFecha fechaAdmin = currentInm->getFechaAdministracion(); 
 
-            // Se empaqueta en el DataType compuesto
             DtInmuebleAdministrado* dtCompuesto = new DtInmuebleAdministrado(id, dir, fechaAdmin);
             listaRetorno->add(dtCompuesto);
         }
@@ -329,7 +321,6 @@ ICollection* Sistema::seleccionarInmobiliariaAdministrada(const char* nombreInmo
 
 
 void Sistema::altaPublicacion(const int numid, const char* text, float price, bool tipopub) {
-    // 1. Buscamos el inmueble por su ID en el diccionario del Sistema
     Integer* key = new Integer(numid);
     ICollectible* item = this->inmuebles->find(key);
     delete key;
@@ -340,7 +331,6 @@ void Sistema::altaPublicacion(const int numid, const char* text, float price, bo
 
     Inmueble* inm = dynamic_cast<Inmueble*>(item);
 
-    // 2. Transmitimos el mensaje al Inmueble (Mensaje 2 del DC)
     inm->altaPublicacion(numid, text, price, tipopub);
 }
 
@@ -355,34 +345,28 @@ void Sistema::altaPublicacion(const int numid, const char* text, float price, bo
 ICollection* Sistema::listarinmueblesxpropietario() {
     ICollection* listaRetorno = new List();
     
-    // 1. Iteramos la colección de inmuebles del sistema
     IIterator* itInm = this->inmuebles->getIterator();
 
     while (itInm->hasCurrent()) {
         Inmueble* currentInm = dynamic_cast<Inmueble*>(itInm->getCurrent());
 
         if (currentInm != nullptr) {
-            // 2. Extraemos el ID y la Dirección DIRECTO desde la clase de negocio Inmueble
             int id = currentInm->getNumeroID(); 
             DtDireccion dir = currentInm->getDireccion();
 
-            // 3. Obtenemos su propietario asociado
             Propietario* prop = currentInm->getDuenio(); 
 
             if (prop != nullptr) {
-                // 4. Fabricamos el DataType plano del propietario
                 DtPropietario dtPropAux(prop->getNickname().c_str(), prop->getNombre().c_str());
 
-                // 5. ¡Directo al constructor del DataType Compuesto!
                 DtInmXProp* dtCompuesto = new DtInmXProp(id, dir, dtPropAux);
 
-                // 6. Lo agregamos al set/lista de retorno
                 listaRetorno->add(dtCompuesto);
             }
         }
         itInm->next();
     }
-    delete itInm; // Evitamos memory leaks
+    delete itInm; 
 
     return listaRetorno;
 }
@@ -421,19 +405,15 @@ void Sistema::eliminarInmueble(int numid) {
         throw std::runtime_error("Error: Inmueble no seleccionado o ID inválido.");
     }
 
-    // 1. Desencadena toda la cascada de desvinculaciones y borrados que programamos
     this->inmuebleActual->borrarAdministracion();
     this->inmuebleActual->removerPropietario(numid);
 
-    // 2. Lo sacamos de la colección global de inmuebles del Sistema
     Integer* keyInm = new Integer(numid);
     this->inmuebles->remove(keyInm);
     delete keyInm;
 
-    // 3. ¡DESTROY FINAL!: Borramos el objeto Inmueble real del Heap
     delete this->inmuebleActual;
     
-    // 4. Limpiamos el puntero del controlador para dejar el sistema en un estado limpio
     this->inmuebleActual = nullptr;
 }
 
