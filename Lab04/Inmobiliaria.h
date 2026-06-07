@@ -55,6 +55,8 @@ public:
 //3er Caso
     ICollection* seleccionarInmobiliariaAdministrada();
 
+//4to Caso
+    void desvincularInmueble(int numid , Administracion* admi) ;
 
 
 };

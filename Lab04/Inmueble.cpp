@@ -87,3 +87,34 @@ void Inmueble::altaPublicacion(const int numid, const char* text, float price, b
 
 
 //|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+void Inmueble::borrarAdministracion() {
+    // 💡 Validación defensiva: Solo actuamos si realmente hay una administración vinculada
+    if (this->administracionAsociada != nullptr) {
+        
+
+        this->administracionAsociada->borrarPublicacion();
+
+        this->administracionAsociada->desvincularInmueble(this->numeroID);
+
+        // 2. ¡DESTROY!: Liberamos la memoria del objeto asociativo Administracion
+        delete this->administracionAsociada;
+
+        // 3. Limpieza de seguridad: Seteamos el puntero a nullptr para evitar basura
+        this->administracionAsociada = nullptr;
+    }
+}
+
+
+void Inmueble::removerPropietario(int numid) {
+    // Obtenemos el puntero al dueño real de este inmueble
+    Propietario* prop = this->getDuenio();
+
+    if (prop != nullptr) {
+        // 💡 Le envía al propietario la orden de quitar este inmueble de su colección.
+        // Llamamos a un método del Propietario (ej: removerInmueble) y le pasamos el ID.
+        prop->removerPropietario(numid); 
+    }
+}

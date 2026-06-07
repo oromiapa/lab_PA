@@ -34,6 +34,9 @@ public:
 //1er Caso
     void vincularInmueble(Inmueble* i);
 
+//4to Caso
+    void removerPropietario(int numid) ;
+
 };
 
 #endif

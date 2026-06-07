@@ -21,6 +21,7 @@ private:
     DtFecha fechaPublicacion;
     bool tipoPublicacion; // TRUE = Venta, FALSE = Alquiler
     bool activa;
+    IDictionary* visitas;
 
 public:
 // Constructor y Destructor
@@ -45,6 +46,10 @@ public:
 //3er Caso
     bool comprobarTipo(bool tipoPub) const;
     bool mismaFecha(const DtFecha& fecha) const;
+
+
+//4to Caso
+    void borrarVisita() ;
 
 };
 

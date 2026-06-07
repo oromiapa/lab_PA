@@ -3,9 +3,12 @@
 
 #include <string>
 #include <stdexcept>
+
+// DataTypes
 #include "./DataTypes/DtFecha.h"
-#include "Cliente.h"
-#include "Publicacion.h"
+
+//ICollection/interfaces
+#include "./ICollection/interfaces/ICollectible.h"
 
 
 class Visita {
@@ -15,11 +18,17 @@ private:
     std::string contacto;
 
 public:
-    Visita(const DtFecha& fechavisita, const std::string& contacto);
+//Constructor y Destructor
+    Visita(const DtFecha& fechavisita, const char* contacto);
     ~Visita();
 
+//Gets
     DtFecha getFechaVisita() ;
     std::string getContacto() ;
+
+//Sets
+    void setFechaVistia() ;
+    void setContacto() ;
 
 };
 

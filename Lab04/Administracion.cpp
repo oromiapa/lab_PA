@@ -1,5 +1,6 @@
 #include "Administracion.h"
 #include "Inmueble.h"
+#include "Inmobiliaria.h"
 #include "Publicacion.h"
 
 
@@ -44,6 +45,11 @@ DtFecha Administracion::getFechaInicio() const {
 
 Inmueble* Administracion::getInmueble() const {
     return this->inmuebleAdministrado;
+}
+
+
+Inmobiliaria* Administracion::getInmobiliaria() const {
+    return this->InmobiliariaAsociada;
 }
 
 
@@ -102,3 +108,40 @@ void Administracion::altaPublicacion(const int numid, const char* text, float pr
 
     this->publicaciones->add(nuevaPub);
 }
+
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+void Administracion::borrarPublicacion() {
+
+    if (this->publicaciones != nullptr) {
+        IIterator* itPub = this->publicaciones->getIterator();
+
+        while (itPub->hasCurrent()) {
+            Publicacion* currentPub = dynamic_cast<Publicacion*>(itPub->getCurrent());
+
+            if (currentPub != nullptr) {
+                // 💡 ¡NUEVO PASO!: Antes de borrar la publicación, limpiamos sus visitas
+                currentPub->borrarVisita();
+
+                // DESTROY de la publicación real
+                delete currentPub; 
+            }
+            itPub->next();
+        }
+        delete itPub;
+    }
+}
+
+
+
+
+void Administracion::desvincularInmueble(int numid) {
+    if (this->InmobiliariaAsociada != nullptr) {
+        // Le pasamos el ID y nos pasamos a nosotros mismos (this)
+        this->InmobiliariaAsociada->desvincularInmueble(numid, this); 
+    }
+}
+

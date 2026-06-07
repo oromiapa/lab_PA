@@ -13,6 +13,7 @@
 
 class Inmueble;
 class Publicacion;
+class Inmobiliaria;
 
 class Administracion : public ICollectible {
 
@@ -20,6 +21,7 @@ private:
     DtFecha fechainicio;
     Inmueble* inmuebleAdministrado;
     ICollection* publicaciones;
+    Inmobiliaria* InmobiliariaAsociada;
 
 public:
 //Constructor y Destructor
@@ -30,6 +32,7 @@ public:
 //Gets
     DtFecha getFechaInicio() const;
     Inmueble* getInmueble() const;
+    Inmobiliaria* getInmobiliaria() const;
 
 //Sets
     void setFechaInicio(const DtFecha& fechainicio) ;
@@ -38,7 +41,10 @@ public:
 //3er Caso
     void altaPublicacion(const int numid , const char* text , float price , bool tipopub) ;
 
-    
+//4to Caso
+    void borrarPublicacion() ;
+    void desvincularInmueble(int numid) ;
+
 
 };
 

@@ -217,3 +217,25 @@ ICollection* Inmobiliaria::seleccionarInmobiliariaAdministrada() {
 
 
 
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+void Inmobiliaria::desvincularInmueble(int numid, Administracion* admin) {
+    // 1. Removemos el Inmueble de la colección por su clave (ID)
+    if (this->inmuebles != nullptr) {
+        Integer* keyInm = new Integer(numid);
+        
+        // El remove saca el objeto de la lista asociativa pero NO lo borra de la memoria
+        this->inmuebles->remove(keyInm); 
+        
+        delete keyInm; // Limpiamos la llave temporal que creamos para buscar
+    }
+
+    // 2. Removemos la Administración de la colección
+    if (this->administraciones != nullptr && admin != nullptr) {
+        // Al pasarle directamente el puntero 'admin', la colección sabe cuál quitar
+        this->administraciones->remove(admin);
+    }
+}

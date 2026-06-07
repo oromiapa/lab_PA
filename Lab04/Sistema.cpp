@@ -28,7 +28,6 @@
 #include "./ICollection/collections/List.h"
 
 
-//Constructor y destructor
 
 Sistema::Sistema() {
     this->usuarios = new OrderedDictionary();
@@ -60,10 +59,12 @@ Sistema::~Sistema() {
 }
 
 
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
 
-// Métodos
 
 bool Sistema::existeUsuario(const char* nickname) {
 
@@ -171,26 +172,22 @@ ICollection* Sistema::listarPropietarios() {
 
 
 void Sistema::vincularPropietario(const char* nicknamePropietario) {
-    // 1. Buscamos el usuario en el diccionario global de usuarios del sistema
+
     String* keyBuscar = new String(nicknamePropietario);
     ICollectible* item = this->usuarios->find(keyBuscar);
-    delete keyBuscar; // Borramos la clave de búsqueda para evitar fugas de memoria
-
+    delete keyBuscar; 
     if (item == nullptr) {
         throw std::invalid_argument("El propietario no existe.");
     }
     
-    // 2. Súper importante: Validamos que realmente sea un Propietario
     Propietario* prop = dynamic_cast<Propietario*>(item);
     if (prop == nullptr) {
         throw std::invalid_argument("El nickname ingresado no pertenece a un propietario.");
     }
 
-    // 3. Le pasamos el propietario a la inmobiliaria que el sistema está "recordando"
     if (this->inmobiliariaActual != nullptr) {
         
-        // AQUÍ PASA TODO: El sistema le da el Propietario, 
-        // y la Inmobiliaria absorbe sus inmuebles automáticamente
+
         this->inmobiliariaActual->vincularPropietario(prop); 
         
     } else {
@@ -418,4 +415,25 @@ DtInmueble Sistema::seleccionarInmueble(int numid) {
 
 
 
+
+void Sistema::eliminarInmueble(int numid) {
+    if (this->inmuebleActual == nullptr || this->inmuebleActual->getNumeroID() != numid) {
+        throw std::runtime_error("Error: Inmueble no seleccionado o ID inválido.");
+    }
+
+    // 1. Desencadena toda la cascada de desvinculaciones y borrados que programamos
+    this->inmuebleActual->borrarAdministracion();
+    this->inmuebleActual->removerPropietario(numid);
+
+    // 2. Lo sacamos de la colección global de inmuebles del Sistema
+    Integer* keyInm = new Integer(numid);
+    this->inmuebles->remove(keyInm);
+    delete keyInm;
+
+    // 3. ¡DESTROY FINAL!: Borramos el objeto Inmueble real del Heap
+    delete this->inmuebleActual;
+    
+    // 4. Limpiamos el puntero del controlador para dejar el sistema en un estado limpio
+    this->inmuebleActual = nullptr;
+}
 

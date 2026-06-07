@@ -50,6 +50,10 @@ public:
 //3er Caso
     void altaPublicacion(const int numid , const char* text , float price , bool tipopub) ;
 
+//4to Caso
+    void borrarAdministracion() ;
+    void removerPropietario(int numid) ;
+
 
 };
 
