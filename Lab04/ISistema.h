@@ -34,6 +34,8 @@ public:
     virtual ICollection* listarinmueblesxpropietario() = 0 ;
     virtual DtInmueble seleccionarInmueble(int numid) = 0 ;
     virtual void eliminarInmueble(int numid) = 0 ;
+    virtual ICollection* filtrarPublicaciones( bool tipopub , float preciomin , float preciomax , TipoInmueble tipo ) = 0 ;
+    virtual DtInmueble seleccionarPublicacion(int id) = 0 ;
 
 };
 

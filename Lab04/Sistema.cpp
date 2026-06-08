@@ -417,3 +417,44 @@ void Sistema::eliminarInmueble(int numid) {
     this->inmuebleActual = nullptr;
 }
 
+
+
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+ICollection* Sistema::filtrarPublicaciones(bool tipopub , float preciomin , float preciomax , TipoInmueble tipo) {
+
+    ICollection* listaRetorno = new List();
+
+    IIterator* itInm = this->inmobiliarias->getIterator();
+
+    while (itInm->hasCurrent()) {
+        Inmobiliaria* currentInm = dynamic_cast<Inmobiliaria*>(itInm->getCurrent());
+
+        if (currentInm != nullptr) {
+
+
+             
+
+            if (prop != nullptr) {
+                DtPropietario dtPropAux(prop->getNickname().c_str(), prop->getNombre().c_str());
+
+                DtInmXProp* dtCompuesto = new DtInmXProp(id, dir, dtPropAux);
+
+                listaRetorno->add(dtCompuesto);
+            }
+        }
+        itInm->next();
+    }
+    delete itInm; 
+
+    return listaRetorno;
+
+
+}
+
+

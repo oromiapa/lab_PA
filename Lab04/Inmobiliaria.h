@@ -59,6 +59,10 @@ public:
 //4to Caso
     void desvincularInmueble(int numid , Administracion* admi) ;
 
+//5to
+    ICollection* filtrarPublicaciones(bool tipopub , float preciomin , float preciomax , TipoInmueble tipo) ;
+
+
 
 };
 

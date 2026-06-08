@@ -4,7 +4,7 @@
 #include <string>
 #include <stdexcept>
 
-//DataTypes internos
+//DataTypes
 #include "DtDireccion.h"
 #include "DtFecha.h"
 

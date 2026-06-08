@@ -11,6 +11,7 @@
 #include "./DataTypes/DtDireccion.h"
 #include "./DataTypes/DtFecha.h"
 #include "./DataTypes/TipoTecho.h"
+#include "./DataTypes/TipoInmueble.h"
 
 //ICollection/interfaces
 #include "./ICollection/interfaces/IDictionary.h"
@@ -70,11 +71,17 @@ public:
     void altaPublicacion(const int numid , const char* text , float price , bool tipopub) ;
 
 
+//Caso Especial: ALTA DE VISITA
+
 
 //Cuarto Caso: ELIMINAR INMUEBLE
     ICollection* listarinmueblesxpropietario() ;
     DtInmueble seleccionarInmueble(int numid) ;
     void eliminarInmueble(int numid) ;
+
+//Quinto Caso: Consultar Publicacion
+    ICollection* filtrarPublicaciones(bool tipopub , float preciomin , float preciomax , TipoInmueble tipo) ;
+    DtInmueble seleccionarPublicacion(int id) ;
 
 };
 
