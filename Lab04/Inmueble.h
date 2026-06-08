@@ -7,6 +7,7 @@
 //DataTypes
 #include "./DataTypes/DtDireccion.h"
 #include "./DataTypes/DtFecha.h"
+#include "./DataTypes/TipoInmueble.h"
 
 //ICollection/interfaces
 #include "./ICollection/interfaces/ICollectible.h"
@@ -54,6 +55,8 @@ public:
     void borrarAdministracion() ;
     void removerPropietario(int numid) ;
 
+//5to Caso
+    bool cumpleTipo(TipoInmueble tipo) ;
 
 };
 

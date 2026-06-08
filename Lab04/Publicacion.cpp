@@ -128,3 +128,17 @@ void Publicacion::borrarVisita() {
         delete itVis;
     }
 }
+
+
+
+//||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+bool Publicacion::comprobarDatos(bool tipopub, float preciomin, float preciomax) const {
+    if (this->tipoPublicacion != tipopub)
+        return false;
+    if (this->precio < preciomin || this->precio > preciomax)
+        return false;
+    return true;
+}

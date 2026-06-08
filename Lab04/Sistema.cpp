@@ -426,35 +426,58 @@ void Sistema::eliminarInmueble(int numid) {
 
 
 
-ICollection* Sistema::filtrarPublicaciones(bool tipopub , float preciomin , float preciomax , TipoInmueble tipo) {
-
-    ICollection* listaRetorno = new List();
-
-    IIterator* itInm = this->inmobiliarias->getIterator();
-
-    while (itInm->hasCurrent()) {
-        Inmobiliaria* currentInm = dynamic_cast<Inmobiliaria*>(itInm->getCurrent());
-
-        if (currentInm != nullptr) {
-
-
-             
-
-            if (prop != nullptr) {
-                DtPropietario dtPropAux(prop->getNickname().c_str(), prop->getNombre().c_str());
-
-                DtInmXProp* dtCompuesto = new DtInmXProp(id, dir, dtPropAux);
-
-                listaRetorno->add(dtCompuesto);
+ICollection* Sistema::filtrarPublicaciones(bool tipopub, float preciomin, float preciomax, TipoInmueble tipo) {
+ 
+    ICollection* resultado = new List();
+ 
+    // dynamic_cast: usuarios tiene mezcla de Cliente, Propietario, Inmobiliaria
+    IIterator* it = this->usuarios->getIterator();
+    while (it->hasCurrent()) {
+        Inmobiliaria* inmo = dynamic_cast<Inmobiliaria*>(it->getCurrent());
+ 
+        if (inmo != nullptr) {
+            ICollection* filtroInmo = inmo->filtrarPublicaciones(tipopub, preciomin, preciomax, tipo);
+ 
+            // static_cast: filtroInmo solo contiene DataFiltro*
+            IIterator* itFiltro = filtroInmo->getIterator();
+            while (itFiltro->hasCurrent()) {
+                DataFiltro* df = static_cast<DataFiltro*>(itFiltro->getCurrent());
+                resultado->add(df);
+                itFiltro->next();
             }
+            delete itFiltro;
+            delete filtroInmo; // contenedor vacío, DataFiltros ya están en resultado
+ 
         }
-        itInm->next();
+        it->next();
     }
-    delete itInm; 
-
-    return listaRetorno;
-
-
+    delete it;
+ 
+    return resultado;
 }
 
 
+
+
+DtInmueble Sistema::seleccionarPublicacion(int id) {
+ 
+    // dynamic_cast: usuarios tiene mezcla de tipos
+    IIterator* it = this->usuarios->getIterator();
+    while (it->hasCurrent()) {
+        Inmobiliaria* inmo = dynamic_cast<Inmobiliaria*>(it->getCurrent());
+ 
+        if (inmo != nullptr) {
+            DtInmueble* resultado = inmo->seleccionarPublicacion(id);
+            if (resultado != nullptr) {
+                DtInmueble dt = *resultado; // copiar antes de liberar
+                delete resultado;
+                delete it;
+                return dt;
+            }
+        }
+        it->next();
+    }
+    delete it;
+ 
+    throw std::invalid_argument("No existe una publicacion con el ID ingresado.");
+}

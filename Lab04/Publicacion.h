@@ -19,7 +19,7 @@ private:
     std::string texto;
     float precio;
     DtFecha fechaPublicacion;
-    bool tipoPublicacion; // TRUE = Venta, FALSE = Alquiler
+    bool tipoPublicacion; 
     bool activa;
     ICollection* visitas;
 
@@ -51,6 +51,8 @@ public:
 //4to Caso
     void borrarVisita() ;
 
+//5to Caso
+    bool comprobarDatos(bool tipopub, float preciomin, float preciomax) const;    
 };
 
 #endif

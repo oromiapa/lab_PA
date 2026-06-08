@@ -9,6 +9,7 @@
 #include "./DataTypes/DtFecha.h"
 #include "./DataTypes/DtInmueble.h"
 #include "./DataTypes/TipoTecho.h"
+#include "./DataTypes/TipoInmueble.h"
 
 
 class ISistema {

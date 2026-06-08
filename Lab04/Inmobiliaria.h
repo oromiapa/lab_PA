@@ -8,6 +8,9 @@
 #include "./DataTypes/DtDireccion.h"
 #include "./DataTypes/DtFecha.h"
 #include "./DataTypes/DtInmobiliaria.h"
+#include "./DataTypes/DataFiltro.h"
+#include "./DataTypes/DtInmueble.h"
+
 
 //ICollection/interfaces
 #include "./ICollection/interfaces/IDictionary.h"
@@ -61,7 +64,7 @@ public:
 
 //5to
     ICollection* filtrarPublicaciones(bool tipopub , float preciomin , float preciomax , TipoInmueble tipo) ;
-
+    DtInmueble* seleccionarPublicacion(int id);
 
 
 };

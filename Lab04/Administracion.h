@@ -6,6 +6,9 @@
 
 //DataTypes
 #include "./DataTypes/DtFecha.h"
+#include "./DataTypes/TipoInmueble.h"
+#include "./DataTypes/DtPublicacion.h"
+#include "./DataTypes/DtInmueble.h"
 
 //ICollection/interfaces
 #include "./ICollection/interfaces/ICollectible.h"
@@ -45,7 +48,9 @@ public:
     void borrarPublicacion() ;
     void desvincularInmueble(int numid) ;
 
-
+//5to Caso
+    ICollection* filtrarPublicaciones(bool tipopub , float preciomin , float preciomax , TipoInmueble tipo) ;
+    DtInmueble* seleccionarPublicacion(int id);
 };
 
 #endif

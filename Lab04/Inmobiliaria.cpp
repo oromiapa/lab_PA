@@ -6,6 +6,7 @@
 //DataTypes
 #include "./DataTypes/DtInmXProp.h"
 #include "./DataTypes/DtInmuebleAdministrado.h"
+#include "./DataTypes/DtInmueble.h"
 
 //ICollection
 #include "./ICollection/String.h"
@@ -238,4 +239,68 @@ void Inmobiliaria::desvincularInmueble(int numid, Administracion* admin) {
         // Al pasarle directamente el puntero 'admin', la colección sabe cuál quitar
         this->administraciones->remove(admin);
     }
+}
+
+
+
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+
+ICollection* Inmobiliaria::filtrarPublicaciones(bool tipopub, float preciomin, float preciomax, TipoInmueble tipo) {
+ 
+    ICollection* resultado = new List();
+ 
+    DtInmobiliaria dtInmo(this->getNickname().c_str(), this->getNombre().c_str());
+ 
+    // static_cast: administraciones solo contiene Administracion*, no hay subclases
+    IIterator* itAdmin = this->administraciones->getIterator();
+    while (itAdmin->hasCurrent()) {
+        Administracion* admin = static_cast<Administracion*>(itAdmin->getCurrent());
+ 
+        ICollection* pubsFiltradas = admin->filtrarPublicaciones(tipopub, preciomin, preciomax, tipo);
+ 
+        // static_cast: pubsFiltradas solo contiene DtPublicacion*
+        IIterator* itPub = pubsFiltradas->getIterator();
+        while (itPub->hasCurrent()) {
+            DtPublicacion* dtPub = static_cast<DtPublicacion*>(itPub->getCurrent());
+            DataFiltro* df = new DataFiltro(dtInmo, *dtPub);
+            resultado->add(df);
+            itPub->next();
+        }
+        delete itPub;
+        delete pubsFiltradas; // DtPublicacion copiados en DataFiltro, se puede liberar
+ 
+        itAdmin->next();
+    }
+    delete itAdmin;
+ 
+    return resultado;
+}
+
+
+
+
+
+
+DtInmueble* Inmobiliaria::seleccionarPublicacion(int id) {
+ 
+    // static_cast: administraciones solo contiene Administracion*
+    IIterator* it = this->administraciones->getIterator();
+    while (it->hasCurrent()) {
+        Administracion* admin = static_cast<Administracion*>(it->getCurrent());
+ 
+        DtInmueble* resultado = admin->seleccionarPublicacion(id);
+        if (resultado != nullptr) {
+            delete it;
+            return resultado;
+        }
+        it->next();
+    }
+    delete it;
+    return nullptr;
 }

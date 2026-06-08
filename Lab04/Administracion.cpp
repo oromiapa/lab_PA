@@ -2,6 +2,9 @@
 #include "Inmueble.h"
 #include "Inmobiliaria.h"
 #include "Publicacion.h"
+#include "Casa.h"
+#include "Apartamento.h"
+
 
 
 //ICollection/interfaces
@@ -145,3 +148,78 @@ void Administracion::desvincularInmueble(int numid) {
     }
 }
 
+
+
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+
+ICollection* Administracion::filtrarPublicaciones(bool tipopub, float preciomin, float preciomax, TipoInmueble tipo) {
+ 
+    ICollection* resultado = new List();
+ 
+    // 1. Verificar si el inmueble asociado cumple el tipo pedido
+    if (this->inmuebleAdministrado == nullptr)
+        return resultado;
+ 
+    bool esCasa        = dynamic_cast<Casa*>(this->inmuebleAdministrado) != nullptr;
+    bool esApartamento = dynamic_cast<Apartamento*>(this->inmuebleAdministrado) != nullptr;
+ 
+    bool cumpleTipo = (tipo == TipoInmueble::AMBOS) ||
+                      (tipo == TipoInmueble::CASA        && esCasa) ||
+                      (tipo == TipoInmueble::APARTAMENTO && esApartamento);
+ 
+    if (!cumpleTipo)
+        return resultado;
+ 
+    // 2. Recorrer publicaciones y filtrar
+    IIterator* it = this->publicaciones->getIterator();
+    while (it->hasCurrent()) {
+        Publicacion* p = dynamic_cast<Publicacion*>(it->getCurrent());
+        if (p != nullptr && p->getActiva() && p->comprobarDatos(tipopub, preciomin, preciomax)) {
+ 
+            // Determinar TipoInmueble concreto para el DtPublicacion
+            TipoInmueble tipoConcreto = esCasa ? TipoInmueble::CASA : TipoInmueble::APARTAMENTO;
+ 
+            DtPublicacion* dt = new DtPublicacion(
+                p->getID(),
+                p->getFechaPublicacion(),
+                p->getTexto().c_str(),
+                tipoConcreto
+            );
+            resultado->add(dt);
+        }
+        it->next();
+    }
+    delete it;
+ 
+    return resultado;
+}
+
+
+
+
+
+
+DtInmueble* Administracion::seleccionarPublicacion(int id) {
+ 
+    IIterator* it = this->publicaciones->getIterator();
+    while (it->hasCurrent()) {
+        Publicacion* p = static_cast<Publicacion*>(it->getCurrent());
+        if (p->getID() == id) {
+            delete it;
+            // Construir y retornar el DtInmueble del inmueble administrado
+            return new DtInmueble(
+                this->inmuebleAdministrado->getNumeroID(),
+                this->inmuebleAdministrado->getDireccion(),
+                this->inmuebleAdministrado->getSuperficie(),
+                this->inmuebleAdministrado->getAnioConstruccion()
+            );
+        }
+        it->next();
+    }
+    delete it;
+    return nullptr;
+}
