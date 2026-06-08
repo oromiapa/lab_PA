@@ -47,7 +47,6 @@ public:
     bool comprobarTipo(bool tipoPub) const;
     bool mismaFecha(const DtFecha& fecha) const;
 
-
 //4to Caso
     void borrarVisita() ;
 

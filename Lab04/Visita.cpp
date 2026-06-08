@@ -5,7 +5,6 @@ Visita::Visita(const DtFecha& fechavisita, const char* contacto)
 
 Visita::~Visita() {}
 
-// Gets
 DtFecha Visita::getFechaVisita() const {
     return this->fechavisita;
 }
@@ -14,7 +13,6 @@ std::string Visita::getContacto() const {
     return this->contacto;
 }
 
-// Sets
 void Visita::setFechaVisita(const DtFecha& fechavisita) {
     this->fechavisita = fechavisita;
 }

@@ -430,7 +430,6 @@ ICollection* Sistema::filtrarPublicaciones(bool tipopub, float preciomin, float 
  
     ICollection* resultado = new List();
  
-    // dynamic_cast: usuarios tiene mezcla de Cliente, Propietario, Inmobiliaria
     IIterator* it = this->usuarios->getIterator();
     while (it->hasCurrent()) {
         Inmobiliaria* inmo = dynamic_cast<Inmobiliaria*>(it->getCurrent());
@@ -438,7 +437,6 @@ ICollection* Sistema::filtrarPublicaciones(bool tipopub, float preciomin, float 
         if (inmo != nullptr) {
             ICollection* filtroInmo = inmo->filtrarPublicaciones(tipopub, preciomin, preciomax, tipo);
  
-            // static_cast: filtroInmo solo contiene DataFiltro*
             IIterator* itFiltro = filtroInmo->getIterator();
             while (itFiltro->hasCurrent()) {
                 DataFiltro* df = static_cast<DataFiltro*>(itFiltro->getCurrent());
@@ -446,7 +444,7 @@ ICollection* Sistema::filtrarPublicaciones(bool tipopub, float preciomin, float 
                 itFiltro->next();
             }
             delete itFiltro;
-            delete filtroInmo; // contenedor vacío, DataFiltros ya están en resultado
+            delete filtroInmo; 
  
         }
         it->next();
@@ -461,7 +459,6 @@ ICollection* Sistema::filtrarPublicaciones(bool tipopub, float preciomin, float 
 
 DtInmueble Sistema::seleccionarPublicacion(int id) {
  
-    // dynamic_cast: usuarios tiene mezcla de tipos
     IIterator* it = this->usuarios->getIterator();
     while (it->hasCurrent()) {
         Inmobiliaria* inmo = dynamic_cast<Inmobiliaria*>(it->getCurrent());
@@ -469,7 +466,7 @@ DtInmueble Sistema::seleccionarPublicacion(int id) {
         if (inmo != nullptr) {
             DtInmueble* resultado = inmo->seleccionarPublicacion(id);
             if (resultado != nullptr) {
-                DtInmueble dt = *resultado; // copiar antes de liberar
+                DtInmueble dt = *resultado; 
                 delete resultado;
                 delete it;
                 return dt;

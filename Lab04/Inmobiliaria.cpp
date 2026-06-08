@@ -70,23 +70,18 @@ void Inmobiliaria::setURL(const char* URL) {
 void Inmobiliaria::vincularPropietario(Propietario* p) {
     if (p == nullptr) return;
 
-    // 1. Obtenemos el diccionario original de inmuebles del propietario
-    // (Ya no se crea una lista temporal con 'new List()')
     IDictionary* dictInmuebles = p->obtenerInmueblesPropios(); 
     
-    // 2. Iteramos el diccionario directamente
     IIterator* it = dictInmuebles->getIterator();
     while (it->hasCurrent()) {
         Inmueble* inm = dynamic_cast<Inmueble*>(it->getCurrent());
         if (inm != nullptr) {
-            // Tu función miembro que agrega el inmueble a la inmobiliaria
             this->vincularInmueble(inm); 
         }
         it->next();
     }
     
-    // 3. Limpieza de memoria
-    delete it; // Solo borramos el iterador temporal.
+    delete it; 
     
 }
 
@@ -114,25 +109,20 @@ IDictionary* Inmobiliaria::getInmuebles() const {
 
 
 ICollection* Inmobiliaria::seleccionarInmobiliaria() {
-    // Creamos la lista de retorno de DtInmXProp (Mensaje 2 del DC)
     ICollection* listaRetorno = new List();
 
-    // Mensaje 2.1* [foreach]: i := next
     IIterator* it = this->inmuebles->getIterator();
 
     while (it->hasCurrent()) {
         Inmueble* currentInm = dynamic_cast<Inmueble*>(it->getCurrent());
         
         if (currentInm != nullptr) {
-            // Mensaje 2.2* d := getDatos() : DtInmueble
             int id = currentInm->getNumeroID();
             DtDireccion dir = currentInm->getDireccion();
 
-            // Mensaje 2.2.1* nom := getNombre() : string (Le pide los datos al Propietario)
             Propietario* elDuenio = currentInm->getDuenio();
             DtPropietario dtProp = elDuenio->getDatosPropietario(); 
 
-            // Se empaqueta en el DataType compuesto
             DtInmXProp* dtCompuesto = new DtInmXProp(id, dir, dtProp);
             listaRetorno->add(dtCompuesto);
         }
@@ -140,12 +130,11 @@ ICollection* Inmobiliaria::seleccionarInmobiliaria() {
     }
     delete it;
 
-    return listaRetorno; // Retorna el set de DtInmXProp al Sistema
+    return listaRetorno; 
 }
 
 
 DtFecha Inmobiliaria::obtenerFecha() {
-    // Instanciamos (configuramos) el DataType con la fecha de hoy
     DtFecha fechaActual(5, 6, 2026); 
     return fechaActual;
 }
@@ -182,36 +171,29 @@ void Inmobiliaria::altaAdministracion(int numid) {
 ICollection* Inmobiliaria::seleccionarInmobiliariaAdministrada() {
     ICollection* listaRetorno = new List();
 
-    // 1. Iteramos la lista de ADMINISTRACIONES (las relaciones asociativas reales)
     IIterator* itAdmin = this->administraciones->getIterator();
 
     while (itAdmin->hasCurrent()) {
         Administracion* currentAdmin = dynamic_cast<Administracion*>(itAdmin->getCurrent());
         
         if (currentAdmin != nullptr) {
-            // 2. Le pedimos la fecha directamente a la administración
             DtFecha fechaAdmin = currentAdmin->getFechaInicio();
 
-            // 3. Le pedimos el Inmueble asociado a esa administración
             Inmueble* currentInm = currentAdmin->getInmueble();
             
             if (currentInm != nullptr) {
-                // 4. Extraemos los datos del inmueble 
-                // 💡 Nota: Asegúrate de usar getNumId() o getNumeroID() según tu Inmueble.h
                 int id = currentInm->getNumeroID(); 
                 DtDireccion dir = currentInm->getDireccion();
 
-                // 5. Empaquetamos todo en el DataType correspondiente
                 DtAdministracion dtAdminAux(fechaAdmin); 
                 DtInmuebleAdministrado* dtCompuesto = new DtInmuebleAdministrado(id, dir, dtAdminAux);
 
-                // 6. ¡EL PASO FALTANTE! Metemos el DataType en la lista que va a viajar al main
                 listaRetorno->add(dtCompuesto);
             }
         }
         itAdmin->next();
     }
-    delete itAdmin; // Limpieza del iterador para evitar leaks
+    delete itAdmin; 
 
     return listaRetorno; 
 }
@@ -224,19 +206,15 @@ ICollection* Inmobiliaria::seleccionarInmobiliariaAdministrada() {
 
 
 void Inmobiliaria::desvincularInmueble(int numid, Administracion* admin) {
-    // 1. Removemos el Inmueble de la colección por su clave (ID)
     if (this->inmuebles != nullptr) {
         Integer* keyInm = new Integer(numid);
         
-        // El remove saca el objeto de la lista asociativa pero NO lo borra de la memoria
         this->inmuebles->remove(keyInm); 
         
-        delete keyInm; // Limpiamos la llave temporal que creamos para buscar
+        delete keyInm; 
     }
 
-    // 2. Removemos la Administración de la colección
     if (this->administraciones != nullptr && admin != nullptr) {
-        // Al pasarle directamente el puntero 'admin', la colección sabe cuál quitar
         this->administraciones->remove(admin);
     }
 }
@@ -257,14 +235,12 @@ ICollection* Inmobiliaria::filtrarPublicaciones(bool tipopub, float preciomin, f
  
     DtInmobiliaria dtInmo(this->getNickname().c_str(), this->getNombre().c_str());
  
-    // static_cast: administraciones solo contiene Administracion*, no hay subclases
     IIterator* itAdmin = this->administraciones->getIterator();
     while (itAdmin->hasCurrent()) {
         Administracion* admin = static_cast<Administracion*>(itAdmin->getCurrent());
  
         ICollection* pubsFiltradas = admin->filtrarPublicaciones(tipopub, preciomin, preciomax, tipo);
  
-        // static_cast: pubsFiltradas solo contiene DtPublicacion*
         IIterator* itPub = pubsFiltradas->getIterator();
         while (itPub->hasCurrent()) {
             DtPublicacion* dtPub = static_cast<DtPublicacion*>(itPub->getCurrent());
@@ -273,7 +249,7 @@ ICollection* Inmobiliaria::filtrarPublicaciones(bool tipopub, float preciomin, f
             itPub->next();
         }
         delete itPub;
-        delete pubsFiltradas; // DtPublicacion copiados en DataFiltro, se puede liberar
+        delete pubsFiltradas; 
  
         itAdmin->next();
     }
@@ -289,7 +265,6 @@ ICollection* Inmobiliaria::filtrarPublicaciones(bool tipopub, float preciomin, f
 
 DtInmueble* Inmobiliaria::seleccionarPublicacion(int id) {
  
-    // static_cast: administraciones solo contiene Administracion*
     IIterator* it = this->administraciones->getIterator();
     while (it->hasCurrent()) {
         Administracion* admin = static_cast<Administracion*>(it->getCurrent());

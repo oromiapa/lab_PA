@@ -85,16 +85,12 @@ void Propietario::vincularInmueble(Inmueble* i) {
 
 
 void Propietario::removerPropietario(int numid) {
-    // 💡 Verificamos de forma defensiva que la colección de inmuebles exista
     if (this->inmuebles != nullptr) {
         
-        // Creamos la llave con el ID del inmueble para poder buscarlo en la colección
         Integer* keyInm = new Integer(numid);
         
-        // El remove lo saca de la lista asociativa del propietario
         this->inmuebles->remove(keyInm);
         
-        // Limpiamos la memoria de la llave temporal
         delete keyInm;
     }
 }

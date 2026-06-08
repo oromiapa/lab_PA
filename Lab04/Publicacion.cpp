@@ -101,30 +101,23 @@ bool Publicacion::mismaFecha(const DtFecha& fecha) const {
 
 
 void Publicacion::borrarVisita() {
-    // 1. Verificamos defensivamente que la colección de visitas exista
+
     if (this->visitas != nullptr) {
         
-        // 2. Pedimos el iterador de la colección
         IIterator* itVis = this->visitas->getIterator();
 
-        // 3. Recorremos todas las visitas asociadas
         while (itVis->hasCurrent()) {
-            // Obtenemos el elemento genérico
             ICollectible* item = itVis->getCurrent();
             
-            // Lo casteamos a su tipo real
             Visita* currentVis = dynamic_cast<Visita*>(item);
 
             if (currentVis != nullptr) {
-                // ¡DESTROY!: Liberamos la memoria de la visita en el Heap
                 delete currentVis;
             }
             
-            // Avanzamos al siguiente elemento de la colección
             itVis->next();
         }
         
-        // 4. Limpiamos el iterador para evitar fugas de memoria (Memory Leaks)
         delete itVis;
     }
 }
