@@ -28,3 +28,18 @@ void Cliente::setDocumento(const char* documento) {
     this->documento = documento;
 }
 
+
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+void Cliente::agregarVisita(Visita* v) {
+    if (this->visitas == nullptr) {
+        this->visitas = new List();
+    }
+    this->visitas->add(v);
+}
+
+ICollection* Cliente::getVisitas() const {
+    return this->visitas;
+}

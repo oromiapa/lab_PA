@@ -7,11 +7,13 @@
 
 // DataTypes
 #include "./DataTypes/DtFecha.h"
+#include "./DataTypes/DtVisita.h"
 
 // ICollection/interfaces
 #include "./ICollection/interfaces/ICollectible.h"
 #include "./ICollection/interfaces/ICollection.h"
 
+class Visita;
 
 class Publicacion : public ICollectible {
 private:
@@ -47,11 +49,17 @@ public:
     bool comprobarTipo(bool tipoPub) const;
     bool mismaFecha(const DtFecha& fecha) const;
 
+
 //4to Caso
     void borrarVisita() ;
 
 //5to Caso
     bool comprobarDatos(bool tipopub, float preciomin, float preciomax) const;    
+
+//Caso especial
+    void agregarVisita(Visita* v) ;
+    ICollection* listarVisitas(int idPublicacion);
+
 };
 
 #endif

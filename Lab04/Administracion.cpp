@@ -1,11 +1,11 @@
+#include <ctime>
+
 #include "Administracion.h"
 #include "Inmueble.h"
 #include "Inmobiliaria.h"
 #include "Publicacion.h"
 #include "Casa.h"
 #include "Apartamento.h"
-
-
 
 //ICollection/interfaces
 #include "./ICollection/interfaces/IIterator.h"
@@ -70,9 +70,25 @@ void Administracion::setInmueble(Inmueble* inmueble) {
 //|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
+DtFecha Administracion::obtenerFecha() const {
+    time_t ahora = time(nullptr);       
+    tm* local = localtime(&ahora);      
+
+    int dia  = local->tm_mday;
+    int mes  = local->tm_mon + 1;       
+    int anio = local->tm_year + 1900;   
+
+    return DtFecha(dia, mes, anio);
+
+}
+
+
+
 void Administracion::altaPublicacion(const int numid, const char* text, float price, bool tipopub) {
+
     int maxId = 0;
-    DtFecha fechaHoy(6, 6, 2026); 
+    DtFecha fechaActual = obtenerFecha() ;
+
 
     IIterator* it = this->publicaciones->getIterator();
     while (it->hasCurrent()) {
@@ -85,10 +101,11 @@ void Administracion::altaPublicacion(const int numid, const char* text, float pr
 
             if (p->getActiva()) { 
                 if (p->comprobarTipo(tipopub)) {
-                    if (p->mismaFecha(fechaHoy)) {
-                        delete it;
+                    if (p->mismaFecha(fechaActual)) {
+                        delete it; 
                         throw std::invalid_argument("Regla de negocio: No es posible crear una nueva publicación del mismo tipo en la misma fecha.");
-                    } else {
+                    } 
+                    else {
                         p->setActiva(false);
                     }
                 }
@@ -99,7 +116,7 @@ void Administracion::altaPublicacion(const int numid, const char* text, float pr
     delete it; 
 
     int nuevoId = maxId + 1;
-    Publicacion* nuevaPub = new Publicacion(nuevoId, text, price, fechaHoy, tipopub, true);
+    Publicacion* nuevaPub = new Publicacion(nuevoId, text, price, fechaActual, tipopub, true);
 
     this->publicaciones->add(nuevaPub);
 }
@@ -207,4 +224,36 @@ DtInmueble* Administracion::seleccionarPublicacion(int id) {
     }
     delete it;
     return nullptr;
+}
+
+
+
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+
+Publicacion* Administracion::getPublicacion(int id) {
+
+    if (this->publicaciones != nullptr) {
+
+        IIterator* itPub = this->publicaciones->getIterator();
+
+        while (itPub->hasCurrent()) {
+
+            Publicacion* pub = dynamic_cast<Publicacion*>(itPub->getCurrent());
+            
+            if (pub != nullptr && pub->getID() == id) {
+                delete itPub;
+                return pub;
+            }
+            itPub->next();
+ 
+        }
+        delete itPub;
+    }
+
+    return nullptr;
+
 }

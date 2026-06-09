@@ -1,3 +1,5 @@
+#include <ctime>
+
 #include "Inmobiliaria.h"
 #include "Inmueble.h"
 #include "Administracion.h"
@@ -18,6 +20,9 @@
 //ICollection/collections
 #include "./ICollection/collections/OrderedDictionary.h"
 #include "./ICollection/collections/List.h"
+
+
+
 
 Inmobiliaria::Inmobiliaria(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const DtDireccion & direccionInmobiliaria, const char* telefono, const char* URL) 
     : Usuario(nickname, nombre, email, contrasenia), telefono(telefono), URL(URL), direccionInmobiliaria(direccionInmobiliaria) {
@@ -135,12 +140,19 @@ ICollection* Inmobiliaria::seleccionarInmobiliaria() {
 
 
 DtFecha Inmobiliaria::obtenerFecha() {
-    DtFecha fechaActual(5, 6, 2026); 
-    return fechaActual;
+    time_t ahora = time(nullptr);       
+    tm* local = localtime(&ahora);      
+
+    int dia  = local->tm_mday;
+    int mes  = local->tm_mon + 1;       
+    int anio = local->tm_year + 1900;   
+
+    return DtFecha(dia, mes, anio);
+
 }
 
-
 void Inmobiliaria::altaAdministracion(int numid) {
+
     Integer* keyBuscar = new Integer(numid);
     ICollectible* item = this->inmuebles->find(keyBuscar);
     delete keyBuscar; 
@@ -261,8 +273,6 @@ ICollection* Inmobiliaria::filtrarPublicaciones(bool tipopub, float preciomin, f
 
 
 
-
-
 DtInmueble* Inmobiliaria::seleccionarPublicacion(int id) {
  
     IIterator* it = this->administraciones->getIterator();
@@ -278,4 +288,36 @@ DtInmueble* Inmobiliaria::seleccionarPublicacion(int id) {
     }
     delete it;
     return nullptr;
+}
+
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+
+Publicacion* Inmobiliaria::getPublicacion(int id) {
+    if (this->administraciones != nullptr) {
+        IIterator* itAdmin = this->administraciones->getIterator();
+
+        while (itAdmin->hasCurrent()) {
+            Administracion* admin = dynamic_cast<Administracion*>(itAdmin->getCurrent());
+            
+            if (admin != nullptr) {
+                // Le delegamos la búsqueda a la administración
+                Publicacion* pub = admin->getPublicacion(id); 
+                
+                if (pub != nullptr) {
+                    delete itAdmin; 
+                    return pub;     
+                }
+            }
+            itAdmin->next();
+        }
+        delete itAdmin;
+    }
+    return nullptr;
+
 }

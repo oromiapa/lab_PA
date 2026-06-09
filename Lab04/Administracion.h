@@ -36,6 +36,7 @@ public:
     DtFecha getFechaInicio() const;
     Inmueble* getInmueble() const;
     Inmobiliaria* getInmobiliaria() const;
+    DtFecha obtenerFecha() const;
 
 //Sets
     void setFechaInicio(const DtFecha& fechainicio) ;
@@ -51,6 +52,10 @@ public:
 //5to Caso
     ICollection* filtrarPublicaciones(bool tipopub , float preciomin , float preciomax , TipoInmueble tipo) ;
     DtInmueble* seleccionarPublicacion(int id);
+
+//Caso especial
+    Publicacion* getPublicacion(int id);
+    
 };
 
 #endif

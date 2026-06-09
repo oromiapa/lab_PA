@@ -36,9 +36,13 @@ Propietario* Inmueble::getDuenio() const {
 
 DtFecha Inmueble::getFechaAdministracion() const {
     if (this->administracionAsociada != nullptr) {
-        return this->administracionAsociada->getFechaInicio(); // Mensaje 2.2.1 del DC
+        return this->administracionAsociada->getFechaInicio(); 
     }
-    return DtFecha(0, 0, 2026); // Fecha por defecto si no tuviera (por seguridad)
+    return DtFecha(0, 0, 2026); 
+}
+
+Administracion* Inmueble::getAdministracion() const {
+    return this->administracionAsociada;
 }
 
 //|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||

@@ -37,6 +37,9 @@ public:
     virtual void eliminarInmueble(int numid) = 0 ;
     virtual ICollection* filtrarPublicaciones( bool tipopub , float preciomin , float preciomax , TipoInmueble tipo ) = 0 ;
     virtual DtInmueble seleccionarPublicacion(int id) = 0 ;
+    virtual void altaVisita(const char* nicknameCliente, int idPublicacion, const DtFecha& fechaVisita) = 0;
+    virtual ICollection* listarVisitas(int idPublicacion) = 0;
+
 
 };
 

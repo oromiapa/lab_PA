@@ -58,6 +58,9 @@ public:
 //5to Caso
     bool cumpleTipo(TipoInmueble tipo) ;
 
+//Caso especial
+    Administracion* getAdministracion() const;
+
 };
 
 #endif

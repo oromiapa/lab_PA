@@ -19,6 +19,7 @@
 class Inmueble;
 class Propietario;
 class Administracion;
+class Publicacion;
 
 class Inmobiliaria : public Usuario {
 
@@ -66,7 +67,9 @@ public:
     ICollection* filtrarPublicaciones(bool tipopub , float preciomin , float preciomax , TipoInmueble tipo) ;
     DtInmueble* seleccionarPublicacion(int id);
 
-
+//Caso especial
+    Publicacion* getPublicacion(int id);
+    
 };
 
 

@@ -4,6 +4,7 @@
 #include "Sistema.h"
 #include "DataTypes/DtDireccion.h"
 #include "DataTypes/DtFecha.h"
+#include "DataTypes/DtVisita.h"
 #include "DataTypes/DtInmueble.h"
 #include "DataTypes/DtPropietario.h"
 #include "DataTypes/DtInmobiliaria.h"
@@ -323,5 +324,43 @@ int main() {
     seccion("FIN DE LA EJECUCION");
     std::cout << "Todos los casos ejecutados.\n\n";
 
-    return 0;
+
+    // =========================================================
+    // CASO 7: VISITAS
+    // =========================================================
+    seccion("CASO 7: VISITAS");
+
+    try {
+        // Alta de visita de cliente "jperez" a la publicación id=1
+        DtFecha fechaVisita(8, 6, 2026);
+        sistema.altaVisita("jperez", 1, fechaVisita);
+        std::cout << "[OK] Visita registrada para cliente 'jperez' en publicación id=1.\n";
+
+        // Listar visitas de la publicación id=1
+        ICollection* visitas = sistema.listarVisitas(1);
+        std::cout << "  Visitas registradas (" << visitas->getSize() << "):\n";
+        IIterator* itVis = visitas->getIterator();
+        while (itVis->hasCurrent()) {
+            DtVisita* dv = static_cast<DtVisita*>(itVis->getCurrent());
+            if (dv != nullptr) {
+                std::cout << "    - Cliente=" << dv->getNicknameCliente()
+                        << " | Fecha=" << dv->getFecha().getDia() << "/"
+                        << dv->getFecha().getMes() << "/"
+                        << dv->getFecha().getAnio()
+                        << " | PublicacionID=" << dv->getIdPublicacion()
+                        << "\n";
+            }
+            itVis->next();
+        }
+        delete itVis;
+
+    } catch (const std::exception& e) {
+        std::cerr << "[ERROR] Alta/Listar visitas: " << e.what() << "\n";
+    }
+
+        return 0;
+
+        
 }
+
+

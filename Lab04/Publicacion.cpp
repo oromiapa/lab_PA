@@ -16,12 +16,11 @@ Publicacion::Publicacion(int id, const char* texto, float precio, const DtFecha&
     this->fechaPublicacion = fecha;
     this->tipoPublicacion = tipoPub;
     this->activa = activa;
-    this->visitas = nullptr;  // sin esto, ~Publicacion() hace delete sobre basura → segfault
+    this->visitas = nullptr;  
 }
 
 
 Publicacion::~Publicacion() {
-    // Cuando la publicación muere, se lleva consigo el contenedor de la lista de visitas
     if (this->visitas != nullptr) {
         delete this->visitas;
     }
@@ -101,7 +100,6 @@ bool Publicacion::mismaFecha(const DtFecha& fecha) const {
 
 
 void Publicacion::borrarVisita() {
-
     if (this->visitas != nullptr) {
         
         IIterator* itVis = this->visitas->getIterator();
@@ -109,7 +107,7 @@ void Publicacion::borrarVisita() {
         while (itVis->hasCurrent()) {
             ICollectible* item = itVis->getCurrent();
             
-            Visita* currentVis = dynamic_cast<Visita*>(item);
+            Visita* currentVis = static_cast<Visita*>(item);
 
             if (currentVis != nullptr) {
                 delete currentVis;
@@ -134,4 +132,41 @@ bool Publicacion::comprobarDatos(bool tipopub, float preciomin, float preciomax)
     if (this->precio < preciomin || this->precio > preciomax)
         return false;
     return true;
+}
+
+
+//||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+void Publicacion::agregarVisita(Visita* v) {
+    if (this->visitas == nullptr) {
+        this->visitas = new List();
+    }
+    this->visitas->add(v);
+}
+
+
+
+
+ICollection* Publicacion::listarVisitas(int idPublicacion) {
+
+    ICollection* resultado = new List();
+ 
+    if (this->visitas == nullptr)
+        return resultado;
+ 
+    IIterator* it = this->visitas->getIterator();
+
+    while (it->hasCurrent()) {
+
+        Visita* v = static_cast<Visita*>(it->getCurrent());
+        resultado->add(new DtVisita(v->getFechaVisita(), idPublicacion, v->getContacto()));
+        it->next();
+
+    }
+
+    delete it;
+ 
+    return resultado;
+
 }
