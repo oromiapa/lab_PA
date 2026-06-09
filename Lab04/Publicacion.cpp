@@ -21,9 +21,8 @@ Publicacion::Publicacion(int id, const char* texto, float precio, const DtFecha&
 
 
 Publicacion::~Publicacion() {
-    if (this->visitas != nullptr) {
-        delete this->visitas;
-    }
+    if (this->visitas != nullptr)
+        delete this->visitas;  
 }
 
 

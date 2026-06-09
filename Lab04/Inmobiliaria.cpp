@@ -1,4 +1,5 @@
 #include <ctime>
+#include <iostream>
 
 #include "Inmobiliaria.h"
 #include "Inmueble.h"
@@ -32,9 +33,20 @@ Inmobiliaria::Inmobiliaria(const char* nickname, const char* nombre, const char*
 }
 
 Inmobiliaria::~Inmobiliaria() {
+    std::cout << "  [DEBUG] Antes de destruir Sistema\n";
+    std::cout.flush();
+    if (this->administraciones != nullptr) {
+        IIterator* it = this->administraciones->getIterator();
+        while (it->hasCurrent()) {
+            delete it->getCurrent();
+            it->next();
+        }
+        delete it;
+        delete this->administraciones;
+    }
+ 
     delete this->inmuebles;
     delete this->propietariosAsociados;
-    delete this->administraciones;
 }
 
 DtDireccion Inmobiliaria::getDireccionInmobiliaria() const {
@@ -114,28 +126,24 @@ IDictionary* Inmobiliaria::getInmuebles() const {
 
 
 ICollection* Inmobiliaria::seleccionarInmobiliaria() {
+    std::cout << "[DEBUG] seleccionarInmobiliaria inicio, inmuebles size=" << this->inmuebles->getSize() << "\n"; std::cout.flush();
     ICollection* listaRetorno = new List();
-
     IIterator* it = this->inmuebles->getIterator();
-
     while (it->hasCurrent()) {
+        std::cout << "[DEBUG] iterando inmueble\n"; std::cout.flush();
         Inmueble* currentInm = dynamic_cast<Inmueble*>(it->getCurrent());
-        
         if (currentInm != nullptr) {
-            int id = currentInm->getNumeroID();
-            DtDireccion dir = currentInm->getDireccion();
-
+            std::cout << "[DEBUG] inmueble id=" << currentInm->getNumeroID() << "\n"; std::cout.flush();
             Propietario* elDuenio = currentInm->getDuenio();
-            DtPropietario dtProp = elDuenio->getDatosPropietario(); 
-
-            DtInmXProp* dtCompuesto = new DtInmXProp(id, dir, dtProp);
+            std::cout << "[DEBUG] duenio=" << elDuenio << "\n"; std::cout.flush();
+            DtPropietario dtProp = elDuenio->getDatosPropietario();
+            DtInmXProp* dtCompuesto = new DtInmXProp(currentInm->getNumeroID(), currentInm->getDireccion(), dtProp);
             listaRetorno->add(dtCompuesto);
         }
         it->next();
     }
     delete it;
-
-    return listaRetorno; 
+    return listaRetorno;
 }
 
 
@@ -165,6 +173,8 @@ void Inmobiliaria::altaAdministracion(int numid) {
     DtFecha fechaHoy = this->obtenerFecha();
 
     Administracion* nuevaAdmin = new Administracion(fechaHoy, inm);
+    nuevaAdmin->setInmobiliaria(this);  
+
 
     this->administraciones->add(nuevaAdmin);
 
@@ -218,14 +228,13 @@ ICollection* Inmobiliaria::seleccionarInmobiliariaAdministrada() {
 
 
 void Inmobiliaria::desvincularInmueble(int numid, Administracion* admin) {
+    std::cout << "[DEBUG] desvincularInmueble inmobiliaria, numid=" << numid << " size antes=" << this->inmuebles->getSize() << "\n"; std::cout.flush();
     if (this->inmuebles != nullptr) {
         Integer* keyInm = new Integer(numid);
-        
-        this->inmuebles->remove(keyInm); 
-        
-        delete keyInm; 
+        this->inmuebles->remove(keyInm);
+        delete keyInm;
     }
-
+    std::cout << "[DEBUG] size despues=" << this->inmuebles->getSize() << "\n"; std::cout.flush();
     if (this->administraciones != nullptr && admin != nullptr) {
         this->administraciones->remove(admin);
     }

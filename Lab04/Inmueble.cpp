@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Inmueble.h"
 #include "Propietario.h"
 #include "Inmobiliaria.h"
@@ -94,16 +96,16 @@ void Inmueble::altaPublicacion(const int numid, const char* text, float price, b
 
 
 void Inmueble::borrarAdministracion() {
+    std::cout << "[DEBUG] borrarAdministracion inicio\n"; std::cout.flush();
     if (this->administracionAsociada != nullptr) {
-        
-
-        this->administracionAsociada->borrarPublicacion();
-
+        std::cout << "[DEBUG] desvincularInmueble\n"; std::cout.flush();
         this->administracionAsociada->desvincularInmueble(this->numeroID);
-
+        std::cout << "[DEBUG] borrarPublicacion\n"; std::cout.flush();
+        this->administracionAsociada->borrarPublicacion();
+        std::cout << "[DEBUG] delete admin\n"; std::cout.flush();
         delete this->administracionAsociada;
-
         this->administracionAsociada = nullptr;
+        std::cout << "[DEBUG] borrarAdministracion fin\n"; std::cout.flush();
     }
 }
 

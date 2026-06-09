@@ -41,6 +41,7 @@ public:
 //Sets
     void setFechaInicio(const DtFecha& fechainicio) ;
     void setInmueble(Inmueble* inmueble);
+    void setInmobiliaria(Inmobiliaria* inm);
 
 //3er Caso
     void altaPublicacion(const int numid , const char* text , float price , bool tipopub) ;

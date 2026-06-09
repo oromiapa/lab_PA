@@ -1,3 +1,6 @@
+#include <iostream>
+
+
 #include "Sistema.h"
 #include "Usuario.h"
 #include "Cliente.h"
@@ -47,26 +50,30 @@ Sistema::Sistema() {
 
 Sistema::~Sistema() {
 
+    std::cout << "  [DEBUG] Antes de destruir Sistema\n";
+    std::cout.flush();
+
     IIterator* itI = this->inmuebles->getIterator();
     while (itI->hasCurrent()) {
         delete itI->getCurrent();
         itI->next();
     }
     delete itI;
-
+ 
     IIterator* itU = this->usuarios->getIterator();
     while (itU->hasCurrent()) {
         delete itU->getCurrent();
         itU->next();
     }
     delete itU;
+ 
 
+    delete this->casas;
+    delete this->apartamentos;
     delete this->clientes;
     delete this->propietarios;
     delete this->inmobiliarias;
     delete this->inmuebles;
-    delete this->casas;
-    delete this->apartamentos;
     delete this->usuarios;
 }
 
@@ -275,14 +282,19 @@ ICollection* Sistema::seleccionarInmobiliariaAdministrada(const char* nombreInmo
     while (it->hasCurrent()) {
 
         Inmueble* inm = static_cast<Inmueble*>(it->getCurrent());
-        DtInmuebleAdministrado* dt = new DtInmuebleAdministrado(
-            inm->getNumeroID(),
-            inm->getDireccion(),
-            inm->getFechaAdministracion()
-        );
-        listaRetorno->add(dt);
-        it->next();
 
+        if (inm->getAdministracion() != nullptr) {  
+
+            DtInmuebleAdministrado* dt = new DtInmuebleAdministrado(
+                inm->getNumeroID(),
+                inm->getDireccion(),
+                inm->getFechaAdministracion()
+            );
+
+            listaRetorno->add(dt);
+
+        }
+        it->next();
     }
 
     delete it;
@@ -311,10 +323,10 @@ void Sistema::altaPublicacion(const int numid, const char* text, float price, bo
 
 
 
-void Sistema::altaVisita(const char* nicknameCliente, int idPublicacion, const DtFecha& fechaVisita) {
+void Sistema::altaVisita(const char* nicknameCliente, int idPublicacion, const DtFecha& fechaVisita , const char* contacto) {
 
     String* keyCli = new String(nicknameCliente);
-    ICollectible* itemCli = this->usuarios->find(keyCli);
+    ICollectible* itemCli = this->clientes->find(keyCli);
     delete keyCli;
     Cliente* cli = static_cast<Cliente*>(itemCli);
     
@@ -345,7 +357,7 @@ void Sistema::altaVisita(const char* nicknameCliente, int idPublicacion, const D
     if (pub == nullptr) 
         throw std::invalid_argument("Publicación no encontrada");
 
-    Visita* nueva = new Visita(fechaVisita, nicknameCliente);
+    Visita* nueva = new Visita(fechaVisita, contacto);
     cli->agregarVisita(nueva);
     pub->agregarVisita(nueva);
 

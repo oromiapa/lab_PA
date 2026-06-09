@@ -73,7 +73,7 @@ public:
     void altaPublicacion(const int numid, const char* text, float price, bool tipopub);
 
 //Caso Especial: ALTA DE VISITA
-    void altaVisita(const char* nicknameCliente, int idPublicacion, const DtFecha& fechaVisita);
+    void altaVisita(const char* nicknameCliente, int idPublicacion, const DtFecha& fechaVisita, const char* contacto);
     ICollection* listarVisitas(int idPublicacion);
 
 // Cuarto Caso: ELIMINAR INMUEBLE

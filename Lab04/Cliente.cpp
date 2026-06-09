@@ -4,8 +4,10 @@
 Cliente::Cliente(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const char* apellido, const char* documento) 
     : Usuario(nickname, nombre, email, contrasenia), apellido(apellido), documento(documento) {}
 
-Cliente::~Cliente() {}
-
+Cliente::~Cliente() {
+    if (this->visitas != nullptr)
+        delete this->visitas;
+}
 //|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 

@@ -1,4 +1,5 @@
 #include <ctime>
+#include <iostream>
 
 #include "Administracion.h"
 #include "Inmueble.h"
@@ -14,26 +15,21 @@
 #include "./ICollection/collections/List.h"
 
 
-Administracion::Administracion() : fechainicio(), inmuebleAdministrado(nullptr) {}
+Administracion::Administracion() 
+    : fechainicio(), inmuebleAdministrado(nullptr), 
+      publicaciones(nullptr), InmobiliariaAsociada(nullptr) {}
+
 
 Administracion::Administracion(const DtFecha& fechainicio, Inmueble* inmueble) {
     this->fechainicio = fechainicio;
     this->inmuebleAdministrado = inmueble;
     this->publicaciones = new List(); 
+    this->InmobiliariaAsociada = nullptr;
 }
 
 Administracion::~Administracion() {
-    IIterator* it = this->publicaciones->getIterator();
-    while (it->hasCurrent()) {
-        Publicacion* p = dynamic_cast<Publicacion*>(it->getCurrent());
-        if (p != nullptr) {
-            delete p; 
-        }
-        it->next();
-    }
-    delete it;
-
-    delete this->publicaciones;
+    if (this->publicaciones != nullptr)
+        delete this->publicaciones;
 }
 
 
@@ -66,6 +62,9 @@ void Administracion::setInmueble(Inmueble* inmueble) {
     this->inmuebleAdministrado = inmueble;
 }
 
+void Administracion::setInmobiliaria(Inmobiliaria* inm) {
+    this->InmobiliariaAsociada = inm;
+}
 
 //|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
@@ -127,28 +126,28 @@ void Administracion::altaPublicacion(const int numid, const char* text, float pr
 
 
 void Administracion::borrarPublicacion() {
-
+    std::cout << "[DEBUG] borrarPublicacion inicio\n"; std::cout.flush();
     if (this->publicaciones != nullptr) {
-        IIterator* itPub = this->publicaciones->getIterator();
-
-        while (itPub->hasCurrent()) {
-            Publicacion* currentPub = dynamic_cast<Publicacion*>(itPub->getCurrent());
-
-            if (currentPub != nullptr) {
-                currentPub->borrarVisita();
-
-                delete currentPub; 
-            }
-            itPub->next();
+        IIterator* it = this->publicaciones->getIterator();
+        while (it->hasCurrent()) {
+            Publicacion* pub = static_cast<Publicacion*>(it->getCurrent());
+            std::cout << "[DEBUG] borrando pub id=" << pub->getID() << "\n"; std::cout.flush();
+            pub->borrarVisita();
+            std::cout << "[DEBUG] borrarVisita OK\n"; std::cout.flush();
+            delete pub;
+            std::cout << "[DEBUG] delete pub OK\n"; std::cout.flush();
+            it->next();
         }
-        delete itPub;
+        delete it;
     }
+    std::cout << "[DEBUG] borrarPublicacion fin\n"; std::cout.flush();
 }
 
 
 
 
 void Administracion::desvincularInmueble(int numid) {
+    std::cout << "[DEBUG] Administracion::desvincularInmueble, InmobiliariaAsociada=" << this->InmobiliariaAsociada << "\n"; std::cout.flush();
     if (this->InmobiliariaAsociada != nullptr) {
         this->InmobiliariaAsociada->desvincularInmueble(numid, this); 
     }

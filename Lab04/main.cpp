@@ -1,10 +1,11 @@
 #include <iostream>
+#include <string>
+#include <limits>
 #include <stdexcept>
 
 #include "Sistema.h"
 #include "DataTypes/DtDireccion.h"
 #include "DataTypes/DtFecha.h"
-#include "DataTypes/DtVisita.h"
 #include "DataTypes/DtInmueble.h"
 #include "DataTypes/DtPropietario.h"
 #include "DataTypes/DtInmobiliaria.h"
@@ -12,355 +13,556 @@
 #include "DataTypes/DtInmuebleAdministrado.h"
 #include "DataTypes/DataFiltro.h"
 #include "DataTypes/DtPublicacion.h"
+#include "DataTypes/DtVisita.h"
 #include "DataTypes/TipoTecho.h"
 #include "DataTypes/TipoInmueble.h"
 #include "ICollection/interfaces/ICollection.h"
 #include "ICollection/interfaces/IIterator.h"
+#include "Factory.h"
+
+ISistema* sistemaPtr = nullptr;
+#define sistema (*static_cast<Sistema*>(sistemaPtr))
+
+// =========================================================
+// UTILIDADES
+// =========================================================
+
+void limpiarBuffer() {
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+std::string leerLinea(const std::string& prompt) {
+    std::string valor;
+    std::cout << prompt;
+    std::getline(std::cin, valor);
+    return valor;
+}
+
+int leerEntero(const std::string& prompt) {
+    int valor;
+    while (true) {
+        std::cout << prompt;
+        if (std::cin >> valor) {
+            limpiarBuffer();
+            return valor;
+        }
+        std::cin.clear();
+        limpiarBuffer();
+        std::cout << "  [!] Ingrese un número válido.\n";
+    }
+}
+
+float leerFloat(const std::string& prompt) {
+    float valor;
+    while (true) {
+        std::cout << prompt;
+        if (std::cin >> valor) {
+            limpiarBuffer();
+            return valor;
+        }
+        std::cin.clear();
+        limpiarBuffer();
+        std::cout << "  [!] Ingrese un número válido.\n";
+    }
+}
+
+DtFecha leerFecha(const std::string& prompt) {
+    std::cout << prompt << "\n";
+    int dia = leerEntero("    Dia: ");
+    int mes = leerEntero("    Mes: ");
+    int anio = leerEntero("    Anio: ");
+    return DtFecha(dia, mes, anio);
+}
+
+DtDireccion leerDireccion(const std::string& prompt) {
+    std::cout << prompt << "\n";
+    std::string calle  = leerLinea("    Calle: ");
+    int numero         = leerEntero("    Numero: ");
+    std::string ciudad = leerLinea("    Ciudad: ");
+    return DtDireccion(calle.c_str(), numero, ciudad.c_str());
+}
+
+void separador() {
+    std::cout << "\n----------------------------------------\n";
+}
 
 // =========================================================
 // HELPERS DE IMPRESIÓN
 // =========================================================
-
-void seccion(const std::string& titulo) {
-    std::cout << "\n========================================\n";
-    std::cout << "  " << titulo << "\n";
-    std::cout << "========================================\n";
-}
 
 void imprimirDireccion(const DtDireccion& dir) {
     std::cout << dir.getCalle() << " " << dir.getNumero() << ", " << dir.getCiudad();
 }
 
 void imprimirPropietarios(ICollection* lista) {
-    std::cout << "  Propietarios registrados (" << lista->getSize() << "):\n";
-    IIterator* it = lista->getIterator();
-    while (it->hasCurrent()) {
-        DtPropietario* dt = static_cast<DtPropietario*>(it->getCurrent());
-        std::cout << "    - [" << dt->getNickname() << "] " << dt->getNombre() << "\n";
-        it->next();
+    if (lista->isEmpty()) {
+        std::cout << "  (No hay propietarios registrados)\n";
+    } else {
+        std::cout << "  Propietarios (" << lista->getSize() << "):\n";
+        IIterator* it = lista->getIterator();
+        while (it->hasCurrent()) {
+            DtPropietario* dt = static_cast<DtPropietario*>(it->getCurrent());
+            std::cout << "    - [" << dt->getNickname() << "] " << dt->getNombre() << "\n";
+            it->next();
+        }
+        delete it;
     }
-    delete it;
 }
 
 void imprimirInmobiliarias(ICollection* lista) {
-    std::cout << "  Inmobiliarias registradas (" << lista->getSize() << "):\n";
-    IIterator* it = lista->getIterator();
-    while (it->hasCurrent()) {
-        DtInmobiliaria* dt = static_cast<DtInmobiliaria*>(it->getCurrent());
-        std::cout << "    - [" << dt->getNickname() << "] " << dt->getNombre() << "\n";
-        it->next();
+    if (lista->isEmpty()) {
+        std::cout << "  (No hay inmobiliarias registradas)\n";
+    } else {
+        std::cout << "  Inmobiliarias (" << lista->getSize() << "):\n";
+        IIterator* it = lista->getIterator();
+        while (it->hasCurrent()) {
+            DtInmobiliaria* dt = static_cast<DtInmobiliaria*>(it->getCurrent());
+            std::cout << "    - [" << dt->getNickname() << "] " << dt->getNombre() << "\n";
+            it->next();
+        }
+        delete it;
     }
-    delete it;
 }
 
 void imprimirInmueblesXPropietario(ICollection* lista) {
-    std::cout << "  Inmuebles por propietario (" << lista->getSize() << "):\n";
-    IIterator* it = lista->getIterator();
-    while (it->hasCurrent()) {
-        DtInmXProp* dt = static_cast<DtInmXProp*>(it->getCurrent());
-        std::cout << "    - id=" << dt->getNumId() << " | Dir: ";
-        imprimirDireccion(dt->getDireccion());
-        std::cout << " | Propietario: " << dt->getPropietariovinculado().getNickname() << "\n";
-        it->next();
+    if (lista->isEmpty()) {
+        std::cout << "  (No hay inmuebles registrados)\n";
+    } else {
+        std::cout << "  Inmuebles (" << lista->getSize() << "):\n";
+        IIterator* it = lista->getIterator();
+        while (it->hasCurrent()) {
+            DtInmXProp* dt = static_cast<DtInmXProp*>(it->getCurrent());
+            std::cout << "    - id=" << dt->getNumId() << " | Dir: ";
+            imprimirDireccion(dt->getDireccion());
+            std::cout << " | Propietario: " << dt->getPropietariovinculado().getNickname() << "\n";
+            it->next();
+        }
+        delete it;
     }
-    delete it;
 }
 
 void imprimirInmueblesAdministrados(ICollection* lista) {
-    std::cout << "  Inmuebles administrados (" << lista->getSize() << "):\n";
-    IIterator* it = lista->getIterator();
-    while (it->hasCurrent()) {
-        DtInmuebleAdministrado* dt = static_cast<DtInmuebleAdministrado*>(it->getCurrent());
-        std::cout << "    - id=" << dt->getNumId() << " | Dir: ";
-        imprimirDireccion(dt->getDireccion());
-        std::cout << "\n";
-        it->next();
+    if (lista->isEmpty()) {
+        std::cout << "  (No hay inmuebles administrados)\n";
+    } else {
+        std::cout << "  Inmuebles administrados (" << lista->getSize() << "):\n";
+        IIterator* it = lista->getIterator();
+        while (it->hasCurrent()) {
+            DtInmuebleAdministrado* dt = static_cast<DtInmuebleAdministrado*>(it->getCurrent());
+            DtFecha fecha = dt->getFechaAdministracion().getFechaInicio();
+            std::cout << "    - id=" << dt->getNumId() << " | Dir: ";
+            imprimirDireccion(dt->getDireccion());
+            std::cout << " | Desde: " << fecha.getDia() << "/" << fecha.getMes() << "/" << fecha.getAnio() << "\n";
+            it->next();
+        }
+        delete it;
     }
-    delete it;
 }
 
 void imprimirFiltro(ICollection* lista) {
-    std::cout << "  Resultados (" << lista->getSize() << "):\n";
-    IIterator* it = lista->getIterator();
-    while (it->hasCurrent()) {
-        DataFiltro* df = static_cast<DataFiltro*>(it->getCurrent());
-        DtInmobiliaria inmo = df->getDatosInmobiliaria();
-        DtPublicacion  pub  = df->getDatosPublicacion();
-        std::string tipo = (pub.getTipo() == TipoInmueble::CASA) ? "Casa" : "Apartamento";
-        std::cout << "    - [" << inmo.getNickname() << "]"
-                  << " id_pub=" << pub.getID()
-                  << " | " << tipo
-                  << " | " << pub.getTexto() << "\n";
-        it->next();
+    if (lista->isEmpty()) {
+        std::cout << "  (No se encontraron publicaciones)\n";
+    } else {
+        std::cout << "  Resultados (" << lista->getSize() << "):\n";
+        IIterator* it = lista->getIterator();
+        while (it->hasCurrent()) {
+            DataFiltro* df = static_cast<DataFiltro*>(it->getCurrent());
+            DtInmobiliaria inmo = df->getDatosInmobiliaria();
+            DtPublicacion  pub  = df->getDatosPublicacion();
+            std::string tipo = (pub.getTipo() == TipoInmueble::CASA) ? "Casa" : "Apartamento";
+            std::cout << "    - id_pub=" << pub.getID()
+                      << " | " << tipo
+                      << " | [" << inmo.getNickname() << "]"
+                      << " | " << pub.getTexto() << "\n";
+            it->next();
+        }
+        delete it;
     }
-    delete it;
 }
 
+// =========================================================
+// CASOS
+// =========================================================
+
+void altaCliente() {
+    separador();
+    std::cout << "  ALTA CLIENTE\n";
+    separador();
+    std::string nick  = leerLinea("  Nickname: ");
+    std::string nom   = leerLinea("  Nombre: ");
+    std::string email = leerLinea("  Email: ");
+    std::string pass  = leerLinea("  Contrasenia: ");
+    std::string apell = leerLinea("  Apellido: ");
+    std::string doc   = leerLinea("  Documento: ");
+
+    sistema.altaCliente(nick.c_str(), nom.c_str(), email.c_str(), pass.c_str(), apell.c_str(), doc.c_str());
+    std::cout << "  [OK] Cliente '" << nick << "' dado de alta.\n";
+}
+
+void altaPropietario() {
+    separador();
+    std::cout << "  ALTA PROPIETARIO\n";
+    separador();
+    std::string nick  = leerLinea("  Nickname: ");
+    std::string nom   = leerLinea("  Nombre: ");
+    std::string email = leerLinea("  Email: ");
+    std::string pass  = leerLinea("  Contrasenia: ");
+    std::string tel   = leerLinea("  Telefono: ");
+    int cuenta        = leerEntero("  Cuenta bancaria: ");
+
+    sistema.altaPropietario(nick.c_str(), nom.c_str(), email.c_str(), pass.c_str(), tel.c_str(), cuenta);
+    std::cout << "  [OK] Propietario '" << nick << "' dado de alta.\n";
+
+    // Loop de inmuebles
+    while (true) {
+        separador();
+        std::cout << "  Agregar inmueble:\n";
+        std::cout << "    1- Casa\n";
+        std::cout << "    2- Apartamento\n";
+        std::cout << "    0- Finalizar\n";
+        int opInm = leerEntero("  Opcion: ");
+
+        if (opInm == 0) break;
+
+        DtDireccion dir      = leerDireccion("  Direccion:");
+        DtFecha fechaConst   = leerFecha("  Anio de construccion:");
+        float superficie     = leerFloat("  Superficie (m2): ");
+
+        if (opInm == 1) {
+            std::cout << "  Tipo de techo:\n";
+            std::cout << "    1- Techo plano\n";
+            std::cout << "    2- Techo a dos aguas\n";
+            std::cout << "    3- Techo liviano\n";
+            int opTecho = leerEntero("  Opcion: ");
+            TipoTecho techo = (opTecho == 1) ? TipoTecho::TECHO_PLANO :
+                              (opTecho == 2) ? TipoTecho::TECHO_A_DOS_AGUAS :
+                                               TipoTecho::TECHO_LIVIANO;
+            std::string propH = leerLinea("  Propiedad horizontal (s/n): ");
+            bool propHoriz = (propH == "s" || propH == "S");
+
+            sistema.crearCasa(dir, fechaConst, superficie, propHoriz, techo);
+            std::cout << "  [OK] Casa creada.\n";
+
+        } else if (opInm == 2) {
+            int piso          = leerEntero("  Piso: ");
+            std::string ascStr = leerLinea("  Tiene ascensor (s/n): ");
+            bool ascensor     = (ascStr == "s" || ascStr == "S");
+            float gastos      = leerFloat("  Gastos comunes: ");
+
+            sistema.crearApartamento(dir, fechaConst, superficie, piso, ascensor, gastos);
+            std::cout << "  [OK] Apartamento creado.\n";
+        } else {
+            std::cout << "  [!] Opcion invalida.\n";
+        }
+    }
+
+    sistema.finalizarAltaPropietario();
+    std::cout << "  [OK] Alta de propietario finalizada.\n";
+}
+
+void altaInmobiliaria() {
+    separador();
+    std::cout << "  ALTA INMOBILIARIA\n";
+    separador();
+    std::string nick  = leerLinea("  Nickname: ");
+    std::string nom   = leerLinea("  Nombre: ");
+    std::string email = leerLinea("  Email: ");
+    std::string pass  = leerLinea("  Contrasenia: ");
+    DtDireccion dir   = leerDireccion("  Direccion:");
+    std::string tel   = leerLinea("  Telefono: ");
+    std::string url   = leerLinea("  URL: ");
+
+    sistema.altaInmobiliaria(nick.c_str(), nom.c_str(), email.c_str(), pass.c_str(), dir, tel.c_str(), url.c_str());
+    std::cout << "  [OK] Inmobiliaria '" << nick << "' creada.\n";
+
+    // Listar propietarios y vincular en loop
+    ICollection* props = sistema.listarPropietarios();
+    imprimirPropietarios(props);
+    delete props;
+
+    while (true) {
+        separador();
+        std::string nickProp = leerLinea("  Nickname del propietario a vincular (Enter para finalizar): ");
+        if (nickProp.empty()) break;
+        try {
+            sistema.vincularPropietario(nickProp.c_str());
+            std::cout << "  [OK] '" << nickProp << "' vinculado.\n";
+        } catch (const std::exception& e) {
+            std::cout << "  [!] " << e.what() << "\n";
+        }
+    }
+
+    sistema.finalizarAltaInmobiliaria();
+    std::cout << "  [OK] Alta de inmobiliaria finalizada.\n";
+}
+
+void casoAltaUsuario() {
+    separador();
+    std::cout << "  ALTA USUARIO\n";
+    std::cout << "  Tipo de usuario:\n";
+    std::cout << "    1- Cliente\n";
+    std::cout << "    2- Propietario\n";
+    std::cout << "    3- Inmobiliaria\n";
+    int op = leerEntero("  Opcion: ");
+    try {
+        if      (op == 1) altaCliente();
+        else if (op == 2) altaPropietario();
+        else if (op == 3) altaInmobiliaria();
+        else std::cout << "  [!] Opcion invalida.\n";
+    } catch (const std::exception& e) {
+        std::cout << "  [!] Error: " << e.what() << "\n";
+    }
+}
+
+void casoAltaAdministracion() {
+    separador();
+    std::cout << "  ALTA ADMINISTRACION\n";
+    separador();
+    try {
+        ICollection* inmos = sistema.listarInmobiliarias();
+        imprimirInmobiliarias(inmos);
+        bool sinInmos = inmos->isEmpty();
+        delete inmos;
+        if (sinInmos) return;
+
+        std::string nickInmo = leerLinea("  Nickname de la inmobiliaria: ");
+        ICollection* inmuebles = sistema.seleccionarInmobiliaria(nickInmo.c_str());
+        imprimirInmueblesXPropietario(inmuebles);
+        delete inmuebles;
+
+        int idInm = leerEntero("  ID del inmueble a administrar: ");
+        sistema.altaAdministracion(idInm);
+        std::cout << "  [OK] Administracion dada de alta.\n";
+    } catch (const std::exception& e) {
+        std::cout << "  [!] Error: " << e.what() << "\n";
+    }
+}
+
+void casoAltaPublicacion() {
+    separador();
+    std::cout << "  ALTA PUBLICACION\n";
+    separador();
+    try {
+        ICollection* inmos = sistema.listarInmobiliarias();
+        imprimirInmobiliarias(inmos);
+        bool sinInmos2 = inmos->isEmpty();
+        delete inmos;
+        if (sinInmos2) return;
+
+        std::string nickInmo = leerLinea("  Nickname de la inmobiliaria: ");
+        ICollection* inmuebles = sistema.seleccionarInmobiliariaAdministrada(nickInmo.c_str());
+        imprimirInmueblesAdministrados(inmuebles);
+        delete inmuebles;
+
+        int idInm       = leerEntero("  ID del inmueble: ");
+        std::string txt = leerLinea("  Descripcion: ");
+        float precio    = leerFloat("  Precio: ");
+        std::cout << "  Tipo de publicacion:\n";
+        std::cout << "    1- Venta\n";
+        std::cout << "    2- Alquiler\n";
+        int opTipo  = leerEntero("  Opcion: ");
+        bool tipoPub = (opTipo == 1);
+
+        sistema.altaPublicacion(idInm, txt.c_str(), precio, tipoPub);
+        std::cout << "  [OK] Publicacion creada.\n";
+    } catch (const std::exception& e) {
+        std::cout << "  [!] Error: " << e.what() << "\n";
+    }
+}
+
+void casoAgendarVisita() {
+    separador();
+    std::cout << "  AGENDAR VISITA\n";
+    separador();
+    try {
+        std::string nickCliente = leerLinea("  Nickname del cliente: ");
+        int idPub               = leerEntero("  ID de la publicacion: ");
+        DtFecha fecha           = leerFecha("  Fecha de la visita:");
+        std::string contacto    = leerLinea("  Forma de contacto: ");
+
+        sistema.altaVisita(nickCliente.c_str(), idPub, fecha, contacto.c_str());
+        std::cout << "  [OK] Visita agendada.\n";
+    } catch (const std::exception& e) {
+        std::cout << "  [!] Error: " << e.what() << "\n";
+    }
+}
+
+void casoConsultarPublicaciones() {
+    separador();
+    std::cout << "  CONSULTAR PUBLICACIONES\n";
+    separador();
+    try {
+        // Filtros
+        std::cout << "  Tipo de publicacion:\n";
+        std::cout << "    1- Venta\n";
+        std::cout << "    2- Alquiler\n";
+        int opTipo   = leerEntero("  Opcion: ");
+        bool tipoPub = (opTipo == 1);
+
+        float precioMin = leerFloat("  Precio minimo: ");
+        float precioMax = leerFloat("  Precio maximo: ");
+
+        std::cout << "  Tipo de inmueble:\n";
+        std::cout << "    1- Casa\n";
+        std::cout << "    2- Apartamento\n";
+        std::cout << "    3- Ambos\n";
+        int opInm = leerEntero("  Opcion: ");
+        TipoInmueble tipoInm = (opInm == 1) ? TipoInmueble::CASA :
+                               (opInm == 2) ? TipoInmueble::APARTAMENTO :
+                                              TipoInmueble::AMBOS;
+
+        ICollection* filtro = sistema.filtrarPublicaciones(tipoPub, precioMin, precioMax, tipoInm);
+        imprimirFiltro(filtro);
+
+        if (!filtro->isEmpty()) {
+            int idPub = leerEntero("  Seleccionar publicacion por ID (0 para omitir): ");
+            if (idPub != 0) {
+                DtInmueble dt = sistema.seleccionarPublicacion(idPub);
+                std::cout << "  Inmueble asociado:\n";
+                std::cout << "    id=" << dt.getNumId()
+                          << " | Superficie: " << dt.getSuperficie() << " m2"
+                          << " | Dir: ";
+                imprimirDireccion(dt.getDireccion());
+                std::cout << "\n";
+            }
+        }
+        delete filtro;
+    } catch (const std::exception& e) {
+        std::cout << "  [!] Error: " << e.what() << "\n";
+    }
+}
+
+void casoEliminarInmueble() {
+    separador();
+    std::cout << "  ELIMINAR INMUEBLE\n";
+    separador();
+    try {
+        ICollection* lista = sistema.listarinmueblesxpropietario();
+        imprimirInmueblesXPropietario(lista);
+        delete lista;
+
+        int idInm = leerEntero("  ID del inmueble a eliminar: ");
+        DtInmueble dt = sistema.seleccionarInmueble(idInm);
+        std::cout << "  Inmueble seleccionado: id=" << dt.getNumId()
+                  << " | Superficie: " << dt.getSuperficie() << " m2"
+                  << " | Dir: ";
+        imprimirDireccion(dt.getDireccion());
+        std::cout << "\n";
+
+        std::string confirm = leerLinea("  Confirmar eliminacion (s/n): ");
+        if (confirm == "s" || confirm == "S") {
+            sistema.eliminarInmueble(idInm);
+            std::cout << "  [OK] Inmueble eliminado.\n";
+        } else {
+            std::cout << "  [!] Eliminacion cancelada.\n";
+        }
+    } catch (const std::exception& e) {
+        std::cout << "  [!] Error: " << e.what() << "\n";
+    }
+}
+
+// =========================================================
+// PRECARGA
+// =========================================================
+
+void precargar() {
+    std::cout << "\n  [Precargando datos...]\n";
+
+    // Clientes
+    sistema.altaCliente("jperez", "Juan", "jperez@mail.com", "pass123", "Perez", "12345678");
+    sistema.altaCliente("mgarcia", "Maria", "mgarcia@mail.com", "pass456", "Garcia", "87654321");
+
+    // Propietario 1: prop_lopez con una Casa (id=1)
+    sistema.altaPropietario("prop_lopez", "Carlos", "clopez@mail.com", "propPass1", "099123456", 100200300);
+    sistema.crearCasa(
+        DtDireccion("Rivera", 1234, "Montevideo"),
+        DtFecha(1, 1, 2005),
+        120.5f, false, TipoTecho::TECHO_PLANO
+    );
+    sistema.finalizarAltaPropietario();
+
+    // Propietario 2: prop_torres con un Apartamento (id=2)
+    sistema.altaPropietario("prop_torres", "Ana", "atorres@mail.com", "propPass2", "091987654", 200300400);
+    sistema.crearApartamento(
+        DtDireccion("18 de Julio", 900, "Montevideo"),
+        DtFecha(15, 6, 2010),
+        75.0f, 3, true, 2500.0f
+    );
+    sistema.finalizarAltaPropietario();
+
+    // Inmobiliaria
+    sistema.altaInmobiliaria(
+        "inmo_sol", "Inmobiliaria Sol", "sol@inmosol.com", "inmoPass1",
+        DtDireccion("Av. Italia", 5678, "Montevideo"),
+        "29001234", "https://www.inmosol.com"
+    );
+    sistema.vincularPropietario("prop_lopez");
+    sistema.vincularPropietario("prop_torres");
+    sistema.finalizarAltaInmobiliaria();
+
+    // Administracion del inmueble id=1
+    sistema.seleccionarInmobiliaria("inmo_sol");
+    sistema.altaAdministracion(1);
+
+    // Publicacion de alquiler para inmueble id=1
+    sistema.altaPublicacion(1, "Casa amplia con jardin en Montevideo.", 15000.0f, false);
+
+    std::cout << "  [OK] Datos precargados:\n";
+    std::cout << "       Clientes:       jperez, mgarcia\n";
+    std::cout << "       Propietarios:   prop_lopez (Casa id=1), prop_torres (Apto id=2)\n";
+    std::cout << "       Inmobiliaria:   inmo_sol\n";
+    std::cout << "       Administracion: inmueble id=1\n";
+    std::cout << "       Publicacion:    id=1 | Alquiler | $15000\n";
+}
 
 // =========================================================
 // MAIN
 // =========================================================
 
 int main() {
+    // Obtener el Sistema via Factory (singleton)
+    sistemaPtr = Factory::getInstancia()->getSistema();
 
-    Sistema sistema;
+    std::cout << "\n  ================================\n";
+    std::cout << "    Sistema de Gestion Inmobiliaria\n";
+    std::cout << "  ================================\n";
 
-    // =========================================================
-    // CASO 1: ALTA DE USUARIOS
-    // =========================================================
-    seccion("CASO 1: ALTA DE USUARIOS");
-
-    try {
-        if (!sistema.existeUsuario("jperez")) {
-            sistema.altaCliente("jperez", "Juan", "jperez@mail.com", "pass123", "Perez", "12345678");
-            std::cout << "[OK] Cliente 'jperez' dado de alta.\n";
-        }
-        if (!sistema.existeUsuario("mgarcia")) {
-            sistema.altaCliente("mgarcia", "Maria", "mgarcia@mail.com", "pass456", "Garcia", "87654321");
-            std::cout << "[OK] Cliente 'mgarcia' dado de alta.\n";
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "[ERROR] Alta de cliente: " << e.what() << "\n";
-    }
-
-    try {
-        if (!sistema.existeUsuario("prop_lopez")) {
-            sistema.altaPropietario("prop_lopez", "Carlos", "clopez@mail.com", "propPass1", "099123456", 100200300);
-            std::cout << "[OK] Propietario 'prop_lopez' dado de alta.\n";
-
-            DtDireccion dirCasa("Rivera", 1234, "Montevideo");
-            DtFecha fechaCasa(1, 1, 2005);
-            sistema.crearCasa(dirCasa, fechaCasa, 120.5f, false, TipoTecho::TECHO_PLANO);
-            std::cout << "[OK] Casa creada y vinculada a 'prop_lopez' (id=1).\n";
-
-            sistema.finalizarAltaPropietario();
-            std::cout << "[OK] Alta de 'prop_lopez' finalizada.\n";
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "[ERROR] Alta propietario 1: " << e.what() << "\n";
-    }
-
-    try {
-        if (!sistema.existeUsuario("prop_torres")) {
-            sistema.altaPropietario("prop_torres", "Ana", "atorres@mail.com", "propPass2", "091987654", 200300400);
-            std::cout << "[OK] Propietario 'prop_torres' dado de alta.\n";
-
-            DtDireccion dirApto("18 de Julio", 900, "Montevideo");
-            DtFecha fechaApto(15, 6, 2010);
-            sistema.crearApartamento(dirApto, fechaApto, 75.0f, 3, true, 2500.0f);
-            std::cout << "[OK] Apartamento creado y vinculado a 'prop_torres' (id=2).\n";
-
-            sistema.finalizarAltaPropietario();
-            std::cout << "[OK] Alta de 'prop_torres' finalizada.\n";
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "[ERROR] Alta propietario 2: " << e.what() << "\n";
-    }
-
-    try {
-        if (!sistema.existeUsuario("inmo_sol")) {
-            DtDireccion dirInmo("Av. Italia", 5678, "Montevideo");
-            sistema.altaInmobiliaria(
-                "inmo_sol", "Inmobiliaria Sol", "sol@inmosol.com", "inmoPass1",
-                dirInmo, "29001234", "https://www.inmosol.com"
-            );
-            std::cout << "[OK] Inmobiliaria 'inmo_sol' creada.\n";
-
-            ICollection* propietarios = sistema.listarPropietarios();
-            imprimirPropietarios(propietarios);
-            delete propietarios;
-
-            sistema.vincularPropietario("prop_lopez");
-            std::cout << "[OK] 'prop_lopez' vinculado a 'inmo_sol'.\n";
-            sistema.vincularPropietario("prop_torres");
-            std::cout << "[OK] 'prop_torres' vinculado a 'inmo_sol'.\n";
-
-            sistema.finalizarAltaInmobiliaria();
-            std::cout << "[OK] Alta de inmobiliaria finalizada.\n";
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "[ERROR] Alta inmobiliaria: " << e.what() << "\n";
-    }
-
-
-    // =========================================================
-    // CASO 2: ALTA DE ADMINISTRACIÓN
-    // =========================================================
-    seccion("CASO 2: ALTA DE ADMINISTRACIÓN");
-
-    try {
-        ICollection* inmobiliarias = sistema.listarInmobiliarias();
-        imprimirInmobiliarias(inmobiliarias);
-        delete inmobiliarias;
-
-        ICollection* inmueblesDisponibles = sistema.seleccionarInmobiliaria("inmo_sol");
-        imprimirInmueblesXPropietario(inmueblesDisponibles);
-        delete inmueblesDisponibles;
-
-        sistema.altaAdministracion(1);
-        std::cout << "[OK] Administración del inmueble id=1 dada de alta.\n";
-    } catch (const std::exception& e) {
-        std::cerr << "[ERROR] Alta de administración: " << e.what() << "\n";
-    }
-
-
-    // =========================================================
-    // CASO 3: ALTA DE PUBLICACIÓN
-    // =========================================================
-    seccion("CASO 3: ALTA DE PUBLICACIÓN");
-
-    try {
-        ICollection* inmobiliarias = sistema.listarInmobiliarias();
-        imprimirInmobiliarias(inmobiliarias);
-        delete inmobiliarias;
-
-        ICollection* inmueblesAdm = sistema.seleccionarInmobiliariaAdministrada("inmo_sol");
-        imprimirInmueblesAdministrados(inmueblesAdm);
-        delete inmueblesAdm;
-
-        sistema.altaPublicacion(1, "Casa amplia con jardin en Montevideo.", 15000.0f, false);
-        std::cout << "[OK] Publicacion de alquiler creada para inmueble id=1.\n";
-
+    std::cout << "\n  Desea precargar datos de prueba? (s/n): ";
+    std::string resp;
+    std::getline(std::cin, resp);
+    if (resp == "s" || resp == "S") {
         try {
-            sistema.altaPublicacion(2, "Apartamento moderno con ascensor.", 120000.0f, true);
-            std::cout << "[OK] Publicacion de venta creada para inmueble id=2.\n";
+            precargar();
         } catch (const std::exception& e) {
-            std::cerr << "[ESPERADO] id=2 sin administracion: " << e.what() << "\n";
+            std::cout << "  [!] Error en precarga: " << e.what() << "\n";
         }
-    } catch (const std::exception& e) {
-        std::cerr << "[ERROR] Alta de publicacion: " << e.what() << "\n";
     }
 
+    while (true) {
+        separador();
+        std::cout << "  MENU PRINCIPAL\n";
+        std::cout << "    1- Alta Usuario\n";
+        std::cout << "    2- Alta Administracion\n";
+        std::cout << "    3- Alta Publicacion\n";
+        std::cout << "    4- Agendar Visita\n";
+        std::cout << "    5- Consultar Publicaciones\n";
+        std::cout << "    6- Eliminar Inmueble\n";
+        std::cout << "    0- Salir\n";
+        separador();
 
-    // =========================================================
-    // CASO 4: ELIMINAR INMUEBLE
-    // =========================================================
-    seccion("CASO 4: ELIMINAR INMUEBLE");
+        int op = leerEntero("  Opcion: ");
 
-    try {
-        std::cout << "  --- Antes de eliminar ---\n";
-        ICollection* antes = sistema.listarinmueblesxpropietario();
-        imprimirInmueblesXPropietario(antes);
-        delete antes;
-
-        DtInmueble dtInm = sistema.seleccionarInmueble(2);
-        std::cout << "[OK] Inmueble id=" << dtInm.getNumId()
-                  << " seleccionado | Superficie: " << dtInm.getSuperficie() << " m2 | Dir: ";
-        imprimirDireccion(dtInm.getDireccion());
-        std::cout << "\n";
-
-        sistema.eliminarInmueble(2);
-        std::cout << "[OK] Inmueble id=2 eliminado.\n";
-
-        std::cout << "  --- Despues de eliminar ---\n";
-        ICollection* despues = sistema.listarinmueblesxpropietario();
-        imprimirInmueblesXPropietario(despues);
-        delete despues;
-    } catch (const std::exception& e) {
-        std::cerr << "[ERROR] Eliminar inmueble: " << e.what() << "\n";
-    }
-
-
-    // =========================================================
-    // CASO 5: FILTRAR PUBLICACIONES
-    // =========================================================
-    seccion("CASO 5: FILTRAR PUBLICACIONES");
-
-    try {
-        // Alquileres de Casa entre $0 y $20000 — debería encontrar la publicacion del id=1
-        std::cout << "  Filtro: Alquiler | $0-$20000 | Casa\n";
-        ICollection* filtro1 = sistema.filtrarPublicaciones(false, 0.0f, 20000.0f, TipoInmueble::CASA);
-        imprimirFiltro(filtro1);
-        delete filtro1;
-
-        // Alquileres de Apartamento — no debería encontrar nada (id=2 fue eliminado)
-        std::cout << "  Filtro: Alquiler | $0-$20000 | Apartamento\n";
-        ICollection* filtro2 = sistema.filtrarPublicaciones(false, 0.0f, 20000.0f, TipoInmueble::APARTAMENTO);
-        imprimirFiltro(filtro2);
-        delete filtro2;
-
-        // Alquileres de cualquier tipo — debería encontrar la publicacion del id=1
-        std::cout << "  Filtro: Alquiler | $0-$20000 | Ambos\n";
-        ICollection* filtro3 = sistema.filtrarPublicaciones(false, 0.0f, 20000.0f, TipoInmueble::AMBOS);
-        imprimirFiltro(filtro3);
-        delete filtro3;
-
-        // Ventas de cualquier tipo — no debería encontrar nada
-        std::cout << "  Filtro: Venta | $0-$999999 | Ambos\n";
-        ICollection* filtro4 = sistema.filtrarPublicaciones(true, 0.0f, 999999.0f, TipoInmueble::AMBOS);
-        imprimirFiltro(filtro4);
-        delete filtro4;
-    } catch (const std::exception& e) {
-        std::cerr << "[ERROR] Filtrar publicaciones: " << e.what() << "\n";
-    }
-
-
-    // =========================================================
-    // CASO 6: SELECCIONAR PUBLICACION
-    // =========================================================
-    seccion("CASO 6: SELECCIONAR PUBLICACION");
-
-    try {
-        // Buscar la publicacion id=1 — debería devolver los datos de la Casa
-        DtInmueble dt = sistema.seleccionarPublicacion(1);
-        std::cout << "[OK] Publicacion id=1 encontrada:\n";
-        std::cout << "    id_inmueble=" << dt.getNumId()
-                  << " | Superficie: " << dt.getSuperficie() << " m2"
-                  << " | Dir: ";
-        imprimirDireccion(dt.getDireccion());
-        std::cout << "\n";
-    } catch (const std::exception& e) {
-        std::cerr << "[ERROR] seleccionarPublicacion id=1: " << e.what() << "\n";
-    }
-
-    try {
-        // Buscar una publicacion inexistente — debería lanzar excepcion
-        DtInmueble dt = sistema.seleccionarPublicacion(99);
-        std::cout << "[OK] Publicacion id=99 encontrada (inesperado).\n";
-    } catch (const std::exception& e) {
-        std::cerr << "[ESPERADO] Publicacion id=99 no existe: " << e.what() << "\n";
-    }
-
-    seccion("FIN DE LA EJECUCION");
-    std::cout << "Todos los casos ejecutados.\n\n";
-
-
-    // =========================================================
-    // CASO 7: VISITAS
-    // =========================================================
-    seccion("CASO 7: VISITAS");
-
-    try {
-        // Alta de visita de cliente "jperez" a la publicación id=1
-        DtFecha fechaVisita(8, 6, 2026);
-        sistema.altaVisita("jperez", 1, fechaVisita);
-        std::cout << "[OK] Visita registrada para cliente 'jperez' en publicación id=1.\n";
-
-        // Listar visitas de la publicación id=1
-        ICollection* visitas = sistema.listarVisitas(1);
-        std::cout << "  Visitas registradas (" << visitas->getSize() << "):\n";
-        IIterator* itVis = visitas->getIterator();
-        while (itVis->hasCurrent()) {
-            DtVisita* dv = static_cast<DtVisita*>(itVis->getCurrent());
-            if (dv != nullptr) {
-                std::cout << "    - Cliente=" << dv->getNicknameCliente()
-                        << " | Fecha=" << dv->getFecha().getDia() << "/"
-                        << dv->getFecha().getMes() << "/"
-                        << dv->getFecha().getAnio()
-                        << " | PublicacionID=" << dv->getIdPublicacion()
-                        << "\n";
-            }
-            itVis->next();
+        switch (op) {
+            case 1: casoAltaUsuario();          break;
+            case 2: casoAltaAdministracion();   break;
+            case 3: casoAltaPublicacion();      break;
+            case 4: casoAgendarVisita();        break;
+            case 5: casoConsultarPublicaciones(); break;
+            case 6: casoEliminarInmueble();     break;
+            case 0:
+                return 0;
+            default:
+                std::cout << "  [!] Opcion invalida.\n";
         }
-        delete itVis;
-
-    } catch (const std::exception& e) {
-        std::cerr << "[ERROR] Alta/Listar visitas: " << e.what() << "\n";
     }
-
-        return 0;
-
-        
 }
-
-
