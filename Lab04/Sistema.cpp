@@ -275,31 +275,15 @@ void Sistema::altaAdministracion(int numid) {
 
 
 ICollection* Sistema::seleccionarInmobiliariaAdministrada(const char* nombreInmobiliaria) {
+    String* key = new String(nombreInmobiliaria);
+    ICollectible* item = this->inmobiliarias->find(key);
+    delete key;
 
-    ICollection* listaRetorno = new List();
-    IIterator* it = this->inmuebles->getIterator();
+    if (item == nullptr)
+        throw std::invalid_argument("La inmobiliaria seleccionada no existe.");
 
-    while (it->hasCurrent()) {
-
-        Inmueble* inm = static_cast<Inmueble*>(it->getCurrent());
-
-        if (inm->getAdministracion() != nullptr) {  
-
-            DtInmuebleAdministrado* dt = new DtInmuebleAdministrado(
-                inm->getNumeroID(),
-                inm->getDireccion(),
-                inm->getFechaAdministracion()
-            );
-
-            listaRetorno->add(dt);
-
-        }
-        it->next();
-    }
-
-    delete it;
-    return listaRetorno;
-
+    Inmobiliaria* inm = static_cast<Inmobiliaria*>(item);
+    return inm->seleccionarInmobiliariaAdministrada();
 }
 
 

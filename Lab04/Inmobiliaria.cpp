@@ -160,26 +160,24 @@ DtFecha Inmobiliaria::obtenerFecha() {
 }
 
 void Inmobiliaria::altaAdministracion(int numid) {
-
     Integer* keyBuscar = new Integer(numid);
     ICollectible* item = this->inmuebles->find(keyBuscar);
-    delete keyBuscar; 
+    delete keyBuscar;
 
-    if (item == nullptr) {
+    if (item == nullptr)
         throw std::invalid_argument("El inmueble seleccionado no pertenece a esta inmobiliaria.");
-    }
-    Inmueble* inm = dynamic_cast<Inmueble*>(item);
+
+    Inmueble* inm = static_cast<Inmueble*>(item);
+
+    // Validar que no tenga ya una administración activa
+    if (inm->getAdministracion() != nullptr)
+        throw std::invalid_argument("El inmueble ya posee una administracion activa.");
 
     DtFecha fechaHoy = this->obtenerFecha();
-
     Administracion* nuevaAdmin = new Administracion(fechaHoy, inm);
-    nuevaAdmin->setInmobiliaria(this);  
-
-
+    nuevaAdmin->setInmobiliaria(this);
     this->administraciones->add(nuevaAdmin);
-
     inm->setAdministracion(nuevaAdmin);
-    
 }
 
 
