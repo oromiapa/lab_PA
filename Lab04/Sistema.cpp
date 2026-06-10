@@ -275,6 +275,7 @@ void Sistema::altaAdministracion(int numid) {
 
 
 ICollection* Sistema::seleccionarInmobiliariaAdministrada(const char* nombreInmobiliaria) {
+
     String* key = new String(nombreInmobiliaria);
     ICollectible* item = this->inmobiliarias->find(key);
     delete key;
@@ -284,6 +285,7 @@ ICollection* Sistema::seleccionarInmobiliariaAdministrada(const char* nombreInmo
 
     Inmobiliaria* inm = static_cast<Inmobiliaria*>(item);
     return inm->seleccionarInmobiliariaAdministrada();
+
 }
 
 
@@ -485,7 +487,7 @@ ICollection* Sistema::filtrarPublicaciones(bool tipopub, float preciomin, float 
 }
 
 
-DtInmueble Sistema::seleccionarPublicacion(int id) {
+DtInmueble* Sistema::seleccionarPublicacion(int id) {
 
     IIterator* it = this->inmobiliarias->getIterator();
 
@@ -496,18 +498,13 @@ DtInmueble Sistema::seleccionarPublicacion(int id) {
         DtInmueble* resultado = inmo->seleccionarPublicacion(id);
 
         if (resultado != nullptr) {
-            DtInmueble dt = *resultado;
-            delete resultado;
             delete it;
-            return dt;
+            return resultado;  // retornás el puntero directo, sin copiar
         }
 
         it->next();
-
     }
 
     delete it;
-
     throw std::invalid_argument("No existe una publicacion con el ID ingresado.");
-
 }

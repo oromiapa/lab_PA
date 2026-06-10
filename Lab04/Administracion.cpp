@@ -7,6 +7,8 @@
 #include "Publicacion.h"
 #include "Casa.h"
 #include "Apartamento.h"
+#include "./DataTypes/DtCasa.h"
+#include "./DataTypes/DtApartamento.h"
 
 //ICollection/interfaces
 #include "./ICollection/interfaces/IIterator.h"
@@ -162,29 +164,25 @@ void Administracion::desvincularInmueble(int numid) {
 
 
 ICollection* Administracion::filtrarPublicaciones(bool tipopub, float preciomin, float preciomax, TipoInmueble tipo) {
- 
+
     ICollection* resultado = new List();
- 
+
     if (this->inmuebleAdministrado == nullptr)
         return resultado;
- 
-    bool esCasa        = dynamic_cast<Casa*>(this->inmuebleAdministrado) != nullptr;
-    bool esApartamento = dynamic_cast<Apartamento*>(this->inmuebleAdministrado) != nullptr;
- 
-    bool cumpleTipo = (tipo == TipoInmueble::AMBOS) ||
-                      (tipo == TipoInmueble::CASA        && esCasa) ||
-                      (tipo == TipoInmueble::APARTAMENTO && esApartamento);
- 
-    if (!cumpleTipo)
+
+    if (!this->inmuebleAdministrado->cumpleTipo(tipo))
         return resultado;
- 
+
+
     IIterator* it = this->publicaciones->getIterator();
     while (it->hasCurrent()) {
         Publicacion* p = dynamic_cast<Publicacion*>(it->getCurrent());
         if (p != nullptr && p->getActiva() && p->comprobarDatos(tipopub, preciomin, preciomax)) {
- 
-            TipoInmueble tipoConcreto = esCasa ? TipoInmueble::CASA : TipoInmueble::APARTAMENTO;
- 
+
+            TipoInmueble tipoConcreto = this->inmuebleAdministrado->cumpleTipo(TipoInmueble::CASA)
+                ? TipoInmueble::CASA
+                : TipoInmueble::APARTAMENTO;
+
             DtPublicacion* dt = new DtPublicacion(
                 p->getID(),
                 p->getFechaPublicacion(),
@@ -196,7 +194,7 @@ ICollection* Administracion::filtrarPublicaciones(bool tipopub, float preciomin,
         it->next();
     }
     delete it;
- 
+
     return resultado;
 }
 
@@ -212,12 +210,16 @@ DtInmueble* Administracion::seleccionarPublicacion(int id) {
         Publicacion* p = static_cast<Publicacion*>(it->getCurrent());
         if (p->getID() == id) {
             delete it;
-            return new DtInmueble(
-                this->inmuebleAdministrado->getNumeroID(),
-                this->inmuebleAdministrado->getDireccion(),
-                this->inmuebleAdministrado->getSuperficie(),
-                this->inmuebleAdministrado->getAnioConstruccion()
-            );
+            Inmueble* i = this->inmuebleAdministrado;
+
+            if (Casa* c = dynamic_cast<Casa*>(i)) {
+                return new DtCasa(c->getNumeroID(), c->getDireccion(), c->getSuperficie(),
+                                  c->getAnioConstruccion(), c->getPropiedadHorizontal(), c->getTecho());
+            } else if (Apartamento* a = dynamic_cast<Apartamento*>(i)) {
+                return new DtApartamento(a->getNumeroID(), a->getDireccion(), a->getSuperficie(),
+                                         a->getAnioConstruccion(), a->getNumeroPiso(),
+                                         a->hayAscensor(), a->getGastosComunes());
+            }
         }
         it->next();
     }

@@ -32,3 +32,11 @@ void Apartamento::setNumeroPiso(int numeroPiso) {
 void Apartamento::setGastosComunes(float gastosComunes) {
     this->gastosComunes = gastosComunes;
 }
+
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+bool Apartamento::cumpleTipo(TipoInmueble tipo) {
+    return tipo == TipoInmueble::APARTAMENTO || tipo == TipoInmueble::AMBOS;
+}

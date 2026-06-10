@@ -83,7 +83,7 @@ public:
 
 // Quinto Caso: CONSULTAR PUBLICACION
     ICollection* filtrarPublicaciones(bool tipopub, float preciomin, float preciomax, TipoInmueble tipo);
-    DtInmueble seleccionarPublicacion(int id);
+    DtInmueble* seleccionarPublicacion(int id);
 
 };
 

@@ -26,6 +26,8 @@ public:
     void setPropiedadHorizontal(bool propiedadHorizontal);
     void setTecho(TipoTecho techo);
 
+//5to Caso
+    bool cumpleTipo(TipoInmueble tipo) ;
 
 
 };

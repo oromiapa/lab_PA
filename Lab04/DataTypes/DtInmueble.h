@@ -27,6 +27,7 @@ public:
     DtDireccion getDireccion() const ;
     float getSuperficie() const ;
     DtFecha getAnioConstruccion() const ;
+    
 
 };
 

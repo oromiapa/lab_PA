@@ -33,3 +33,10 @@ bool Casa::isPropiedadHorizontal() {
     return this->propiedadHorizontal;
 }
 
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+bool Casa::cumpleTipo(TipoInmueble tipo) {
+    return tipo == TipoInmueble::CASA || tipo == TipoInmueble::AMBOS;
+}

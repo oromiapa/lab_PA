@@ -3,7 +3,10 @@
 #include <limits>
 #include <stdexcept>
 
+//Clases
 #include "Sistema.h"
+
+//Data Types
 #include "DataTypes/DtDireccion.h"
 #include "DataTypes/DtFecha.h"
 #include "DataTypes/DtInmueble.h"
@@ -16,6 +19,8 @@
 #include "DataTypes/DtVisita.h"
 #include "DataTypes/TipoTecho.h"
 #include "DataTypes/TipoInmueble.h"
+#include "DataTypes/DtCasa.h"
+#include "DataTypes/DtApartamento.h"
 #include "ICollection/interfaces/ICollection.h"
 #include "ICollection/interfaces/IIterator.h"
 #include "Factory.h"
@@ -417,20 +422,38 @@ void casoConsultarPublicaciones() {
         if (!filtro->isEmpty()) {
             int idPub = leerEntero("  Seleccionar publicacion por ID (0 para omitir): ");
             if (idPub != 0) {
-                DtInmueble dt = sistema.seleccionarPublicacion(idPub);
+                DtInmueble* dt = sistema.seleccionarPublicacion(idPub);
                 std::cout << "  Inmueble asociado:\n";
-                std::cout << "    id=" << dt.getNumId()
-                          << " | Superficie: " << dt.getSuperficie() << " m2"
-                          << " | Dir: ";
-                imprimirDireccion(dt.getDireccion());
+                std::cout << "    id=" << dt->getNumId()
+                        << " | Superficie: " << dt->getSuperficie() << " m2"
+                        << " | Dir: ";
+                imprimirDireccion(dt->getDireccion());
                 std::cout << "\n";
-            }
-        }
-        delete filtro;
-    } catch (const std::exception& e) {
-        std::cout << "  [!] Error: " << e.what() << "\n";
-    }
-}
+                if (DtCasa* c = dynamic_cast<DtCasa*>(dt)) {
+                    std::cout << "    Tipo: Casa\n";
+                    std::cout << "    Propiedad horizontal: " << (c->getPropiedadHorizontal() ? "Si" : "No") << "\n";
+                    std::string tipoTechoStr;
+                    switch (c->getTecho()) {
+                        case TipoTecho::TECHO_PLANO:        tipoTechoStr = "Techo plano"; break;
+                        case TipoTecho::TECHO_A_DOS_AGUAS:  tipoTechoStr = "Techo a dos aguas"; break;
+                        case TipoTecho::TECHO_LIVIANO:      tipoTechoStr = "Techo liviano"; break;
+                    }
+                    std::cout << "    Techo: " << tipoTechoStr << "\n";
+                } else if (DtApartamento* a = dynamic_cast<DtApartamento*>(dt)) {
+                    std::cout << "    Tipo: Apartamento\n";
+                    std::cout << "    Piso: " << a->getNumeroPiso() << "\n";
+                    std::cout << "    Ascensor: " << (a->hayAscensor() ? "Si" : "No") << "\n";
+                    std::cout << "    Gastos comunes: $" << a->getGastosComunes() << "\n";
+                }
+                delete dt;
+                            }
+                        }
+                        delete filtro;
+                    } catch (const std::exception& e) {
+                        std::cout << "  [!] Error: " << e.what() << "\n";
+                    }
+                }
+
 
 void casoEliminarInmueble() {
     separador();

@@ -25,6 +25,8 @@ public:
     void setNumeroPiso(int numeroPiso);
     void setGastosComunes(float gastosComunes);
 
+//5to Caso
+    bool cumpleTipo(TipoInmueble tipo) ;
 
 };
 #endif

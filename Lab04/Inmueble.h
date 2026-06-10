@@ -17,6 +17,7 @@ class Propietario;
 class Inmobiliaria;
 class Administracion;
 
+
 class Inmueble : public ICollectible {
 
 private:
@@ -56,7 +57,7 @@ public:
     void removerPropietario(int numid) ;
 
 //5to Caso
-    bool cumpleTipo(TipoInmueble tipo) ;
+    virtual bool cumpleTipo(TipoInmueble tipo) = 0;
 
 //Caso especial
     Administracion* getAdministracion() const;
