@@ -218,7 +218,6 @@ void altaPropietario() {
     sistema.altaPropietario(nick.c_str(), nom.c_str(), email.c_str(), pass.c_str(), tel.c_str(), cuenta);
     std::cout << "  [OK] Propietario '" << nick << "' dado de alta.\n";
 
-    // Loop de inmuebles
     while (true) {
         separador();
         std::cout << "  Agregar inmueble:\n";
