@@ -615,42 +615,18 @@ void precargar() {
     sistema.vincularPropietario("prop_oromi");
     sistema.finalizarAltaInmobiliaria();
 
-    // inmobiliaria anthony
     sistema.seleccionarInmobiliaria("inmobiliaria");
     sistema.altaAdministracion(1);
-    sistema.seleccionarInmobiliaria("inmobiliaria");
-    sistema.altaAdministracion(2);
-    sistema.seleccionarInmobiliaria("inmobiliaria");
-    sistema.altaAdministracion(3);
-    sistema.seleccionarInmobiliaria("inmobiliaria");
-    sistema.altaAdministracion(4);
 
-    // hola
-    sistema.seleccionarInmobiliaria("hola");
-    sistema.altaAdministracion(5);
-    sistema.seleccionarInmobiliaria("hola");
-    sistema.altaAdministracion(6);
-
-    // --- Publicaciones ---
-    // inmobiliaria anthony
-    sistema.altaPublicacion(1, "Casa amplia con jardin en Montevideo.", 15000.0f, false);   // alquiler
-    sistema.altaPublicacion(2, "Casa con techo a dos aguas en San Jose.", 250000.0f, true); // venta
-
-    // inmobiliaria hola
-    sistema.altaPublicacion(4, "Casa liviana en departamento.", 180000.0f, true);  // venta
-
-    // --- Visitas ---
-    sistema.altaVisita("jperez",    1, DtFecha(15, 6, 2026), "WhatsApp: 099111222");
-    sistema.altaVisita("mgarcia",   1, DtFecha(16, 6, 2026), "Email: mgarcia@mail.com");
-    sistema.altaVisita("cferreira", 3, DtFecha(17, 6, 2026), "Telefono: 098333444");
+    // Publicacion de alquiler para inmueble id=1
+    sistema.altaPublicacion(1, "Casa amplia con jardin en Montevideo.", 15000.0f, false);
 
     std::cout << "  [OK] Datos precargados:\n";
-    std::cout << "       Clientes:        jperez, mgarcia, cferreira, dfernandez\n";
-    std::cout << "       Propietarios:    prop_lopez (id=1,2), prop_torres (id=3,4), prop_oromi (id=5,6)\n";
-    std::cout << "       Inmobiliarias:   inmobiliaria (admin id=1,2,3), hola (admin id=4,5,6)\n";
-    std::cout << "       Publicaciones:   id=1 alquiler $15000 | id=2 venta $250000 | id=3 alquiler $12000\n";
-    std::cout << "                        id=4 venta $180000  | id=5 alquiler $8000  | id=6 venta $320000\n";
-    std::cout << "       Visitas:         pub1(jperez,mgarcia) pub3(cferreira) pub5(dfernandez) pub6(jperez)\n";
+    std::cout << "       Clientes:       jperez, mgarcia\n";
+    std::cout << "       Propietarios:   prop_lopez (Casa id=1), prop_torres (Apto id=2)\n";
+    std::cout << "       Inmobiliaria:   inmo_sol\n";
+    std::cout << "       Administracion: inmueble id=1\n";
+    std::cout << "       Publicacion:    id=1 | Alquiler | $15000\n";
 }
 
 // =========================================================
