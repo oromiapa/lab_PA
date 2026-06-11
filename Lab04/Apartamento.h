@@ -1,7 +1,6 @@
 #ifndef APARTAMENTO_H
 #define APARTAMENTO_H
 
-//Clases
 #include "Inmueble.h"
 
 class Apartamento : public Inmueble {

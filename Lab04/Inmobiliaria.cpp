@@ -1,5 +1,4 @@
 #include <ctime>
-#include <iostream>
 
 #include "Inmobiliaria.h"
 #include "Inmueble.h"
@@ -27,26 +26,32 @@
 
 Inmobiliaria::Inmobiliaria(const char* nickname, const char* nombre, const char* email, const char* contrasenia, const DtDireccion & direccionInmobiliaria, const char* telefono, const char* URL) 
     : Usuario(nickname, nombre, email, contrasenia), telefono(telefono), URL(URL), direccionInmobiliaria(direccionInmobiliaria) {
+
         this->inmuebles = new OrderedDictionary();
         this->propietariosAsociados = new OrderedDictionary();
         this->administraciones = new List();
-}
+
+    }
 
 Inmobiliaria::~Inmobiliaria() {
-    std::cout << "  [DEBUG] Antes de destruir Sistema\n";
-    std::cout.flush();
+
     if (this->administraciones != nullptr) {
+
         IIterator* it = this->administraciones->getIterator();
+
         while (it->hasCurrent()) {
             delete it->getCurrent();
             it->next();
         }
+
         delete it;
         delete this->administraciones;
+
     }
  
     delete this->inmuebles;
     delete this->propietariosAsociados;
+
 }
 
 DtDireccion Inmobiliaria::getDireccionInmobiliaria() const {
@@ -85,17 +90,22 @@ void Inmobiliaria::setURL(const char* URL) {
 
 
 void Inmobiliaria::vincularPropietario(Propietario* p) {
+
     if (p == nullptr) return;
 
     IDictionary* dictInmuebles = p->obtenerInmueblesPropios(); 
     
     IIterator* it = dictInmuebles->getIterator();
+
     while (it->hasCurrent()) {
+
         Inmueble* inm = dynamic_cast<Inmueble*>(it->getCurrent());
+
         if (inm != nullptr) {
             this->vincularInmueble(inm); 
         }
         it->next();
+
     }
     
     delete it; 
@@ -103,12 +113,14 @@ void Inmobiliaria::vincularPropietario(Propietario* p) {
 }
 
 void Inmobiliaria::vincularInmueble(Inmueble* i) {
+
     if (i == nullptr) return;
 
     int id = i->getNumeroID(); 
     Integer* key = new Integer(id);
 
     this->inmuebles->add(key, i); 
+
 }
 
 
@@ -126,28 +138,32 @@ IDictionary* Inmobiliaria::getInmuebles() const {
 
 
 ICollection* Inmobiliaria::seleccionarInmobiliaria() {
-    std::cout << "[DEBUG] seleccionarInmobiliaria inicio, inmuebles size=" << this->inmuebles->getSize() << "\n"; std::cout.flush();
+
     ICollection* listaRetorno = new List();
     IIterator* it = this->inmuebles->getIterator();
+
     while (it->hasCurrent()) {
-        std::cout << "[DEBUG] iterando inmueble\n"; std::cout.flush();
+
         Inmueble* currentInm = dynamic_cast<Inmueble*>(it->getCurrent());
+
         if (currentInm != nullptr) {
-            std::cout << "[DEBUG] inmueble id=" << currentInm->getNumeroID() << "\n"; std::cout.flush();
             Propietario* elDuenio = currentInm->getDuenio();
-            std::cout << "[DEBUG] duenio=" << elDuenio << "\n"; std::cout.flush();
             DtPropietario dtProp = elDuenio->getDatosPropietario();
             DtInmXProp* dtCompuesto = new DtInmXProp(currentInm->getNumeroID(), currentInm->getDireccion(), dtProp);
             listaRetorno->add(dtCompuesto);
         }
         it->next();
+
     }
+
     delete it;
     return listaRetorno;
+
 }
 
 
 DtFecha Inmobiliaria::obtenerFecha() {
+
     time_t ahora = time(nullptr);       
     tm* local = localtime(&ahora);      
 
@@ -160,6 +176,7 @@ DtFecha Inmobiliaria::obtenerFecha() {
 }
 
 void Inmobiliaria::altaAdministracion(int numid) {
+
     Integer* keyBuscar = new Integer(numid);
     ICollectible* item = this->inmuebles->find(keyBuscar);
     delete keyBuscar;
@@ -169,7 +186,6 @@ void Inmobiliaria::altaAdministracion(int numid) {
 
     Inmueble* inm = static_cast<Inmueble*>(item);
 
-    // Validar que no tenga ya una administración activa
     if (inm->getAdministracion() != nullptr)
         throw std::invalid_argument("El inmueble ya posee una administracion activa.");
 
@@ -178,6 +194,7 @@ void Inmobiliaria::altaAdministracion(int numid) {
     nuevaAdmin->setInmobiliaria(this);
     this->administraciones->add(nuevaAdmin);
     inm->setAdministracion(nuevaAdmin);
+
 }
 
 
@@ -189,11 +206,13 @@ void Inmobiliaria::altaAdministracion(int numid) {
 
 
 ICollection* Inmobiliaria::seleccionarInmobiliariaAdministrada() {
+
     ICollection* listaRetorno = new List();
 
     IIterator* itAdmin = this->administraciones->getIterator();
 
     while (itAdmin->hasCurrent()) {
+
         Administracion* currentAdmin = dynamic_cast<Administracion*>(itAdmin->getCurrent());
         
         if (currentAdmin != nullptr) {
@@ -204,18 +223,18 @@ ICollection* Inmobiliaria::seleccionarInmobiliariaAdministrada() {
             if (currentInm != nullptr) {
                 int id = currentInm->getNumeroID(); 
                 DtDireccion dir = currentInm->getDireccion();
-
                 DtAdministracion dtAdminAux(fechaAdmin); 
                 DtInmuebleAdministrado* dtCompuesto = new DtInmuebleAdministrado(id, dir, dtAdminAux);
-
                 listaRetorno->add(dtCompuesto);
             }
         }
         itAdmin->next();
     }
+
     delete itAdmin; 
 
     return listaRetorno; 
+
 }
 
 
@@ -226,16 +245,17 @@ ICollection* Inmobiliaria::seleccionarInmobiliariaAdministrada() {
 
 
 void Inmobiliaria::desvincularInmueble(int numid, Administracion* admin) {
-    std::cout << "[DEBUG] desvincularInmueble inmobiliaria, numid=" << numid << " size antes=" << this->inmuebles->getSize() << "\n"; std::cout.flush();
+
     if (this->inmuebles != nullptr) {
         Integer* keyInm = new Integer(numid);
         this->inmuebles->remove(keyInm);
         delete keyInm;
     }
-    std::cout << "[DEBUG] size despues=" << this->inmuebles->getSize() << "\n"; std::cout.flush();
+
     if (this->administraciones != nullptr && admin != nullptr) {
         this->administraciones->remove(admin);
     }
+
 }
 
 
@@ -255,23 +275,28 @@ ICollection* Inmobiliaria::filtrarPublicaciones(bool tipopub, float preciomin, f
     DtInmobiliaria dtInmo(this->getNickname().c_str(), this->getNombre().c_str());
  
     IIterator* itAdmin = this->administraciones->getIterator();
+
     while (itAdmin->hasCurrent()) {
+
         Administracion* admin = static_cast<Administracion*>(itAdmin->getCurrent());
  
         ICollection* pubsFiltradas = admin->filtrarPublicaciones(tipopub, preciomin, preciomax, tipo);
  
         IIterator* itPub = pubsFiltradas->getIterator();
+
         while (itPub->hasCurrent()) {
             DtPublicacion* dtPub = static_cast<DtPublicacion*>(itPub->getCurrent());
             DataFiltro* df = new DataFiltro(dtInmo, *dtPub);
             resultado->add(df);
             itPub->next();
         }
+
         delete itPub;
         delete pubsFiltradas; 
  
         itAdmin->next();
     }
+
     delete itAdmin;
  
     return resultado;
@@ -283,18 +308,23 @@ ICollection* Inmobiliaria::filtrarPublicaciones(bool tipopub, float preciomin, f
 DtInmueble* Inmobiliaria::seleccionarPublicacion(int id) {
  
     IIterator* it = this->administraciones->getIterator();
+
     while (it->hasCurrent()) {
+
         Administracion* admin = static_cast<Administracion*>(it->getCurrent());
  
         DtInmueble* resultado = admin->seleccionarPublicacion(id);
+
         if (resultado != nullptr) {
             delete it;
             return resultado;
         }
         it->next();
     }
+
     delete it;
     return nullptr;
+
 }
 
 
@@ -306,6 +336,7 @@ DtInmueble* Inmobiliaria::seleccionarPublicacion(int id) {
 
 
 Publicacion* Inmobiliaria::getPublicacion(int id) {
+
     if (this->administraciones != nullptr) {
         IIterator* itAdmin = this->administraciones->getIterator();
 
@@ -313,7 +344,6 @@ Publicacion* Inmobiliaria::getPublicacion(int id) {
             Administracion* admin = dynamic_cast<Administracion*>(itAdmin->getCurrent());
             
             if (admin != nullptr) {
-                // Le delegamos la búsqueda a la administración
                 Publicacion* pub = admin->getPublicacion(id); 
                 
                 if (pub != nullptr) {

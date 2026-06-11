@@ -5,6 +5,7 @@
 #include "TipoTecho.h"
 
 class DtCasa : public DtInmueble {
+    
 private:
     bool propiedadHorizontal;
     TipoTecho techo;

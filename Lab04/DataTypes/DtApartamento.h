@@ -4,6 +4,7 @@
 #include "DtInmueble.h"
 
 class DtApartamento : public DtInmueble {
+
 private:
     int numeroPiso;
     bool tieneAscensor;

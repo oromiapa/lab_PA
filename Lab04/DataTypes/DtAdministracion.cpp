@@ -1,8 +1,7 @@
 #include "DtAdministracion.h"
 
 
-DtAdministracion::DtAdministracion(const DtFecha &fechaInicio) 
-    : fechaInicio(fechaInicio) {}
+DtAdministracion::DtAdministracion(const DtFecha &fechaInicio) : fechaInicio(fechaInicio) {}
     
 DtAdministracion::~DtAdministracion() {}
 

@@ -10,6 +10,7 @@
 
 
 Publicacion::Publicacion(int id, const char* texto, float precio, const DtFecha& fecha, bool tipoPub, bool activa) {
+
     this->id = id;
     this->texto = texto;
     this->precio = precio;
@@ -17,6 +18,7 @@ Publicacion::Publicacion(int id, const char* texto, float precio, const DtFecha&
     this->tipoPublicacion = tipoPub;
     this->activa = activa;
     this->visitas = nullptr;  
+
 }
 
 
@@ -86,9 +88,7 @@ bool Publicacion::comprobarTipo(bool tipoPub) const {
 }
 
 bool Publicacion::mismaFecha(const DtFecha& fecha) const {
-    return (this->fechaPublicacion.getDia() == fecha.getDia() &&
-            this->fechaPublicacion.getMes() == fecha.getMes() &&
-            this->fechaPublicacion.getAnio() == fecha.getAnio());
+    return (this->fechaPublicacion.getDia() == fecha.getDia() && this->fechaPublicacion.getMes() == fecha.getMes() && this->fechaPublicacion.getAnio() == fecha.getAnio());
 }
 
 
@@ -99,6 +99,7 @@ bool Publicacion::mismaFecha(const DtFecha& fecha) const {
 
 
 void Publicacion::borrarVisita() {
+
     if (this->visitas != nullptr) {
         
         IIterator* itVis = this->visitas->getIterator();
@@ -117,6 +118,7 @@ void Publicacion::borrarVisita() {
         
         delete itVis;
     }
+
 }
 
 
@@ -126,11 +128,13 @@ void Publicacion::borrarVisita() {
 
 
 bool Publicacion::comprobarDatos(bool tipopub, float preciomin, float preciomax) const {
+
     if (this->tipoPublicacion != tipopub)
         return false;
     if (this->precio < preciomin || this->precio > preciomax)
         return false;
     return true;
+
 }
 
 
@@ -138,10 +142,12 @@ bool Publicacion::comprobarDatos(bool tipopub, float preciomin, float preciomax)
 
 
 void Publicacion::agregarVisita(Visita* v) {
+
     if (this->visitas == nullptr) {
         this->visitas = new List();
     }
     this->visitas->add(v);
+
 }
 
 

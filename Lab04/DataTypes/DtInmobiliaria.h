@@ -12,9 +12,11 @@ private:
     std::string nombre;
 
 public:
+//Constructor y Destructor
     DtInmobiliaria(std::string nick, std::string nom);
     virtual ~DtInmobiliaria();
 
+//Gets
     std::string getNickname() const ;
     std::string getNombre() const;
 

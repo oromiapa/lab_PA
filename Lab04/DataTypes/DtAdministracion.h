@@ -4,7 +4,6 @@
 #include <string>
 #include <stdexcept>
 
-//DataTypes internos
 #include "DtFecha.h"
 
 #include "../ICollection/interfaces/ICollectible.h"
@@ -14,10 +13,13 @@ class DtAdministracion : public ICollectible {
 
 private:
     DtFecha fechaInicio;
+
 public:
+//Constructor y Destructor
     DtAdministracion(const DtFecha &fechaInicio);
     virtual ~DtAdministracion();
 
+//Gets
     DtFecha getFechaInicio() const ;
 
 };

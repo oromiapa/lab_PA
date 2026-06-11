@@ -17,10 +17,11 @@ private:
     DtAdministracion fechaAdministracion;
 
 public:
-
+//Constructor y Destructor
     DtInmuebleAdministrado(int id, const DtDireccion &dir, const DtAdministracion &fechaAdm);
     virtual ~DtInmuebleAdministrado();
 
+//Gets
     int getNumId() const ;
     DtDireccion getDireccion() const ;
     DtAdministracion getFechaAdministracion() const ; 

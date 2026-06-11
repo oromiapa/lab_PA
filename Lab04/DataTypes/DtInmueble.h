@@ -20,9 +20,11 @@ private:
     DtFecha anioConstruccion;
 
 public:
+//Constructor y Destructor
     DtInmueble(int id, const DtDireccion &dir, float sup, const DtFecha &fecha);
     virtual ~DtInmueble();
 
+//Gets
     int getNumId() const ;
     DtDireccion getDireccion() const ;
     float getSuperficie() const ;

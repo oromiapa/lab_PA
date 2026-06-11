@@ -14,6 +14,7 @@ private:
     std::string nicknameCliente;
 
 public:
+//Constructor y Destructor
     DtVisita(const DtFecha & fecha, int idPublicacion, const std::string & nicknameCliente);
     ~DtVisita();
 

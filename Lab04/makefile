@@ -24,7 +24,7 @@ DtDireccion.o:
 	g++ -c DataTypes/DtDireccion.cpp
 
 DtFecha.o:
-	g++ -c DataTypes/DTFecha.cpp
+	g++ -c DataTypes/DtFecha.cpp
 
 DtInmobiliaria.o:
 	g++ -c DataTypes/DtInmobiliaria.cpp

@@ -1,7 +1,6 @@
 #ifndef CASA_H
 #define CASA_H
 
-//Clases
 #include "Inmueble.h"
 
 //DataTypes

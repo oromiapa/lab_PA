@@ -1,6 +1,3 @@
-#include <iostream>
-
-
 #include "Sistema.h"
 #include "Usuario.h"
 #include "Cliente.h"
@@ -35,23 +32,21 @@
 
 
 Sistema::Sistema() {
-    this->usuarios       = new OrderedDictionary();
-    this->clientes       = new OrderedDictionary();
-    this->propietarios   = new OrderedDictionary();
-    this->inmobiliarias  = new OrderedDictionary();
-    this->inmuebles      = new OrderedDictionary();
-    this->casas          = new OrderedDictionary();
-    this->apartamentos   = new OrderedDictionary();
+    this->usuarios = new OrderedDictionary();
+    this->clientes = new OrderedDictionary();
+    this->propietarios = new OrderedDictionary();
+    this->inmobiliarias = new OrderedDictionary();
+    this->inmuebles = new OrderedDictionary();
+    this->casas = new OrderedDictionary();
+    this->apartamentos = new OrderedDictionary();
     this->inmobiliariaActual = nullptr;
-    this->propietarioActual  = nullptr;
-    this->inmuebleActual     = nullptr;
-    this->contadorInmuebles  = 0;
+    this->propietarioActual = nullptr;
+    this->inmuebleActual = nullptr;
+    this->contadorInmuebles = 0;
+    this->contadorPublicaciones = 0 ;
 }
 
 Sistema::~Sistema() {
-
-    std::cout << "  [DEBUG] Antes de destruir Sistema\n";
-    std::cout.flush();
 
     IIterator* itI = this->inmuebles->getIterator();
     while (itI->hasCurrent()) {
@@ -274,6 +269,11 @@ void Sistema::altaAdministracion(int numid) {
 //|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
+int Sistema::autoincrementarPub() {
+    return ++this->contadorPublicaciones ;
+}
+
+
 ICollection* Sistema::seleccionarInmobiliariaAdministrada(const char* nombreInmobiliaria) {
 
     String* key = new String(nombreInmobiliaria);
@@ -298,6 +298,8 @@ void Sistema::altaPublicacion(const int numid, const char* text, float price, bo
     if (item == nullptr)
         throw std::invalid_argument("Error: No existe un inmueble con el ID especificado.");
 
+    int nuevoId = this->autoincrementarPub();
+
     static_cast<Inmueble*>(item)->altaPublicacion(numid, text, price, tipopub);
 
 }
@@ -309,39 +311,39 @@ void Sistema::altaPublicacion(const int numid, const char* text, float price, bo
 
 
 
-void Sistema::altaVisita(const char* nicknameCliente, int idPublicacion, const DtFecha& fechaVisita , const char* contacto) {
+void Sistema::altaVisita(const char* nicknameCliente, int idPublicacion, const DtFecha& fechaVisita, const char* contacto) {
 
     String* keyCli = new String(nicknameCliente);
     ICollectible* itemCli = this->clientes->find(keyCli);
     delete keyCli;
-    Cliente* cli = static_cast<Cliente*>(itemCli);
-    
-    if (cli == nullptr) 
+
+    if (itemCli == nullptr)  
         throw std::invalid_argument("Cliente no encontrado");
+
+    Cliente* cli = static_cast<Cliente*>(itemCli);
+
 
     Publicacion* pub = nullptr;
     IIterator* itInm = this->inmuebles->getIterator();
 
     while (itInm->hasCurrent()) {
-        
         Inmueble* inm = static_cast<Inmueble*>(itInm->getCurrent());
-        
         if (inm != nullptr) {
             Administracion* adm = inm->getAdministracion();
             if (adm != nullptr) {
                 pub = adm->getPublicacion(idPublicacion);
-                if (pub != nullptr) 
+                if (pub != nullptr)
                     break;
             }
         }
         itInm->next();
-
     }
 
     delete itInm;
 
-    if (pub == nullptr) 
-        throw std::invalid_argument("Publicación no encontrada");
+    if (pub == nullptr)
+        throw std::invalid_argument("Publicacion no encontrada");
+
 
     Visita* nueva = new Visita(fechaVisita, contacto);
     cli->agregarVisita(nueva);
@@ -499,7 +501,7 @@ DtInmueble* Sistema::seleccionarPublicacion(int id) {
 
         if (resultado != nullptr) {
             delete it;
-            return resultado;  // retornás el puntero directo, sin copiar
+            return resultado; 
         }
 
         it->next();

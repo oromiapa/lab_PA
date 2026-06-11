@@ -44,6 +44,7 @@ private:
     Propietario* propietarioActual;
     Inmueble* inmuebleActual;
     int contadorInmuebles;
+    int contadorPublicaciones;
 
 public:
     Sistema();
@@ -69,6 +70,7 @@ public:
 
 // Tercer Caso: ALTA DE PUBLICACION
 //  ICollection* listarInmobiliarias(); [Es el mismo que en el segundo caso]
+    int autoincrementarPub() ;
     ICollection* seleccionarInmobiliariaAdministrada(const char* nombreInmobiliaria);
     void altaPublicacion(const int numid, const char* text, float price, bool tipopub);
 

@@ -16,10 +16,11 @@ private:
     DtPropietario propietariovinculado;
 
 public:
-
+//Constructor y Destructor
     DtInmXProp(int id, const DtDireccion &dir, const DtPropietario &prop);
     virtual ~DtInmXProp();
 
+//Gets
     int getNumId() const ;
     DtDireccion getDireccion() const ;
     DtPropietario getPropietariovinculado() const ;

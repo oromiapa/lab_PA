@@ -485,6 +485,67 @@ void casoEliminarInmueble() {
 }
 
 // =========================================================
+// LISTADOS
+// =========================================================
+
+
+
+void listarPropietarios() {
+    separador();
+    std::cout << "  LISTADO DE PROPIETARIOS\n";
+    separador();
+    try {
+        ICollection* lista = sistema.listarPropietarios();
+        imprimirPropietarios(lista);
+        delete lista;
+    } catch (const std::exception& e) {
+        std::cout << "  [!] Error: " << e.what() << "\n";
+    }
+}
+
+void listarInmobiliarias() {
+    separador();
+    std::cout << "  LISTADO DE INMOBILIARIAS\n";
+    separador();
+    try {
+        ICollection* lista = sistema.listarInmobiliarias();
+        imprimirInmobiliarias(lista);
+        delete lista;
+    } catch (const std::exception& e) {
+        std::cout << "  [!] Error: " << e.what() << "\n";
+    }
+}
+
+void listarInmuebles() {
+    separador();
+    std::cout << "  LISTADO DE INMUEBLES\n";
+    separador();
+    try {
+        ICollection* lista = sistema.listarinmueblesxpropietario();
+        imprimirInmueblesXPropietario(lista);
+        delete lista;
+    } catch (const std::exception& e) {
+        std::cout << "  [!] Error: " << e.what() << "\n";
+    }
+}
+
+void casoListar() {
+    separador();
+    std::cout << "  LISTAR\n";
+    std::cout << "    1- Clientes\n";
+    std::cout << "    2- Propietarios\n";
+    std::cout << "    3- Inmobiliarias\n";
+    std::cout << "    4- Inmuebles\n";
+    int op = leerEntero("  Opcion: ");
+    switch (op) {
+        case 2: listarPropietarios();  break;
+        case 3: listarInmobiliarias(); break;
+        case 4: listarInmuebles();     break;
+        default: std::cout << "  [!] Opcion invalida.\n";
+    }
+}
+
+// =========================================================
 // PRECARGA
 // =========================================================
 
@@ -570,6 +631,7 @@ int main() {
         std::cout << "    4- Agendar Visita\n";
         std::cout << "    5- Consultar Publicaciones\n";
         std::cout << "    6- Eliminar Inmueble\n";
+        std::cout << "    7- Listar\n";
         std::cout << "    0- Salir\n";
         separador();
 
@@ -582,6 +644,7 @@ int main() {
             case 4: casoAgendarVisita();        break;
             case 5: casoConsultarPublicaciones(); break;
             case 6: casoEliminarInmueble();     break;
+            case 7: casoListar();               break;
             case 0:
                 return 0;
             default:
