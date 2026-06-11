@@ -532,15 +532,14 @@ void listarInmuebles() {
 void casoListar() {
     separador();
     std::cout << "  LISTAR\n";
-    std::cout << "    1- Clientes\n";
-    std::cout << "    2- Propietarios\n";
-    std::cout << "    3- Inmobiliarias\n";
-    std::cout << "    4- Inmuebles\n";
+    std::cout << "    1- Propietarios\n";
+    std::cout << "    2- Inmobiliarias\n";
+    std::cout << "    3- Inmuebles\n";
     int op = leerEntero("  Opcion: ");
     switch (op) {
-        case 2: listarPropietarios();  break;
-        case 3: listarInmobiliarias(); break;
-        case 4: listarInmuebles();     break;
+        case 1: listarPropietarios();  break;
+        case 2: listarInmobiliarias(); break;
+        case 3: listarInmuebles();     break;
         default: std::cout << "  [!] Opcion invalida.\n";
     }
 }
@@ -554,49 +553,104 @@ void precargar() {
 
     // Clientes
     sistema.altaCliente("jperez", "Juan", "jperez@mail.com", "pass123", "Perez", "12345678");
-    sistema.altaCliente("mgarcia", "Maria", "mgarcia@mail.com", "pass456", "Garcia", "87654321");
+    sistema.altaCliente("mgarcia", "Maria", "mgarcia@mail.com", "pass123", "Garcia", "87654321");
+    sistema.altaCliente("cferreira", "Cristian", "cristian@mail.com", "pass123", "Ferreira", "11223344");
+    sistema.altaCliente("dfernandez", "Diego", "diego@mail.com", "pass123", "Fernandez", "22446688");
+    
 
-    // Propietario 1: prop_lopez con una Casa (id=1)
+    // Propietario 1: prop_lopez con una Casa
     sistema.altaPropietario("prop_lopez", "Carlos", "clopez@mail.com", "propPass1", "099123456", 100200300);
     sistema.crearCasa(
         DtDireccion("Rivera", 1234, "Montevideo"),
         DtFecha(1, 1, 2005),
         120.5f, false, TipoTecho::TECHO_PLANO
     );
+    sistema.crearCasa(
+        DtDireccion("Asamblea", 1234, "San jose"),
+        DtFecha(25, 9, 2003),
+        221.0f, true, TipoTecho::TECHO_A_DOS_AGUAS
+    );
     sistema.finalizarAltaPropietario();
 
-    // Propietario 2: prop_torres con un Apartamento (id=2)
+    // Propietario 2: prop_torres con un Apartamento
     sistema.altaPropietario("prop_torres", "Ana", "atorres@mail.com", "propPass2", "091987654", 200300400);
     sistema.crearApartamento(
-        DtDireccion("18 de Julio", 900, "Montevideo"),
+        DtDireccion("Batlle", 900, "Montevideo"),
         DtFecha(15, 6, 2010),
         75.0f, 3, true, 2500.0f
+    );
+    sistema.crearCasa(
+        DtDireccion("nombre:calle", 1234, "departamento"),
+        DtFecha(12, 12, 2013),
+        115.5f, false, TipoTecho::TECHO_LIVIANO
+    );
+    sistema.finalizarAltaPropietario();
+
+    sistema.altaPropietario("prop_oromi", "Aparicio", "aoromi@mail.com", "propPass3", "099999999", 200300400);
+    sistema.crearApartamento(
+        DtDireccion("calle_z", 600, "Montevideo"),
+        DtFecha(15, 6, 2010),
+        33.33f, 3, true, 3400.0f
+    );
+    sistema.crearApartamento(
+        DtDireccion("calle_x", 500, "hola-soy-un-departamento"),
+        DtFecha(25, 1, 2002),
+        66.6f, 3, true, 6666.6f
     );
     sistema.finalizarAltaPropietario();
 
     // Inmobiliaria
     sistema.altaInmobiliaria(
-        "inmo_sol", "Inmobiliaria Sol", "sol@inmosol.com", "inmoPass1",
-        DtDireccion("Av. Italia", 5678, "Montevideo"),
-        "29001234", "https://www.inmosol.com"
+        "inmobiliaria", "Inmobiliaria Anthony", "anthony@inmo.com", "inmoPass1",
+        DtDireccion("Av. Italia", 5678, "Montevideo"), "29001234", "https://www.asdasdasd.com"
     );
     sistema.vincularPropietario("prop_lopez");
     sistema.vincularPropietario("prop_torres");
     sistema.finalizarAltaInmobiliaria();
 
-    // Administracion del inmueble id=1
-    sistema.seleccionarInmobiliaria("inmo_sol");
-    sistema.altaAdministracion(1);
+    sistema.altaInmobiliaria(
+        "hola", "Inmobiliaria Luca", "Luca@hola.com", "inmoPass2",
+        DtDireccion("dondesea", 1212, "Durazno"), "99999999", "https://www.xdxdxdxd.com"
+    );
+    sistema.vincularPropietario("prop_oromi");
+    sistema.finalizarAltaInmobiliaria();
 
-    // Publicacion de alquiler para inmueble id=1
-    sistema.altaPublicacion(1, "Casa amplia con jardin en Montevideo.", 15000.0f, false);
+    // inmobiliaria anthony
+    sistema.seleccionarInmobiliaria("inmobiliaria");
+    sistema.altaAdministracion(1);
+    sistema.seleccionarInmobiliaria("inmobiliaria");
+    sistema.altaAdministracion(2);
+    sistema.seleccionarInmobiliaria("inmobiliaria");
+    sistema.altaAdministracion(3);
+    sistema.seleccionarInmobiliaria("inmobiliaria");
+    sistema.altaAdministracion(4);
+
+    // hola
+    sistema.seleccionarInmobiliaria("hola");
+    sistema.altaAdministracion(5);
+    sistema.seleccionarInmobiliaria("hola");
+    sistema.altaAdministracion(6);
+
+    // --- Publicaciones ---
+    // inmobiliaria anthony
+    sistema.altaPublicacion(1, "Casa amplia con jardin en Montevideo.", 15000.0f, false);   // alquiler
+    sistema.altaPublicacion(2, "Casa con techo a dos aguas en San Jose.", 250000.0f, true); // venta
+
+    // inmobiliaria hola
+    sistema.altaPublicacion(4, "Casa liviana en departamento.", 180000.0f, true);  // venta
+
+    // --- Visitas ---
+    sistema.altaVisita("jperez",    1, DtFecha(15, 6, 2026), "WhatsApp: 099111222");
+    sistema.altaVisita("mgarcia",   1, DtFecha(16, 6, 2026), "Email: mgarcia@mail.com");
+    sistema.altaVisita("cferreira", 3, DtFecha(17, 6, 2026), "Telefono: 098333444");
 
     std::cout << "  [OK] Datos precargados:\n";
-    std::cout << "       Clientes:       jperez, mgarcia\n";
-    std::cout << "       Propietarios:   prop_lopez (Casa id=1), prop_torres (Apto id=2)\n";
-    std::cout << "       Inmobiliaria:   inmo_sol\n";
-    std::cout << "       Administracion: inmueble id=1\n";
-    std::cout << "       Publicacion:    id=1 | Alquiler | $15000\n";
+    std::cout << "       Clientes:        jperez, mgarcia, cferreira, dfernandez\n";
+    std::cout << "       Propietarios:    prop_lopez (id=1,2), prop_torres (id=3,4), prop_oromi (id=5,6)\n";
+    std::cout << "       Inmobiliarias:   inmobiliaria (admin id=1,2,3), hola (admin id=4,5,6)\n";
+    std::cout << "       Publicaciones:   id=1 alquiler $15000 | id=2 venta $250000 | id=3 alquiler $12000\n";
+    std::cout << "                        id=4 venta $180000  | id=5 alquiler $8000  | id=6 venta $320000\n";
+    std::cout << "       Visitas:         pub1(jperez,mgarcia) pub3(cferreira) pub5(dfernandez) pub6(jperez)\n";
 }
 
 // =========================================================
@@ -604,7 +658,7 @@ void precargar() {
 // =========================================================
 
 int main() {
-    // Obtener el Sistema via Factory (singleton)
+    
     sistemaPtr = Factory::getInstancia()->getSistema();
 
     std::cout << "\n  ================================\n";
